@@ -92,6 +92,33 @@ class ConfirmRequest(BaseModel):
     corrected: bool = False
 
 
+class DistinctionRequest(BaseModel):
+    text: str
+    song: Optional[SongRef] = None
+    interpretation: Interpretation
+
+
+class DistinctionResult(BaseModel):
+    should_ask: bool = False
+    question: Optional[str] = None
+    options: List[str] = []
+    stop_reason: Optional[str] = None
+
+
+class EvaluateRequest(BaseModel):
+    text: str
+    song: Optional[SongRef] = None
+    interpretation: Interpretation
+    question: Optional[str] = None
+    answer: str
+
+
+class EvaluateResult(BaseModel):
+    interpretation: Interpretation
+    supported: bool
+    evaluation_note: str
+
+
 class Pattern(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
@@ -284,6 +311,125 @@ def _match_prevalence(text: str, pattern_candidate: str, patterns: List[dict]) -
     return Prevalence(found=False)
 
 
+# ---------------- Distinction Questioner (2nd AI worker) ----------------
+DISTINCTION_PROMPT = """Sen Fifthback içindeki ikinci yapay zekâ çalışanı olan Ayrım Sorgulayıcı'sın (Distinction Questioner).
+
+Görevin TAVSİYE VERMEK DEĞİL. Görevin, tek bir ek sorunun bu geri bildirimin ANLAMINI esaslı biçimde değiştirip değiştiremeyeceğine karar vermek.
+
+Tüm çıktı TÜRKÇE olmalı.
+
+İçsel muhakeme (bunu uygula ama JSON dışına yazma):
+10 — Sinyal: Çalışanın sözlerinde açıkça ne var?
+20 — Etkin etkenler: Aynı anda önemli olabilecek 1–4 ihtiyaç, baskı, kısıt veya gerilim (metindeki kanıta dayalı).
+30 — Ayırt edici soru: Bu geri bildirimin ne anlama geldiğini EN ÇOK değiştirecek TEK en değerli soruyu belirle.
+
+Örnek: "İstifa edesim var." → yalnızca "ayrılma isteği" diye etiketleme. Bunun yerine şuna benzer tek bir yararlı soru sor:
+"İstifa düşünceni en çok ne besliyor: işin kendisi, çalışma biçimi, belirli bir ilişki/olay, yoksa iş dışında değişen bir koşul?"
+
+Kurallar:
+- ASLA "A mı, B mi" dayatma. Birden çok etken bir arada olabilir; bu yüzden seçenekler çoklu seçilebilir olmalı.
+- Teşhis etme. Neden/sebep uydurma. Metnin desteklemediği bir şey ekleme.
+- Eğer ek bir soru çok az yararlı bilgi katacaksa, SORMA (should_ask=false) ve dur.
+
+KATI JSON üret:
+{
+  "should_ask": true veya false,
+  "question": tek bir Türkçe ayırt edici soru, ya da null,
+  "options": çalışanın arasından ÇOKLU seçebileceği 3-5 kısa Türkçe seçenek (olası etkenler) — birbirini dışlamaz. "hiçbiri" ekleme, onu arayüz ekler,
+  "stop_reason": should_ask false ise neden sormadığına dair kısa Türkçe açıklama, aksi halde null
+}
+Yalnızca JSON nesnesi ver, başka bir şey yazma."""
+
+
+async def distinction_with_llm(text: str, interp: Interpretation) -> DistinctionResult:
+    if not EMERGENT_LLM_KEY:
+        return DistinctionResult(should_ask=False, stop_reason="Ek soru için yeterli dayanak yok.")
+    try:
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"distinction-{uuid.uuid4()}",
+            system_message=DISTINCTION_PROMPT,
+        ).with_model("anthropic", "claude-sonnet-4-6")
+
+        sig_lines = "; ".join(f"{s.label}: \"{s.evidence}\"" for s in interp.signals)
+        prompt = (
+            f"Çalışanın metni:\n\"\"\"\n{text}\n\"\"\"\n\n"
+            f"Yorumlayıcının çıkardığı tür: {interp.feedback_type}\n"
+            f"Sinyaller: {sig_lines}\n"
+            f"Örüntü adayı: {interp.pattern_candidate}"
+        )
+        resp = await chat.send_message(UserMessage(text=prompt))
+        raw = resp if isinstance(resp, str) else str(resp)
+        m = re.search(r'\{.*\}', raw, re.DOTALL)
+        data = json.loads(m.group(0) if m else raw)
+
+        should_ask = bool(data.get("should_ask"))
+        question = str(data.get("question")).strip() if data.get("question") else None
+        options = [str(o).strip() for o in (data.get("options") or []) if str(o).strip()][:5]
+        if should_ask and (not question or len(options) < 2):
+            return DistinctionResult(should_ask=False, stop_reason="Anlamlı bir ayırt edici soru bulunamadı.")
+        return DistinctionResult(
+            should_ask=should_ask,
+            question=question if should_ask else None,
+            options=options if should_ask else [],
+            stop_reason=(str(data.get("stop_reason")).strip() if data.get("stop_reason") else None) if not should_ask else None,
+        )
+    except Exception as e:
+        logger.error(f"Distinction failed, stopping: {e}")
+        return DistinctionResult(should_ask=False, stop_reason="Ek soru üretilemedi.")
+
+
+# ---------------- Evaluator (grounding check) ----------------
+EVALUATOR_PROMPT = """Sen Fifthback içindeki Değerlendirici'sin (Evaluator).
+
+Görevin TAVSİYE VERMEK ya da yeni yorum üretmek DEĞİL. Görevin yalnızca kontrol etmek: güncellenen yorum, çalışanın GERÇEK sözleri ve verdiği yanıt/düzeltmelerle DESTEKLENİYOR mu?
+
+Tüm çıktı TÜRKÇE olmalı.
+
+Kurallar:
+- Teşhis etme. Neden/sebep uydurma.
+- Yalnızca dayanağı denetle: her sinyal ve etken, çalışanın metnine ya da yanıtına dayanıyor mu?
+- Metnin ötesine geçen, uydurulmuş ya da varsayıma dayalı bir kısım varsa bunu nazikçe belirt.
+
+KATI JSON üret:
+{
+  "supported": true veya false,
+  "note": kısa Türkçe açıklama — yorumun hangi kısımlarının çalışanın sözlerine dayandığını, varsa dayanağı zayıf kısmı belirt
+}
+Yalnızca JSON nesnesi ver."""
+
+
+async def evaluate_grounding(text: str, interp: Interpretation) -> tuple:
+    default_note = "Güncellenen yorum, paylaştığın sözlere ve yanıtına dayanıyor."
+    if not EMERGENT_LLM_KEY:
+        return True, default_note
+    try:
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"evaluate-{uuid.uuid4()}",
+            system_message=EVALUATOR_PROMPT,
+        ).with_model("anthropic", "claude-sonnet-4-6")
+
+        sig_lines = "; ".join(f"{s.label}: \"{s.evidence}\"" for s in interp.signals)
+        need_lines = "; ".join(n.title for n in interp.active_needs)
+        prompt = (
+            f"Çalışanın (yanıtı dahil) metni:\n\"\"\"\n{text}\n\"\"\"\n\n"
+            f"Güncellenen yorum — Tür: {interp.feedback_type}\n"
+            f"Sinyaller: {sig_lines}\n"
+            f"Etkin etkenler: {need_lines}"
+        )
+        resp = await chat.send_message(UserMessage(text=prompt))
+        raw = resp if isinstance(resp, str) else str(resp)
+        m = re.search(r'\{.*\}', raw, re.DOTALL)
+        data = json.loads(m.group(0) if m else raw)
+        supported = bool(data.get("supported", True))
+        note = str(data.get("note", default_note)).strip() or default_note
+        return supported, note
+    except Exception as e:
+        logger.error(f"Evaluator failed, defaulting supported: {e}")
+        return True, default_note
+
+
 # ---------------- Routes ----------------
 @api_router.get("/")
 async def root():
@@ -298,6 +444,29 @@ async def interpret(req: InterpretRequest):
     seeded = await db.patterns.find({"seeded": True}, {"_id": 0}).to_list(200)
     interp.prevalence = _match_prevalence(req.text.strip(), interp.pattern_candidate, seeded)
     return interp
+
+
+@api_router.post("/distinction", response_model=DistinctionResult)
+async def distinction(req: DistinctionRequest):
+    if not req.text or not req.text.strip():
+        raise HTTPException(status_code=400, detail="Metin boş olamaz.")
+    return await distinction_with_llm(req.text.strip(), req.interpretation)
+
+
+@api_router.post("/evaluate", response_model=EvaluateResult)
+async def evaluate(req: EvaluateRequest):
+    combined = req.text.strip()
+    if req.question and req.answer and req.answer.strip():
+        combined = (
+            f"{req.text.strip()}\n\n"
+            f"[Netleştirici soru] {req.question}\n"
+            f"[Çalışanın yanıtı] {req.answer.strip()}"
+        )
+    refined = await interpret_with_llm(combined, req.song)
+    seeded = await db.patterns.find({"seeded": True}, {"_id": 0}).to_list(200)
+    refined.prevalence = _match_prevalence(combined, refined.pattern_candidate, seeded)
+    supported, note = await evaluate_grounding(combined, refined)
+    return EvaluateResult(interpretation=refined, supported=supported, evaluation_note=note)
 
 
 @api_router.post("/feedback/confirm")

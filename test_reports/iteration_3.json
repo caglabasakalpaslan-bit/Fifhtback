@@ -1,0 +1,38 @@
+{
+  "summary": "Full-stack test of Fifthback's NEW Distinction Questioner + Evaluator AI workers (Claude Sonnet 4.6 via Emergent). Backend: 4/4 new pytest passed (test_distinction_evaluate.py) plus 3 regression checks from backend_test.py still green. POST /api/distinction with 'İstifa edesim var.' returned should_ask=true with a Turkish question ('İstifa düşünceni en çok ne besliyor?') and 5 Turkish options (no 'Hiçbiri' in options). POST /api/distinction with 'Destek ekibi harikaydı, gerçekten minnettarım.' returned should_ask=false with a Turkish stop_reason and empty options. POST /api/distinction with '   ' returned 400. POST /api/evaluate returned a refined interpretation with all journey fields (signals verbatim substrings of combined text+answer, active_needs>=1, org+personal responsibility, >=2 channels, prevalence object), supported bool, and Turkish evaluation_note. Frontend: typing 'İstifa edesim var.' + submit rendered solution-journey; step-distinction was inserted after interpret (journey-step-dot-5 exists → 6 steps). step-distinction contains distinction-question, 5 distinction-option-{i}, distinction-none, distinction-freetext, submit-distinction-btn, skip-distinction-btn. Selecting options 0+1 and clicking submit-distinction-btn called /api/evaluate, rendered evaluator-result inline with the grounding note ('Sinyallerin üçü de çalışanın metnine doğrudan dayanmaktadır…'), and the journey STAYED at 6 dots (interpretation.id preserved → no remount/reset). Navigation to remaining steps (prevalence/tension/responsibility/closure) works and final confirm-interpretation-btn / correct-interpretation-btn / add-more-btn are visible. Skills loaded: ai-testing-core, ai-testing-llm. LiteLLM logs confirm real claude-sonnet-4-6 calls for /interpret, /distinction, and /evaluate at test times.\n\nFeature verdicts:\n- POST /api/distinction (ambiguous → ask) - pass - evidence: should_ask=true, question='İstifa düşünceni en çok ne besliyor?', 5 TR options, no 'hiçbiri'; skill: ai-testing-llm.\n- POST /api/distinction (clear → stop) - pass - evidence: should_ask=false + non-empty Turkish stop_reason, options=[]; skill: ai-testing-llm.\n- POST /api/distinction (empty) - pass - evidence: 400 with detail; skill: ai-testing-llm.\n- POST /api/evaluate (refined + grounding) - pass - evidence: verbatim substring checks on refined signals evidence against combined text+answer, org/personal responsibility non-empty, ≥2 channels, supported=bool, note non-empty TR; skill: ai-testing-llm.\n- Frontend distinction step insertion + submit flow - pass - evidence: 6 journey dots after interpret, evaluator-result rendered after submit, 6 dots retained (no reset).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_distinction_evaluate.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/distinction_evaluate_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "SolutionJourney.js has grown to ~638 lines with the added Distinction step body inline. It is still under the 700-line soft limit but should be split (StepDistinction, StepUnderstand, ...) before the next feature; the 5-step review already flagged this and the new step made it worse.",
+    "server.py now has 3 LLM workers (interpret, distinction, evaluator) sharing near-identical LlmChat scaffolding. Extract a single _call_claude_json(system, prompt) helper to remove duplication and centralize the JSON-parsing/error path.",
+    "distinction_with_llm silently swallows exceptions and returns should_ask=false with a generic stop_reason ('Ek soru üretilemedi.'). Same for evaluate_grounding which defaults to supported=True. This masks real LLM failures from monitoring — add a WARN log with the exception and consider bubbling a metric.",
+    "In /api/evaluate the interp_with_llm is re-run on the combined text with 3 sequential Claude calls total (interpret + evaluate + prevalence read). Endpoint p95 is 25–40s per the task brief; consider running interpret and evaluator against the same combined text in a single prompt or in parallel to cut latency. Real users on the preview URL will hit the Cloudflare 100s ceiling if network is slow.",
+    "SolutionJourney useEffect for askDistinction has an empty dep array and disables react-hooks/exhaustive-deps. This is intentional (askedRef gate) but is fragile: if `interpretation` changes prop identity (e.g. after evaluate), a future refactor could re-fire the call. Prefer keying on interpretation.id in the ref check.",
+    "Distinction options are rendered with array-index keys and no de-duplication; if the LLM ever returns two identical options they will still both render and be selectable — add a lower-case dedupe in normalization on the backend.",
+    "No rate limiting on the new /api/distinction and /api/evaluate — each user turn now costs up to 3 LLM calls. Add per-IP/session throttling before the demo is exposed publicly.",
+    "EvaluateRequest.answer is Field-less string; empty answer bypasses the composed-combined branch and just re-interprets the original text. Add server-side validation to reject empty answer with 400 (or make it optional & documented)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_distinction_evaluate.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "not applicable - app has no auth",
+  "seed_data_creation": "No new seed data. Existing 5 seeded Turkish patterns + prior live TEST_ patterns from iteration_2 are still in Mongo.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "New endpoints /api/distinction and /api/evaluate both work with real Claude Sonnet 4.6 via EMERGENT_LLM_KEY. Distinction correctly asks for multi-signal ambiguous text and stops for clearly single-signal positive text (no Hiçbiri in options — UI adds it). Evaluate returns full refined journey + grounding. Frontend inserts the distinction step ONLY when should_ask=true → journey has 6 dots (journey-step-dot-0..5); when should_ask=false the journey stays at 5 dots (verified by backend contract + frontend memo). Data-testids verified: distinction-question, distinction-option-{0..4}, distinction-none, distinction-freetext, submit-distinction-btn, skip-distinction-btn, evaluator-result. Interpretation id preservation on setInterpretation keeps journey from remounting on evaluate. Tests: /app/backend/tests/test_distinction_evaluate.py — export REACT_APP_BACKEND_URL and run with pytest.",
+  "rca of the issue": "N/A - no functional bugs found this iteration."
+}

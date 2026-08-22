@@ -17,3 +17,13 @@ export const getPatterns = async () => {
   const { data } = await axios.get(`${API}/patterns`);
   return data;
 };
+
+export const askDistinction = async (payload) => {
+  const { data } = await axios.post(`${API}/distinction`, payload);
+  return data;
+};
+
+export const evaluateAnswer = async (payload) => {
+  const { data } = await axios.post(`${API}/evaluate`, payload);
+  return data;
+};

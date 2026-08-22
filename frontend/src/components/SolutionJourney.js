@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Check, Pencil, Quote, Tag, Sparkles, Disc3, Loader2, PartyPopper,
   Users, Clock, TrendingUp, Building2, User, GitBranch, ShieldCheck,
   ChevronLeft, ChevronRight, Plus, Send, AlertTriangle, Layers,
+  HelpCircle, BadgeCheck,
 } from "lucide-react";
 import { toast } from "sonner";
-import { confirmFeedback } from "../lib/api";
+import { confirmFeedback, askDistinction, evaluateAnswer } from "../lib/api";
 import { TYPE_META } from "../data/constants";
 
-const STEPS = [
+const BASE_STEPS = [
   { key: "understand", title: "Seni nasıl anladık?", icon: Quote },
   { key: "prevalence", title: "Bu örüntü ne kadar yaygın?", icon: TrendingUp },
   { key: "tension", title: "Buradaki asıl gerilim ne?", icon: Layers },
   { key: "responsibility", title: "Kim ne yapabilir?", icon: GitBranch },
   { key: "closure", title: "Nasıl kapanabilir?", icon: ShieldCheck },
 ];
+const DISTINCTION_STEP = { key: "distinction", title: "Bir şeyi netleştirelim", icon: HelpCircle };
 
 const slide = {
   enter: { opacity: 0, x: 24 },
@@ -32,6 +34,30 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
 
+  // Distinction Questioner + Evaluator state
+  const [distinction, setDistinction] = useState(null);
+  const [selected, setSelected] = useState([]);
+  const [freeText, setFreeText] = useState("");
+  const [noneChosen, setNoneChosen] = useState(false);
+  const [evaluating, setEvaluating] = useState(false);
+  const [evalResult, setEvalResult] = useState(null);
+  const askedRef = useRef(false);
+
+  useEffect(() => {
+    if (askedRef.current) return;
+    askedRef.current = true;
+    askDistinction({ text, song, interpretation })
+      .then((d) => setDistinction(d))
+      .catch(() => setDistinction({ should_ask: false }));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const steps = useMemo(() => {
+    if (distinction?.should_ask) {
+      return [BASE_STEPS[0], DISTINCTION_STEP, ...BASE_STEPS.slice(1)];
+    }
+    return BASE_STEPS;
+  }, [distinction]);
+
   const meta = TYPE_META[interpretation.feedback_type] || TYPE_META.OTHER;
   const prevalence = interpretation.prevalence;
 
@@ -46,6 +72,41 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
     onAddMore?.(extra.trim());
     setAdding(false);
     setExtra("");
+  };
+
+  const toggleOption = (opt) => {
+    setNoneChosen(false);
+    setSelected((prev) => (prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt]));
+  };
+
+  const chooseNone = () => {
+    setNoneChosen(true);
+    setSelected([]);
+    setFreeText("");
+  };
+
+  const submitDistinction = async () => {
+    const parts = [...selected];
+    if (freeText.trim()) parts.push(freeText.trim());
+    const answer = noneChosen ? "hiçbiri" : parts.join("; ");
+    if (!answer) {
+      toast("Bir seçenek seç, kendin yaz ya da “Hiçbiri”yi seç.");
+      return;
+    }
+    setEvaluating(true);
+    try {
+      const res = await evaluateAnswer({
+        text, song, interpretation, question: distinction.question, answer,
+      });
+      // Keep the same id so the journey does not remount / reset.
+      setInterpretation({ ...res.interpretation, id: interpretation.id });
+      setEvalResult({ supported: res.supported, note: res.evaluation_note });
+      toast.success("Yanıtın değerlendirildi — yorum güncellendi.");
+    } catch (e) {
+      toast.error("Değerlendirme başarısız oldu. Lütfen tekrar dene.");
+    } finally {
+      setEvaluating(false);
+    }
   };
 
   const confirm = async () => {
@@ -90,7 +151,8 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
     );
   }
 
-  const CurrentIcon = STEPS[step].icon;
+  const CurrentIcon = steps[step].icon;
+  const stepKey = steps[step].key;
 
   return (
     <motion.div
@@ -111,7 +173,7 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          {STEPS.map((s, i) => (
+          {steps.map((s, i) => (
             <button
               key={s.key}
               data-testid={`journey-step-dot-${i}`}
@@ -133,10 +195,10 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
           </div>
           <div>
             <p className="text-[11px] font-mono uppercase tracking-[0.14em] text-[#8A847C]">
-              Adım {step + 1} / {STEPS.length}
+              Adım {step + 1} / {steps.length}
             </p>
             <h3 className="font-serif text-xl font-semibold text-[#1A1816] leading-tight">
-              {STEPS[step].title}
+              {steps[step].title}
             </h3>
           </div>
         </div>
@@ -146,15 +208,15 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
       <div className="px-5 py-5 min-h-[260px]">
         <AnimatePresence mode="wait">
           <motion.div
-            key={step + (editing ? "-edit" : "")}
+            key={stepKey + (editing ? "-edit" : "")}
             variants={slide}
             initial="enter"
             animate="center"
             exit="exit"
             transition={{ duration: 0.22 }}
           >
-            {/* STEP 0 — Understand */}
-            {step === 0 && (
+            {/* STEP — Understand */}
+            {stepKey === "understand" && (
               <div className="space-y-5" data-testid="step-understand">
                 <div>
                   <div className="flex items-center gap-1.5 mb-2 text-[#8A847C]">
@@ -240,8 +302,101 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
               </div>
             )}
 
-            {/* STEP 1 — Prevalence */}
-            {step === 1 && (
+            {/* STEP — Distinction Questioner + Evaluator */}
+            {stepKey === "distinction" && (
+              <div className="space-y-4" data-testid="step-distinction">
+                {evalResult ? (
+                  <div className="space-y-3" data-testid="evaluator-result">
+                    <div className="flex items-center gap-2 text-[#3F6B56]">
+                      <BadgeCheck className="h-4 w-4" />
+                      <span className="text-[11px] font-mono uppercase tracking-[0.14em] font-semibold">
+                        Değerlendirici · dayanak kontrolü
+                      </span>
+                    </div>
+                    <div className={`rounded-lg border p-4 ${evalResult.supported ? "border-[#CDE3D6] bg-[#EDF5F0]" : "border-amber-200 bg-amber-50"}`}>
+                      <p className={`text-sm font-semibold mb-1 ${evalResult.supported ? "text-[#3F6B56]" : "text-amber-800"}`}>
+                        {evalResult.supported ? "Yorum, senin sözlerine dayanıyor." : "Bir kısmı dayanağa göre gözden geçirildi."}
+                      </p>
+                      <p className={`text-sm leading-relaxed ${evalResult.supported ? "text-[#3F6B56]" : "text-amber-900"}`}>
+                        {evalResult.note}
+                      </p>
+                    </div>
+                    <p className="text-xs text-[#8A847C] italic">
+                      Yanıtın, sonraki adımlardaki yoruma işlendi. Dilersen “İleri” ile devam et.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-start gap-2 rounded-lg bg-[#FBF7F2] border border-[#F0EAE2] px-3 py-2.5">
+                      <HelpCircle className="h-4 w-4 text-[#C85A32] mt-0.5 shrink-0" />
+                      <p className="text-xs text-[#8A847C] leading-relaxed">
+                        Tek bir soru, bu geri bildirimin anlamını değiştirebilir. Birden fazla seçebilir,
+                        kendin yazabilir ya da “Hiçbiri”yi seçebilirsin — bu bir “A mı B mi” değil.
+                      </p>
+                    </div>
+                    <p className="font-serif text-lg text-[#1A1816] leading-snug" data-testid="distinction-question">
+                      {distinction?.question}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(distinction?.options || []).map((opt, i) => (
+                        <button
+                          key={i}
+                          data-testid={`distinction-option-${i}`}
+                          onClick={() => toggleOption(opt)}
+                          className={`text-xs rounded-full border px-3 py-1.5 font-medium transition-colors ${
+                            selected.includes(opt)
+                              ? "bg-[#1A1816] text-[#FAF8F5] border-[#1A1816]"
+                              : "bg-white text-[#57534E] border-[#E7E0D8] hover:border-[#C85A32]"
+                          }`}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                      <button
+                        data-testid="distinction-none"
+                        onClick={chooseNone}
+                        className={`text-xs rounded-full border px-3 py-1.5 font-medium transition-colors ${
+                          noneChosen
+                            ? "bg-[#3F6B56] text-white border-[#3F6B56]"
+                            : "bg-white text-[#8A847C] border-dashed border-[#E7E0D8] hover:border-[#3F6B56]"
+                        }`}
+                      >
+                        Hiçbiri
+                      </button>
+                    </div>
+                    <input
+                      data-testid="distinction-freetext"
+                      value={freeText}
+                      onChange={(e) => { setFreeText(e.target.value); setNoneChosen(false); }}
+                      placeholder="Ya da kendi cümlenle yaz…"
+                      className="w-full rounded-lg border border-[#E7E0D8] bg-white px-3 py-2 text-sm outline-none focus:border-[#C85A32]"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        data-testid="submit-distinction-btn"
+                        onClick={submitDistinction}
+                        disabled={evaluating}
+                        className="flex-1 flex items-center justify-center gap-2 rounded-full bg-[#C85A32] px-4 py-2.5 text-sm font-medium text-white active:scale-[0.98] transition-transform disabled:opacity-60"
+                      >
+                        {evaluating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                        Yanıtı değerlendir
+                      </button>
+                      <button
+                        data-testid="skip-distinction-btn"
+                        onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}
+                        disabled={evaluating}
+                        className="rounded-full border border-[#E7E0D8] px-4 py-2.5 text-sm font-medium text-[#57534E]"
+                      >
+                        Atla
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* STEP — Prevalence */}
+            {stepKey === "prevalence" && (
               <div className="space-y-4" data-testid="step-prevalence">
                 {prevalence?.found ? (
                   <>
@@ -298,8 +453,8 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
               </div>
             )}
 
-            {/* STEP 2 — Tension (co-active needs) */}
-            {step === 2 && (
+            {/* STEP — Tension (co-active needs) */}
+            {stepKey === "tension" && (
               <div className="space-y-3" data-testid="step-tension">
                 <div className="flex items-start gap-2 rounded-lg bg-[#EDF5F0] border border-[#CDE3D6] px-3 py-2.5">
                   <Layers className="h-4 w-4 text-[#3F6B56] mt-0.5 shrink-0" />
@@ -321,8 +476,8 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
               </div>
             )}
 
-            {/* STEP 3 — Responsibility */}
-            {step === 3 && (
+            {/* STEP — Responsibility */}
+            {stepKey === "responsibility" && (
               <div className="space-y-4" data-testid="step-responsibility">
                 <p className="text-xs text-[#8A847C] italic">
                   Burada kimse suçlanmıyor — kurumun sorumluluğu ile senin kendi alanını ayrı ayrı gösteriyoruz.
@@ -356,8 +511,8 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
               </div>
             )}
 
-            {/* STEP 4 — Closure */}
-            {step === 4 && (
+            {/* STEP — Closure */}
+            {stepKey === "closure" && (
               <div className="space-y-3" data-testid="step-closure">
                 {interpretation.safety_note && (
                   <div className="flex items-start gap-2 rounded-lg bg-[#EDF5F0] border border-[#CDE3D6] px-3 py-2.5" data-testid="safety-note">
@@ -397,7 +552,7 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
 
       {/* Nav + actions */}
       <div className="border-t border-[#F0EAE2] bg-[#FDFCFA] px-5 py-4">
-        {step < STEPS.length - 1 ? (
+        {step < steps.length - 1 ? (
           <div className="flex items-center justify-between">
             <button
               data-testid="journey-back-btn"
@@ -409,7 +564,7 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
             </button>
             <button
               data-testid="journey-next-btn"
-              onClick={() => { setStep((s) => Math.min(STEPS.length - 1, s + 1)); setEditing(false); }}
+              onClick={() => { setStep((s) => Math.min(steps.length - 1, s + 1)); setEditing(false); }}
               className="flex items-center gap-1.5 rounded-full bg-[#1A1816] px-5 py-2.5 text-sm font-medium text-[#FAF8F5] active:scale-[0.98] transition-transform"
             >
               İleri <ChevronRight className="h-4 w-4" />
