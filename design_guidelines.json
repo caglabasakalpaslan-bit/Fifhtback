@@ -1,0 +1,127 @@
+{
+  "project_name": "Fifthback",
+  "archetype": "ARCHETYPE 1: Warm Editorial & Empathetic Clarity (Organic & Earthy with Swiss Rigor)",
+  "vibe_and_narrative": "Fifthback transforms corporate feedback from sterile compliance forms into human, dignified dialogue. Rather than forcing employees into rigid A vs B matrices, it starts with an intimate, unhurried question: 'What's happening?'. It blends editorial warm paper textures, literary serif accents (Playfair Display / Newsreader warmth), thoughtful vinyl/music touches for acoustic sentiment, with high-clarity managerial pattern intelligence that honors privacy above all.",
+  "theme_strategy": "Light Theme primary (warm cream/parchment background #FAF8F5 with deep espresso charcoal ink #1A1816 and terracotta/sage accents), with subtle warm-dark mode toggle support.",
+  "typography": {
+    "font_family_headings": "Newsreader, Playfair Display, serif, Georgia",
+    "font_family_body": "Plus Jakarta Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+    "font_family_mono": "JetBrains Mono, SFMono-Regular, Menlo, monospace",
+    "hierarchy": {
+      "h1_hero": "text-4xl sm:text-5xl lg:text-6xl font-serif font-medium tracking-tight leading-[1.1]",
+      "h2_section": "text-2xl sm:text-3xl lg:text-4xl font-serif font-medium tracking-tight text-stone-900 dark:text-stone-100",
+      "h3_card_header": "text-xl sm:text-2xl font-serif font-semibold text-stone-800 dark:text-stone-200",
+      "h4_sub": "text-lg sm:text-xl font-sans font-medium text-stone-700 dark:text-stone-300",
+      "body_lead": "text-lg text-stone-600 dark:text-stone-300 leading-relaxed",
+      "body_default": "text-base text-stone-700 dark:text-stone-300 leading-relaxed font-sans",
+      "body_small": "text-sm text-stone-500 dark:text-stone-400 font-sans",
+      "overline_badge": "text-xs font-mono uppercase tracking-[0.2em] font-semibold",
+      "evidence_quote": "font-mono text-xs sm:text-sm bg-amber-50/80 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border-l-2 border-amber-500 px-3 py-2 rounded-r-md"
+    }
+  },
+  "colors": {
+    "palette": {
+      "bg_canvas": "#FAF8F5",
+      "bg_canvas_dark": "#141312",
+      "bg_card": "#FFFFFF",
+      "bg_card_dark": "#1C1A19",
+      "bg_muted_card": "#F4EFEA",
+      "bg_muted_dark": "#242220",
+      "ink_primary": "#1A1816",
+      "ink_secondary": "#57534E",
+      "ink_muted": "#8A847C",
+      "border_soft": "#E7E0D8",
+      "border_soft_dark": "#2E2A27",
+      "accent_terracotta": "#C85A32",
+      "accent_terracotta_hover": "#B04D27",
+      "accent_terracotta_soft": "#FDF2EC",
+      "accent_sage": "#3F6B56",
+      "accent_sage_soft": "#EDF5F0",
+      "accent_amber": "#D97706",
+      "accent_amber_soft": "#FEF3C7",
+      "accent_indigo_slate": "#334155",
+      "feedback_types": {
+        "REQUEST": {
+          "badge_bg": "bg-sky-50 text-sky-800 border-sky-200 dark:bg-sky-950/60 dark:text-sky-200 dark:border-sky-800",
+          "accent_color": "#0284C7"
+        },
+        "TENSION": {
+          "badge_bg": "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/60 dark:text-amber-200 dark:border-amber-800",
+          "accent_color": "#D97706"
+        },
+        "PROBLEM": {
+          "badge_bg": "bg-rose-50 text-rose-800 border-rose-200 dark:bg-rose-950/60 dark:text-rose-200 dark:border-rose-800",
+          "accent_color": "#E11D48"
+        },
+        "SUGGESTION": {
+          "badge_bg": "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-200 dark:border-emerald-800",
+          "accent_color": "#059669"
+        },
+        "POSITIVE": {
+          "badge_bg": "bg-violet-50 text-violet-800 border-violet-200 dark:bg-violet-950/60 dark:text-violet-200 dark:border-violet-800",
+          "accent_color": "#7C3AED"
+        },
+        "OTHER": {
+          "badge_bg": "bg-stone-100 text-stone-800 border-stone-200 dark:bg-stone-800 dark:text-stone-200 dark:border-stone-700",
+          "accent_color": "#78716C"
+        }
+      },
+      "status_badges": {
+        "NEW": "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-800",
+        "ACTIVE": "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-300 dark:border-amber-800",
+        "STUCK": "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-800",
+        "RESOLVED": "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800"
+      }
+    }
+  },
+  "layout_and_grids": {
+    "container_max_w": "max-w-6xl mx-auto px-4 sm:px-6 lg:px-8",
+    "top_nav": "sticky top-0 z-40 backdrop-blur-xl bg-[#FAF8F5]/85 dark:bg-[#141312]/85 border-b border-[#E7E0D8] dark:border-[#2E2A27] transition-colors duration-200",
+    "employee_view_layout": "grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start py-8 sm:py-12",
+    "employee_left_column": "lg:col-span-7 space-y-6",
+    "employee_right_column": "lg:col-span-5 space-y-6 lg:sticky lg:top-24",
+    "manager_view_layout": "space-y-8 py-8 sm:py-12",
+    "manager_metrics_grid": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4",
+    "manager_pattern_table_grid": "grid grid-cols-1 gap-4",
+    "demo_bar_layout": "rounded-2xl border border-stone-200 dark:border-stone-800 bg-stone-50/70 dark:bg-stone-900/60 p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 shadow-sm"
+  },
+  "visual_enhancers": {
+    "paper_texture_grain": "Subtle vintage paper warm tone with fine border strokes (1px solid border-stone-200/80)",
+    "music_vinyl_card": "Warm acoustic aesthetic badge with miniature spinning disc indicator when song is entered or played",
+    "ai_interpreter_card": "Crystal clarity container with fine golden amber beacon indicating 'Feedback Interpreter Active'",
+    "privacy_shield_banner": "Subtle sage green banner indicating zero identity leakage, zero HR form bureaucracy",
+    "animations": "framer-motion staggered fade-in, smooth accordion expansions, button micro-bounces (active:scale-[0.98])"
+  },
+  "image_urls": {
+    "workspace_atmosphere": "https://images.pexels.com/photos/38815827/pexels-photo-38815827.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "warm_desk_typewriter": "https://images.pexels.com/photos/1432534/pexels-photo-1432534.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "cozy_reading_desk": "https://images.unsplash.com/photo-1621177555534-0ff4264dc567?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwyfHx3YXJtJTIwb2ZmaWNlJTIwYXRtb3NwaGVyZSUyMGVkaXRvcmlhbCUyMG11c2ljfGVufDB8fHx8MTc4NzM2NjU3N3ww&ixlib=rb-4.1.0&q=85"
+  },
+  "ui_components_structure": {
+    "Navbar": "src/components/Navbar.js (Logo with Fifthback icon, Mode switcher for 'Employee Voice' vs 'Manager Lens', 60s Demo Quick-fill trigger, and Theme toggle)",
+    "EmployeeVoice": "src/components/EmployeeVoice.js (Editorial single prompt 'What's happening?', optional 'Express it with a song' drawer/input, quick sample starter prompts for 60s challenge)",
+    "AiInterpreterCard": "src/components/AiInterpreterCard.js (Feedback Interpreter output: Type badge, 1-4 active signals with exact evidence quotes, Pattern candidate, and 'Did we understand you correctly?' confirm/correct interactive controls)",
+    "CorrectionDialog": "src/components/CorrectionDialog.js (Empathetic modal allowing the employee to tweak signals, feedback type, or add nuance without diagnostic jargon)",
+    "ConfirmationToast": "src/components/ConfirmationState.js (Heartwarming resolution confirmation stating feedback was synthesized into anonymized pattern pool)",
+    "ManagerDashboard": "src/components/ManagerDashboard.js (Aggregated recurring patterns table & cards: Pattern/Tension, Frequency indicator, Affected teams pill list, Unresolved duration, Blocker spotlight, Status filter & switcher NEW/ACTIVE/STUCK/RESOLVED, and Privacy Guarantee footer)",
+    "PatternDetailModal": "src/components/PatternDetailModal.js (Deep-dive into anonymized recurring signals and song acoustic sentiment summary for managers to unblock teams)",
+    "DemoControlsBar": "src/components/DemoControlsBar.js (One-click 60-second Challenge Presets: 'Engineering vs Design handoff tension', 'Onboarding silent request', 'Meeting overload problem', 'Gratitude & wins')"
+  },
+  "instructions_to_main_agent": [
+    "1. Keep the architecture ultra-clean in React with pure Tailwind + Lucide icons + Framer Motion. Keep the backend in FastAPI with Claude Sonnet 4.6 (or reliable fallback deterministic extractor for instant offline 60-second challenge reliability).",
+    "2. Employee experience MUST start with the single question 'What\\'s happening?' in warm, large, inviting serif typography.",
+    "3. Support optional 'Express it with a song' with song title & artist fields and pre-curated emotional music suggestions (e.g., 'Under Pressure' by Queen & Bowie, 'Helplessness Blues' by Fleet Foxes, 'Everything in Its Right Place' by Radiohead).",
+    "4. AI Worker 'Feedback Interpreter' must output strictly: Feedback Type (REQUEST | TENSION | PROBLEM | SUGGESTION | POSITIVE | OTHER), 1–4 active signals with exact evidence quotes from the employee text, and a short pattern candidate.",
+    "5. Follow the golden rule: NEVER diagnose the employee, never force an A vs B dilemma, never invent hidden psychological motives.",
+    "6. Include the interactive confirmation step: 'Did we understand you correctly?' with [Yes, that\\'s accurate] and [Adjust nuance / Correct this].",
+    "7. Manager Dashboard must display aggregated recurring patterns with: Pattern / unresolved tension, Frequency count, Affected teams, How long unresolved (e.g., '3 weeks', '2 months'), Blocker, and Status (NEW, ACTIVE, STUCK, RESOLVED).",
+    "8. Guarantee and visually emphasize 100% Employee Privacy (zero identities, zero timestamps tied to individuals, aggregated patterns only).",
+    "9. Pre-seed rich, realistic demo patterns (4-6 patterns across Product, Eng, Customer Support, Design, Operations) so the Manager Dashboard is immediately compelling.",
+    "10. Add all required data-testid attributes to buttons, textareas, inputs, badges, and cards for automated testing."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": {
+    "anti_ai_slop": "Use warm organic tones (#FAF8F5, #1A1816, terracotta #C85A32, sage #3F6B56), rich editorial serif headlines, spacious asymmetrical layouts, and zero generic purple neon gradients.",
+    "test_ids_mandate": "Ensure data-testid is attached to all interactive buttons, inputs, tabs, and status selectors (e.g. data-testid='submit-feedback-btn', data-testid='input-whats-happening', data-testid='confirm-interpretation-btn', data-testid='manager-view-tab').",
+    "sonner_toast": "Use sonner for gentle editorial notifications upon submission and pattern unblocking."
+  }
+}
