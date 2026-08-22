@@ -4,8 +4,8 @@ import { Disc3, ShieldCheck } from "lucide-react";
 
 export const Navbar = ({ view, setView }) => {
   const tabs = [
-    { key: "employee", label: "Employee Voice" },
-    { key: "manager", label: "Manager Lens" },
+    { key: "employee", label: "Çalışan Sesi" },
+    { key: "manager", label: "Yönetici Görünümü" },
   ];
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#FAF8F5]/85 border-b border-[#E7E0D8]">
@@ -17,7 +17,7 @@ export const Navbar = ({ view, setView }) => {
           <div className="leading-none">
             <span className="font-serif text-xl font-medium tracking-tight">Fifthback</span>
             <span className="hidden sm:inline ml-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[#8A847C]">
-              feedback, heard
+              sesin duyuldu
             </span>
           </div>
         </div>
@@ -46,7 +46,7 @@ export const Navbar = ({ view, setView }) => {
 
         <div className="hidden md:flex items-center gap-1.5 text-[#3F6B56]" data-testid="privacy-chip">
           <ShieldCheck className="h-4 w-4" strokeWidth={2} />
-          <span className="text-xs font-medium">No identities stored</span>
+          <span className="text-xs font-medium">Kimlik bilgisi saklanmaz</span>
         </div>
       </div>
     </header>

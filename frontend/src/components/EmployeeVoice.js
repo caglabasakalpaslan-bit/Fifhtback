@@ -18,7 +18,7 @@ export const EmployeeVoice = ({ onConfirmed }) => {
   const runInterpret = async (overrideText, overrideSong) => {
     const t = (overrideText ?? text).trim();
     if (!t) {
-      toast("Tell us what's happening first.", { description: "Even a sentence is enough." });
+      toast("Önce neler olduğunu anlat.", { description: "Tek bir cümle bile yeterli." });
       return;
     }
     setLoading(true);
@@ -28,7 +28,7 @@ export const EmployeeVoice = ({ onConfirmed }) => {
       const result = await interpretFeedback(t, s);
       setInterpretation(result);
     } catch (e) {
-      toast.error("The interpreter stumbled. Please try again.");
+      toast.error("Yorumlayıcı takıldı. Lütfen tekrar dene.");
     } finally {
       setLoading(false);
     }
@@ -60,15 +60,15 @@ export const EmployeeVoice = ({ onConfirmed }) => {
       <div className="lg:col-span-7 space-y-6">
         <div>
           <span className="text-xs font-mono uppercase tracking-[0.22em] text-[#C85A32] font-semibold">
-            One question. No forms.
+            Tek soru. Form yok.
           </span>
           <h1 className="mt-3 font-serif text-4xl sm:text-5xl lg:text-6xl font-medium tracking-tight leading-[1.05]">
-            What's happening?
+            Neler oluyor?
           </h1>
           <p className="mt-4 text-lg text-[#57534E] leading-relaxed max-w-xl">
-            Write it however it lives in your head — a problem, a request, a bit of
-            tension, an idea, or something good worth saying. We'll reflect it back,
-            never twist it.
+            Aklında nasıl duruyorsa öyle yaz — bir sorun, bir talep, biraz gerginlik,
+            bir fikir ya da söylenmeye değer güzel bir şey. Biz onu sana geri yansıtırız,
+            asla çarpıtmayız.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export const EmployeeVoice = ({ onConfirmed }) => {
             data-testid="input-whats-happening"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Start typing... it stays anonymous."
+            placeholder="Yazmaya başla... anonim kalır."
             rows={6}
             className="w-full resize-none px-5 py-4 text-base leading-relaxed bg-transparent outline-none placeholder:text-[#B8B0A6]"
           />
@@ -95,7 +95,7 @@ export const EmployeeVoice = ({ onConfirmed }) => {
                   <div className="flex items-center gap-2 text-[#C85A32]">
                     <Disc3 className={`h-4 w-4 ${hasSong ? "vinyl-spin" : ""}`} />
                     <span className="text-xs font-mono uppercase tracking-[0.18em] font-semibold">
-                      Express it with a song
+                      Bir şarkıyla anlat
                     </span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -103,14 +103,14 @@ export const EmployeeVoice = ({ onConfirmed }) => {
                       data-testid="input-song-title"
                       value={song.title}
                       onChange={(e) => setSong({ ...song, title: e.target.value })}
-                      placeholder="Song title"
+                      placeholder="Şarkı adı"
                       className="rounded-lg border border-[#E7E0D8] bg-white px-3 py-2 text-sm outline-none focus:border-[#C85A32]"
                     />
                     <input
                       data-testid="input-song-artist"
                       value={song.artist}
                       onChange={(e) => setSong({ ...song, artist: e.target.value })}
-                      placeholder="Artist"
+                      placeholder="Sanatçı"
                       className="rounded-lg border border-[#E7E0D8] bg-white px-3 py-2 text-sm outline-none focus:border-[#C85A32]"
                     />
                   </div>
@@ -140,7 +140,7 @@ export const EmployeeVoice = ({ onConfirmed }) => {
               }`}
             >
               {songOpen ? <X className="h-4 w-4" /> : <Music4 className="h-4 w-4" />}
-              {songOpen ? "Remove song" : "Express it with a song"}
+              {songOpen ? "Şarkıyı kaldır" : "Bir şarkıyla anlat"}
             </button>
             <button
               data-testid="submit-feedback-btn"
@@ -149,7 +149,7 @@ export const EmployeeVoice = ({ onConfirmed }) => {
               className="group flex items-center gap-2 rounded-full bg-[#1A1816] px-5 py-2.5 text-sm font-medium text-[#FAF8F5] transition-transform active:scale-[0.98] disabled:opacity-60"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-[#C85A32]" />}
-              {loading ? "Interpreting…" : "Interpret this"}
+              {loading ? "Yorumlanıyor…" : "Bunu yorumla"}
               {!loading && <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />}
             </button>
           </div>
@@ -159,7 +159,7 @@ export const EmployeeVoice = ({ onConfirmed }) => {
         <div className="rounded-2xl border border-dashed border-[#E7E0D8] bg-[#FBF7F2]/60 p-4">
           <div className="flex items-center gap-2 mb-3">
             <span className="text-[11px] font-mono uppercase tracking-[0.18em] text-[#8A847C] font-semibold">
-              60-second demo · one click
+              60 saniyelik demo · tek tıkla
             </span>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -203,17 +203,17 @@ export const EmployeeVoice = ({ onConfirmed }) => {
               <div className="flex items-center gap-2 text-[#3F6B56]">
                 <ShieldCheck className="h-4 w-4" />
                 <span className="text-xs font-mono uppercase tracking-[0.18em] font-semibold">
-                  Feedback Interpreter
+                  Geri Bildirim Yorumlayıcı
                 </span>
               </div>
               <p className="mt-4 font-serif text-2xl leading-snug text-[#1A1816]">
-                A quiet mirror, not a judge.
+                Sessiz bir ayna, yargıç değil.
               </p>
               <ul className="mt-4 space-y-2.5 text-sm text-[#57534E]">
-                <li className="flex gap-2"><span className="text-[#C85A32]">—</span> Reflects only what you actually said</li>
-                <li className="flex gap-2"><span className="text-[#C85A32]">—</span> Never forces an "A vs B" dilemma</li>
-                <li className="flex gap-2"><span className="text-[#C85A32]">—</span> Never diagnoses you or invents meaning</li>
-                <li className="flex gap-2"><span className="text-[#C85A32]">—</span> You confirm before anything is kept</li>
+                <li className="flex gap-2"><span className="text-[#C85A32]">—</span> Yalnızca senin gerçekten söylediğini yansıtır</li>
+                <li className="flex gap-2"><span className="text-[#C85A32]">—</span> Asla bir "A ya da B" ikilemine zorlamaz</li>
+                <li className="flex gap-2"><span className="text-[#C85A32]">—</span> Seni teşhis etmez, anlam uydurmaz</li>
+                <li className="flex gap-2"><span className="text-[#C85A32]">—</span> Hiçbir şey saklanmadan önce sen onaylarsın</li>
               </ul>
             </motion.div>
           )}

@@ -5,6 +5,7 @@ import { getPatterns } from "../lib/api";
 import { TYPE_META, STATUS_META } from "../data/constants";
 
 const STATUS_FILTERS = ["ALL", "NEW", "ACTIVE", "STUCK", "RESOLVED"];
+const FILTER_ALL_LABEL = "Tümü";
 
 const Metric = ({ icon: Icon, label, value, tint }) => (
   <div className="rounded-2xl border border-[#E7E0D8] bg-white p-4 shadow-sm">
@@ -49,7 +50,7 @@ const PatternCard = ({ p, index }) => {
             <TrendingUp className="h-4 w-4" />
             <span className="font-serif text-2xl font-medium">{p.frequency}</span>
           </div>
-          <span className="text-[10px] font-mono uppercase tracking-wide text-[#8A847C]">mentions</span>
+          <span className="text-[10px] font-mono uppercase tracking-wide text-[#8A847C]">bahsedilme</span>
         </div>
       </div>
 
@@ -57,7 +58,7 @@ const PatternCard = ({ p, index }) => {
         <div>
           <div className="flex items-center gap-1.5 text-[#8A847C] mb-1">
             <Users className="h-3.5 w-3.5" />
-            <span className="text-[10px] font-mono uppercase tracking-wide">Affected teams</span>
+            <span className="text-[10px] font-mono uppercase tracking-wide">Etkilenen ekipler</span>
           </div>
           <div className="flex flex-wrap gap-1">
             {p.affected_teams.map((t) => (
@@ -68,14 +69,14 @@ const PatternCard = ({ p, index }) => {
         <div>
           <div className="flex items-center gap-1.5 text-[#8A847C] mb-1">
             <Clock className="h-3.5 w-3.5" />
-            <span className="text-[10px] font-mono uppercase tracking-wide">Unresolved for</span>
+            <span className="text-[10px] font-mono uppercase tracking-wide">Ne kadardır çözülmedi</span>
           </div>
           <p className="text-[#1A1816] font-medium">{p.unresolved_for}</p>
         </div>
         <div>
           <div className="flex items-center gap-1.5 text-[#8A847C] mb-1">
             <Ban className="h-3.5 w-3.5" />
-            <span className="text-[10px] font-mono uppercase tracking-wide">Blocker</span>
+            <span className="text-[10px] font-mono uppercase tracking-wide">Engel</span>
           </div>
           <p className="text-[#1A1816]">{p.blocker}</p>
         </div>
@@ -113,7 +114,7 @@ export const ManagerDashboard = ({ refreshKey }) => {
   const stats = useMemo(() => {
     const total = patterns.reduce((a, p) => a + p.frequency, 0);
     const stuck = patterns.filter((p) => p.status === "STUCK").length;
-    const teams = new Set(patterns.flatMap((p) => p.affected_teams.filter((t) => t !== "Aggregating…")));
+    const teams = new Set(patterns.flatMap((p) => p.affected_teams.filter((t) => t !== "Toplanıyor…")));
     return { patterns: patterns.length, total, stuck, teams: teams.size };
   }, [patterns]);
 
@@ -121,22 +122,22 @@ export const ManagerDashboard = ({ refreshKey }) => {
     <div className="space-y-8 py-8 sm:py-12">
       <div>
         <span className="text-xs font-mono uppercase tracking-[0.22em] text-[#3F6B56] font-semibold">
-          Manager Lens · patterns only
+          Yönetici Görünümü · yalnızca örüntüler
         </span>
         <h1 className="mt-3 font-serif text-4xl sm:text-5xl font-medium tracking-tight leading-[1.05]">
-          What keeps coming up.
+          Sürekli tekrar edenler.
         </h1>
         <p className="mt-3 text-lg text-[#57534E] max-w-2xl">
-          Recurring, anonymized patterns across teams — never a single person, never an identity.
-          Just the tensions worth resolving.
+          Ekipler genelinde tekrar eden, anonimleştirilmiş örüntüler — asla tek bir kişi,
+          asla bir kimlik. Yalnızca çözülmeye değer gerginlikler.
         </p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Metric icon={Layers} label="Live patterns" value={stats.patterns} tint="#C85A32" />
-        <Metric icon={TrendingUp} label="Total mentions" value={stats.total} tint="#D97706" />
-        <Metric icon={Ban} label="Stuck & waiting" value={stats.stuck} tint="#E11D48" />
-        <Metric icon={Users} label="Teams touched" value={stats.teams} tint="#3F6B56" />
+        <Metric icon={Layers} label="Canlı örüntüler" value={stats.patterns} tint="#C85A32" />
+        <Metric icon={TrendingUp} label="Toplam bahsedilme" value={stats.total} tint="#D97706" />
+        <Metric icon={Ban} label="Takılı & bekleyen" value={stats.stuck} tint="#E11D48" />
+        <Metric icon={Users} label="İlgili ekipler" value={stats.teams} tint="#3F6B56" />
       </div>
 
       <div className="flex flex-wrap items-center gap-1.5">
@@ -151,7 +152,7 @@ export const ManagerDashboard = ({ refreshKey }) => {
                 : "bg-white text-[#57534E] border-[#E7E0D8] hover:border-[#C85A32]"
             }`}
           >
-            {f === "ALL" ? "All" : STATUS_META[f].label}
+            {f === "ALL" ? FILTER_ALL_LABEL : STATUS_META[f].label}
           </button>
         ))}
       </div>
@@ -162,7 +163,7 @@ export const ManagerDashboard = ({ refreshKey }) => {
         </div>
       ) : filtered.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-[#E7E0D8] bg-white/60 py-16 text-center text-[#8A847C]">
-          No patterns in this status yet.
+          Bu durumda henüz örüntü yok.
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4" data-testid="patterns-grid">
@@ -173,8 +174,8 @@ export const ManagerDashboard = ({ refreshKey }) => {
       <div className="flex items-center gap-2 rounded-2xl border border-[#CDE3D6] bg-[#EDF5F0] px-5 py-4">
         <ShieldCheck className="h-5 w-5 text-[#3F6B56] shrink-0" />
         <p className="text-sm text-[#3F6B56]">
-          <span className="font-semibold">Privacy guarantee:</span> Fifthback never stores who said what.
-          Managers see aggregated patterns only — zero names, zero individual timestamps.
+          <span className="font-semibold">Gizlilik güvencesi:</span> Fifthback kimin ne söylediğini asla saklamaz.
+          Yöneticiler yalnızca birleştirilmiş örüntüleri görür — isim yok, kişiye bağlı zaman damgası yok.
         </p>
       </div>
     </div>

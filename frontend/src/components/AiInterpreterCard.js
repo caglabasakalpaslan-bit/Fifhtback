@@ -22,7 +22,7 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
   const saveCorrection = () => {
     setInterpretation(draft);
     setEditing(false);
-    toast("Thanks — updated to match you.", { description: "Your words, your call." });
+    toast("Teşekkürler — sana göre güncellendi.", { description: "Senin sözlerin, senin kararın." });
   };
 
   const confirm = async (corrected) => {
@@ -30,12 +30,12 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
     try {
       await confirmFeedback({ text, song, interpretation, corrected });
       setDone(true);
-      toast.success("Heard. Folded into the anonymized pattern pool.", {
-        description: "No name, no trace — just the pattern.",
+      toast.success("Duyuldu. Anonim örüntü havuzuna eklendi.", {
+        description: "İsim yok, iz yok — yalnızca örüntü.",
       });
       setTimeout(() => onConfirmed?.(), 1400);
     } catch (e) {
-      toast.error("Couldn't save. Please try again.");
+      toast.error("Kaydedilemedi. Lütfen tekrar dene.");
     } finally {
       setSaving(false);
     }
@@ -52,9 +52,9 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
         <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-[#3F6B56] flex items-center justify-center">
           <PartyPopper className="h-6 w-6 text-white" />
         </div>
-        <h3 className="font-serif text-2xl text-[#1A1816]">Heard, and kept anonymous.</h3>
+        <h3 className="font-serif text-2xl text-[#1A1816]">Duyuldu ve anonim kaldı.</h3>
         <p className="mt-2 text-sm text-[#57534E]">
-          Your feedback became part of a bigger pattern — no identity attached.
+          Geri bildirimin daha büyük bir örüntünün parçası oldu — hiçbir kimlik eklenmeden.
         </p>
       </motion.div>
     );
@@ -75,7 +75,7 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D97706]" />
           </span>
           <span className="text-xs font-mono uppercase tracking-[0.18em] font-semibold">
-            Feedback Interpreter
+            Geri Bildirim Yorumlayıcı
           </span>
         </div>
         {!editing && (
@@ -84,7 +84,7 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
             onClick={() => { setDraft(interpretation); setEditing(true); }}
             className="flex items-center gap-1 text-xs text-[#8A847C] hover:text-[#C85A32] transition-colors"
           >
-            <Pencil className="h-3.5 w-3.5" /> Adjust
+            <Pencil className="h-3.5 w-3.5" /> Düzenle
           </button>
         )}
       </div>
@@ -94,7 +94,7 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
         <motion.div variants={item}>
           <div className="flex items-center gap-1.5 mb-2 text-[#8A847C]">
             <Tag className="h-3.5 w-3.5" />
-            <span className="text-[11px] font-mono uppercase tracking-[0.16em]">We heard this as</span>
+            <span className="text-[11px] font-mono uppercase tracking-[0.16em]">Bunu şöyle anladık</span>
           </div>
           {editing ? (
             <div className="flex flex-wrap gap-1.5" data-testid="type-editor">
@@ -126,7 +126,7 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
           <div className="flex items-center gap-1.5 mb-2 text-[#8A847C]">
             <Quote className="h-3.5 w-3.5" />
             <span className="text-[11px] font-mono uppercase tracking-[0.16em]">
-              Active signals · {interpretation.signals.length}
+              Aktif sinyaller · {interpretation.signals.length}
             </span>
           </div>
           <div className="space-y-3" data-testid="signals-list">
@@ -157,7 +157,7 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
         <motion.div variants={item}>
           <div className="flex items-center gap-1.5 mb-2 text-[#8A847C]">
             <Sparkles className="h-3.5 w-3.5" />
-            <span className="text-[11px] font-mono uppercase tracking-[0.16em]">Pattern candidate</span>
+            <span className="text-[11px] font-mono uppercase tracking-[0.16em]">Örüntü adayı</span>
           </div>
           <p className="text-sm text-[#57534E] italic">"{interpretation.pattern_candidate}"</p>
         </motion.div>
@@ -181,18 +181,18 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
               onClick={saveCorrection}
               className="flex-1 rounded-full bg-[#1A1816] px-4 py-2.5 text-sm font-medium text-[#FAF8F5] active:scale-[0.98] transition-transform"
             >
-              Save my correction
+              Düzeltmemi kaydet
             </button>
             <button
               onClick={() => setEditing(false)}
               className="rounded-full border border-[#E7E0D8] px-4 py-2.5 text-sm font-medium text-[#57534E]"
             >
-              Cancel
+              Vazgeç
             </button>
           </div>
         ) : (
           <>
-            <p className="font-serif text-lg text-[#1A1816] mb-3">Did we understand you correctly?</p>
+            <p className="font-serif text-lg text-[#1A1816] mb-3">Seni doğru anladık mı?</p>
             <div className="flex flex-col sm:flex-row gap-2">
               <button
                 data-testid="confirm-interpretation-btn"
@@ -201,7 +201,7 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
                 className="flex-1 flex items-center justify-center gap-2 rounded-full bg-[#3F6B56] px-4 py-2.5 text-sm font-medium text-white active:scale-[0.98] transition-transform disabled:opacity-60"
               >
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                Yes, that's accurate
+                Evet, doğru
               </button>
               <button
                 data-testid="correct-interpretation-btn"
@@ -209,7 +209,7 @@ export const AiInterpreterCard = ({ interpretation, setInterpretation, text, son
                 disabled={saving}
                 className="flex-1 flex items-center justify-center gap-2 rounded-full border border-[#E7E0D8] bg-white px-4 py-2.5 text-sm font-medium text-[#57534E] hover:border-[#C85A32] hover:text-[#C85A32] transition-colors"
               >
-                <Pencil className="h-4 w-4" /> Not quite — adjust
+                <Pencil className="h-4 w-4" /> Tam değil — düzelt
               </button>
             </div>
           </>

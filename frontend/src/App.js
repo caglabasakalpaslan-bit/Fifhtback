@@ -21,8 +21,8 @@ function App() {
       </main>
       <footer className="border-t border-[#E7E0D8] py-6 mt-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-[#8A847C]">
-          <span className="font-serif italic text-sm">Fifthback — feedback, heard.</span>
-          <span className="font-mono uppercase tracking-[0.16em]">No forms · No identities</span>
+          <span className="font-serif italic text-sm">Fifthback — sesin duyuldu.</span>
+          <span className="font-mono uppercase tracking-[0.16em]">Form yok · Kimlik yok</span>
         </div>
       </footer>
       <Toaster position="bottom-center" richColors closeButton toastOptions={{ style: { fontFamily: "Plus Jakarta Sans" } }} />
