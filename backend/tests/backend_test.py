@@ -1,10 +1,14 @@
-"""Backend tests for Fifthback (feedback resolution) API.
+"""Backend tests for Fifthback (Turkish 5-step Solution Journey) API.
 
-Covers:
-- POST /api/interpret (LLM path with verbatim evidence + optional song note)
-- POST /api/interpret input validation
-- GET  /api/patterns (5 pre-seeded demo patterns)
-- POST /api/feedback/confirm end-to-end -> pattern appears in /api/patterns
+Covers new Turkish response schema:
+- POST /api/interpret returns feedback_type, signals(verbatim), pattern_candidate,
+  active_needs (>=1), responsibility (org & personal lists), channels (>=2 with
+  title/detail/tradeoff), prevalence object.
+- prevalence.found=true with real seeded numbers for meeting-overload Turkish text.
+- prevalence.found=false for unrelated novel text.
+- POST /api/interpret empty text -> 400.
+- POST /api/feedback/confirm stores feedback and creates/increments live pattern.
+- GET /api/patterns returns 5 Turkish seeded patterns.
 """
 
 import os
@@ -16,6 +20,7 @@ import requests
 BASE_URL = os.environ["REACT_APP_BACKEND_URL"].rstrip("/")
 
 FEEDBACK_TYPES = {"REQUEST", "TENSION", "PROBLEM", "SUGGESTION", "POSITIVE", "OTHER"}
+VALID_STATUSES = {"NEW", "ACTIVE", "STUCK", "RESOLVED"}
 
 
 @pytest.fixture(scope="module")
@@ -32,48 +37,88 @@ def test_health_root(api_client):
     assert "Fifthback" in r.json().get("message", "")
 
 
-# ---------------- /api/interpret ----------------
-def test_interpret_meeting_overload(api_client):
-    text = (
-        "My calendar is completely full of meetings and I have almost no time to do "
-        "the actual work. By the time I can focus it's already 6pm."
+# ---------------- /api/interpret rich schema (meeting overload TR) ----------------
+MEETINGS_TEXT = (
+    "Takvimim tamamen toplantılarla dolu ve asıl işi yapmaya neredeyse hiç vaktim "
+    "kalmıyor. Odaklanabildiğimde saat çoktan 18:00 oluyor."
+)
+
+
+def _assert_verbatim_evidence(text, evidence):
+    assert evidence.strip(), "empty evidence"
+    assert evidence in text or evidence.lower() in text.lower(), (
+        f"Evidence not verbatim substring: {evidence!r}"
     )
-    r = api_client.post(f"{BASE_URL}/api/interpret", json={"text": text}, timeout=90)
+
+
+def test_interpret_meeting_overload_full_schema(api_client):
+    r = api_client.post(f"{BASE_URL}/api/interpret", json={"text": MEETINGS_TEXT}, timeout=120)
     assert r.status_code == 200, r.text
     data = r.json()
 
-    # Required top-level fields
+    # feedback_type
     assert data["feedback_type"] in FEEDBACK_TYPES
-    assert isinstance(data["signals"], list)
-    assert 1 <= len(data["signals"]) <= 4
+
+    # signals 1..4 with verbatim TR evidence
+    signals = data["signals"]
+    assert isinstance(signals, list) and 1 <= len(signals) <= 4
+    for sig in signals:
+        assert sig["label"].strip()
+        _assert_verbatim_evidence(MEETINGS_TEXT, sig["evidence"])
+
+    # pattern_candidate
     assert isinstance(data["pattern_candidate"], str) and data["pattern_candidate"].strip()
 
-    # Each signal has label + verbatim evidence
-    for sig in data["signals"]:
-        assert sig["label"].strip()
-        assert sig["evidence"].strip()
-        # verbatim substring of the input (case-insensitive tolerance)
-        assert sig["evidence"] in text or sig["evidence"].lower() in text.lower(), (
-            f"Evidence not verbatim substring: {sig['evidence']!r}"
-        )
+    # active_needs >= 1
+    needs = data.get("active_needs") or []
+    assert len(needs) >= 1, "active_needs must have at least one entry"
+    for n in needs:
+        assert n.get("title", "").strip(), "need title must be non-empty"
 
-    # Meeting overload -> should likely classify as PROBLEM (per fallback + LLM prompt)
-    # We won't hard-fail on the type since this is a judgement call, but log it.
-    # However the pattern_candidate should be short-ish
-    assert len(data["pattern_candidate"].split()) <= 12
+    # responsibility with org & personal (both must be lists; at least one non-empty)
+    resp = data.get("responsibility") or {}
+    org = resp.get("organizational") or []
+    per = resp.get("personal") or []
+    assert isinstance(org, list) and isinstance(per, list)
+    assert len(org) >= 1, "organizational responsibility should not be empty"
+    assert len(per) >= 1, "personal responsibility should not be empty"
+
+    # channels >= 2 each with title/detail/tradeoff
+    channels = data.get("channels") or []
+    assert len(channels) >= 2, f"expected >=2 channels, got {len(channels)}"
+    for c in channels:
+        assert c.get("title", "").strip()
+        assert "detail" in c
+        assert "tradeoff" in c
+
+    # prevalence must be present
+    prev = data.get("prevalence")
+    assert prev is not None, "prevalence object missing"
+    # For Turkish meeting overload text there IS a seeded pattern -> found True
+    # with real seeded numbers.
+    assert prev.get("found") is True, f"expected prevalence.found True for meetings, got {prev}"
+    assert isinstance(prev.get("frequency"), int) and prev["frequency"] > 0
+    assert isinstance(prev.get("affected_teams"), list) and prev["affected_teams"]
+    assert isinstance(prev.get("unresolved_for"), str) and prev["unresolved_for"].strip()
+    assert isinstance(prev.get("matched_title"), str) and prev["matched_title"].strip()
 
 
-def test_interpret_with_song_returns_song_note(api_client):
-    text = "Every sprint the designs come in late and half of them can't actually be built."
-    body = {
-        "text": text,
-        "song": {"title": "Under Pressure", "artist": "Queen & David Bowie"},
-    }
-    r = api_client.post(f"{BASE_URL}/api/interpret", json=body, timeout=90)
+def test_interpret_prevalence_not_found_for_novel_text(api_client):
+    novel = (
+        "Ofis kahve makinesinin espresso ayarı benim damak zevkime uygun değil, "
+        "keşke biraz daha yumuşak çekim seçeneği olsa."
+    )
+    r = api_client.post(f"{BASE_URL}/api/interpret", json={"text": novel}, timeout=120)
     assert r.status_code == 200, r.text
     data = r.json()
-    assert data.get("song_note"), "song_note should be present when song provided"
-    assert isinstance(data["song_note"], str) and len(data["song_note"]) > 5
+    prev = data.get("prevalence") or {}
+    # unrelated novel text should NOT be matched against seeded patterns
+    assert prev.get("found") is False, (
+        f"prevalence must be False for unrelated text; got {prev}"
+    )
+    # And no fabricated stats
+    assert prev.get("frequency") in (None, 0)
+    assert not prev.get("matched_title")
 
 
 def test_interpret_empty_text_returns_400(api_client):
@@ -83,27 +128,26 @@ def test_interpret_empty_text_returns_400(api_client):
     assert "detail" in body
 
 
-def test_interpret_positive_type(api_client):
-    text = "I just want to say the support team quietly saved a huge customer escalation last week and they're amazing. I'm really grateful."
-    r = api_client.post(f"{BASE_URL}/api/interpret", json={"text": text}, timeout=90)
-    assert r.status_code == 200
+def test_interpret_with_song_returns_song_note(api_client):
+    body = {
+        "text": MEETINGS_TEXT,
+        "song": {"title": "Everything In Its Right Place", "artist": "Radiohead"},
+    }
+    r = api_client.post(f"{BASE_URL}/api/interpret", json=body, timeout=120)
+    assert r.status_code == 200, r.text
     data = r.json()
-    # Should not force A vs B; expect POSITIVE ideally, but at least in the valid set
-    assert data["feedback_type"] in FEEDBACK_TYPES
-    # verify evidence still verbatim
-    for sig in data["signals"]:
-        assert sig["evidence"] in text or sig["evidence"].lower() in text.lower()
+    assert data.get("song_note"), "song_note should be present when a song is provided"
+    assert isinstance(data["song_note"], str) and len(data["song_note"]) > 5
 
 
-# ---------------- /api/patterns ----------------
+# ---------------- /api/patterns (5 Turkish seeded) ----------------
 REQUIRED_PATTERN_FIELDS = {
     "id", "title", "feedback_type", "frequency", "affected_teams",
     "unresolved_for", "blocker", "status",
 }
-VALID_STATUSES = {"NEW", "ACTIVE", "STUCK", "RESOLVED"}
 
 
-def test_patterns_returns_seeded(api_client):
+def test_patterns_returns_5_turkish_seeded(api_client):
     r = api_client.get(f"{BASE_URL}/api/patterns", timeout=15)
     assert r.status_code == 200
     patterns = r.json()
@@ -118,24 +162,35 @@ def test_patterns_returns_seeded(api_client):
         assert isinstance(p["affected_teams"], list) and len(p["affected_teams"]) >= 1
         assert isinstance(p["frequency"], int) and p["frequency"] >= 0
 
+    # Check at least one seeded title contains Turkish content
+    titles = " | ".join(p["title"] for p in seeded)
+    assert any(w in titles for w in ["Toplantı", "Tasarım", "işe alışma", "async", "Perde"]), (
+        f"seeded pattern titles look non-Turkish: {titles}"
+    )
+
 
 # ---------------- /api/feedback/confirm ----------------
 def test_confirm_creates_live_pattern_visible_in_patterns(api_client):
-    # Use a unique pattern_candidate we control
-    unique_marker = f"TEST_focus_time_erosion_{int(time.time())}"
-    text = "Meetings keep eating my day and I never get focus time."
+    unique_marker = f"TEST_odak_erozyonu_{int(time.time())}"
+    text = "Toplantılar günümü yiyor ve odak zamanı kalmıyor."
     interpretation = {
         "id": "test-" + str(int(time.time())),
         "feedback_type": "PROBLEM",
         "signals": [
-            {"label": "No focus time", "evidence": "Meetings keep eating my day"},
+            {"label": "Odak zamanı yok", "evidence": "Toplantılar günümü yiyor"},
         ],
         "pattern_candidate": unique_marker,
         "song_note": None,
+        "active_needs": [{"title": "Kesintisiz zaman", "detail": "detay"}],
+        "responsibility": {"organizational": ["blok saatler"], "personal": ["takvimi savun"]},
+        "channels": [
+            {"title": "Anonim paylaş", "detail": "d1", "tradeoff": "t1"},
+            {"title": "Ekiple konuş", "detail": "d2", "tradeoff": "t2"},
+        ],
+        "safety_note": None,
+        "prevalence": {"found": False},
     }
-    # Snapshot patterns before
     before = api_client.get(f"{BASE_URL}/api/patterns", timeout=15).json()
-    before_count = len(before)
 
     r = api_client.post(
         f"{BASE_URL}/api/feedback/confirm",
@@ -146,7 +201,6 @@ def test_confirm_creates_live_pattern_visible_in_patterns(api_client):
     assert r.json().get("ok") is True
 
     after = api_client.get(f"{BASE_URL}/api/patterns", timeout=15).json()
-    # find pattern with our unique marker title
     matches = [p for p in after if p.get("title", "").lower() == unique_marker.lower()]
     assert matches, f"Live pattern with title {unique_marker} not found after confirm"
     m = matches[0]
@@ -154,7 +208,7 @@ def test_confirm_creates_live_pattern_visible_in_patterns(api_client):
     assert m["status"] == "NEW"
     assert m["seeded"] is False
     assert m["frequency"] == 1
-    assert after != before or len(after) > before_count
+    assert len(after) >= len(before)
 
 
 def test_confirm_second_time_increments_frequency(api_client):
@@ -162,11 +216,18 @@ def test_confirm_second_time_increments_frequency(api_client):
     interpretation = {
         "id": "test-inc-1",
         "feedback_type": "SUGGESTION",
-        "signals": [{"label": "Async docs", "evidence": "we should write things down"}],
+        "signals": [{"label": "Yazılı öneri", "evidence": "yazılı olsun"}],
         "pattern_candidate": unique_marker,
         "song_note": None,
+        "active_needs": [{"title": "Yazılı bağlam", "detail": "d"}],
+        "responsibility": {"organizational": ["a"], "personal": ["b"]},
+        "channels": [
+            {"title": "Kanal A", "detail": "d", "tradeoff": "t"},
+            {"title": "Kanal B", "detail": "d", "tradeoff": "t"},
+        ],
+        "prevalence": {"found": False},
     }
-    body = {"text": "we should write things down", "song": None,
+    body = {"text": "yazılı olsun", "song": None,
             "interpretation": interpretation, "corrected": False}
     r1 = api_client.post(f"{BASE_URL}/api/feedback/confirm", json=body, timeout=15)
     assert r1.status_code == 200

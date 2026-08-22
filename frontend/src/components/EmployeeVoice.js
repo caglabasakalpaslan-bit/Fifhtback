@@ -4,7 +4,7 @@ import { Music4, Disc3, X, Sparkles, ArrowRight, Loader2, ShieldCheck } from "lu
 import { toast } from "sonner";
 import { interpretFeedback } from "../lib/api";
 import { SONG_SUGGESTIONS, DEMO_PRESETS } from "../data/constants";
-import { AiInterpreterCard } from "./AiInterpreterCard";
+import { SolutionJourney } from "./SolutionJourney";
 
 export const EmployeeVoice = ({ onConfirmed }) => {
   const [text, setText] = useState("");
@@ -52,6 +52,12 @@ export const EmployeeVoice = ({ onConfirmed }) => {
     setSong({ title: "", artist: "" });
     setSongOpen(false);
     setInterpretation(null);
+  };
+
+  const addMore = (extraText) => {
+    const combined = `${text}\n\n${extraText}`.trim();
+    setText(combined);
+    runInterpret(combined, hasSong ? song : null);
   };
 
   return (
@@ -181,12 +187,13 @@ export const EmployeeVoice = ({ onConfirmed }) => {
       <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
         <AnimatePresence mode="wait">
           {interpretation ? (
-            <AiInterpreterCard
+            <SolutionJourney
               key={interpretation.id}
               interpretation={interpretation}
               setInterpretation={setInterpretation}
               text={text}
               song={hasSong ? song : null}
+              onAddMore={addMore}
               onConfirmed={() => {
                 onConfirmed?.();
                 reset();

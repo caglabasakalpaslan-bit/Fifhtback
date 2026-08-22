@@ -1,0 +1,36 @@
+{
+  "summary": "Full-stack retest of Fifthback after the 5-step Turkish Solution Journey redesign. Backend: 8/8 pytest passed against real Claude Sonnet 4.6 (LiteLLM logs confirm model=claude-sonnet-4-6). New schema fully honored: signals with verbatim Turkish evidence, active_needs (>=1), responsibility.organizational & personal, channels (>=2 with title/detail/tradeoff), prevalence object. prevalence.found=true with real seeded numbers (frequency=22, teams=[Yazılım, Müşteri Destek, Operasyon], unresolved_for='6 hafta', matched_title='Toplantı yoğunluğu odaklanmayı aşındırıyor') for the meetings preset; prevalence.found=false for an unrelated novel coffee-machine text (no fabricated stats). Empty text returns 400. GET /api/patterns returns 5 Turkish seeded patterns. POST /api/feedback/confirm persists and merges (frequency increments on repeat). Frontend: Turkish UI throughout ('Neler oluyor?', 'Fifthback Çözüm Yolculuğu', 'Yönetici Görünümü'). demo-preset-meetings auto-triggered interpretation; solution-journey rendered with step 1 (step-understand, badge='Gerginlik') and Turkish verbatim signals. journey-next-btn walked through step-prevalence (showed real seeded 22 / 6 hafta / 3 teams + 'Buradaki sayılar yalnızca gerçek, anonim verilere dayanır' disclaimer), step-tension (multi need-{i} cards + 'A mı, B mi' banner), step-responsibility (both Kurumun sorumluluğu + Senin alanın sections), step-closure (channel-{i} cards + 'Dikkat:' tradeoffs). journey-back-btn and journey-step-dot-{0,4} both work. correct-interpretation-btn jumped to step 0 and revealed type-editor + save-correction-btn. add-more-btn revealed add-more-input + submit-add-more-btn which re-ran interpretation. confirm-interpretation-btn showed confirmation-state and reset the form. Manager Lens count went from 7 -> 8 pattern cards after confirm, proving new live pattern was added. Primary AI feature (POST /api/interpret) - pass - evidence: LiteLLM completion(model=claude-sonnet-4-6, provider=openai) logged at test times, non-canned Turkish labels ('Toplantı yükü baskısı', 'Derin çalışma zamanı kaybı', 'Geç saate sürüklenen odak') with verbatim evidence substrings; skill: ai-testing-llm.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Sonner toast overlay overlaps pattern cards / navbar after confirm", "issue": "The 'Duyuldu. Anonim örüntü havuzuna eklendi.' sonner toast sits above the Manager Lens content and can transiently intercept clicks on nav or the first pattern card for ~1.5-3s after confirming. Screenshot after switching to Manager Lens showed the toast overlapping the third pattern card. Recommend either pointer-events:none on the Toaster container (children keep their own pointer-events auto) or lower its z-index below the sticky Navbar's z-40.", "affected_selectors": ["[data-testid=\"nav-manager-tab\"]", "[data-testid^=\"pattern-card-\"]"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "(Optional/minor, carried over) Prevent the sonner Toaster from overlapping Manager Lens content post-confirm - style Toaster wrapper with pointer-events:none or lower z-index."
+  ],
+  "critical_code_review_comments": [
+    "server.py is still a single ~426-line file mixing FastAPI app setup, Pydantic models, LLM logic, prevalence matcher, routes, and seed data. Still under the 700-line threshold, but it is close - split into routers/ (interpret, feedback, patterns) and services/ (llm.py, prevalence.py, seed.py) before adding more features.",
+    "_match_prevalence uses a 5-char stem prefix intersection with threshold >=2. This is text-length-sensitive and language-agnostic in name only - short Turkish texts (single sentence) may miss legitimate seeded matches. Consider lowering threshold to 1 or adding TF-IDF/embedding-based matching once the pattern set grows.",
+    "seed_patterns still uses deprecated @app.on_event('startup'); FastAPI lifespan handlers are preferred (FastAPI >=0.109).",
+    "CORS is still allow_origins='*' with allow_credentials=true, which browsers reject for credentialed requests. Not exercised (no cookies) but should be tightened before adding auth.",
+    "SolutionJourney.js is 483 lines - approaching the 700-line soft limit and holds 5 distinct step subviews inline. Split each step body into its own subcomponent (StepUnderstand.js, StepPrevalence.js, StepTension.js, StepResponsibility.js, StepClosure.js) for maintainability.",
+    "In server.py interpret_with_llm, the LLM output is post-processed with defensive fallbacks per field (needs or interp.active_needs, etc). Good defense - but confirm the observability: log which fields were substituted so silent LLM under-generation is caught in monitoring.",
+    "confirm_feedback merges patterns via case-insensitive exact title regex. Similar candidate titles (e.g. 'toplantı yoğunluğu' vs 'toplantı yükü') will still create separate patterns. Consider a normalized/stem-based key.",
+    "No rate limiting on /api/interpret - each call spends real LLM tokens. Add basic per-IP throttling before the demo is exposed publicly."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "not applicable - app has no auth",
+  "seed_data_creation": "Two TEST_-prefixed live patterns and one 'Teşekkür ve kazanımlar' live pattern were created via /api/feedback/confirm to verify persistence and Manager Lens count increment. Safe to leave; visible on Manager Lens. Can be cleared via db.patterns.deleteMany({seeded:false}) in Mongo.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Full 5-step Solution Journey works with real Claude Sonnet 4.6 in Turkish. All listed features verified end-to-end. Data-testids used and verified: input-whats-happening, submit-feedback-btn, demo-preset-{handoff,onboarding,meetings,gratitude}, solution-journey, step-understand, step-prevalence, step-tension, step-responsibility, step-closure, feedback-type-badge, signals-list, need-{i}, channel-{i}, safety-note (conditional), journey-back-btn, journey-next-btn, journey-step-dot-{0..4}, correct-interpretation-btn, type-editor, save-correction-btn, add-more-btn, add-more-input, submit-add-more-btn, confirm-interpretation-btn, confirmation-state, nav-employee-tab, nav-manager-tab, patterns-grid, pattern-card-{id}. Backend tests are in /app/backend/tests/backend_test.py; they need REACT_APP_BACKEND_URL exported. Sonner toast overlap on Manager Lens is the only carried-over minor issue.",
+  "rca of the issue": "N/A - no functional bugs. Toast overlap RCA: Toaster is mounted at document root with a default z-index that sits above the Manager Lens grid; toasts also have pointer-events auto so during their 4s lifetime they can block clicks on elements underneath. Fix: <Toaster toastOptions={{style:{pointerEvents:'auto'}}} style={{pointerEvents:'none'}} /> or lower toaster zIndex below the navbar's z-40."
+}

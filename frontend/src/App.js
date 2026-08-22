@@ -25,7 +25,7 @@ function App() {
           <span className="font-mono uppercase tracking-[0.16em]">Form yok · Kimlik yok</span>
         </div>
       </footer>
-      <Toaster position="bottom-center" richColors closeButton toastOptions={{ style: { fontFamily: "Plus Jakarta Sans" } }} />
+      <Toaster position="bottom-center" richColors closeButton style={{ pointerEvents: "none" }} toastOptions={{ style: { fontFamily: "Plus Jakarta Sans", pointerEvents: "auto" } }} />
     </div>
   );
 }

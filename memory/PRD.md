@@ -22,7 +22,9 @@ Build Fifthback, a privacy-protected corporate feedback resolution system. Emplo
 - Confirm / inline-correct flow; confirmed feedback folds into anonymized pattern pool.
 - Manager Dashboard: metrics, status filters, pattern cards, privacy guarantee banner.
 - Pre-seeded 5 demo patterns; 60-second demo presets one-click.
-- Full E2E tested (8/8 backend, all frontend flows pass). Toast moved to bottom-center.
+- Full UI translated to Turkish (all static labels + AI output in Turkish).
+- Result redesigned into 5-step "Fifthback Çözüm Yolculuğu": (1) Seni nasıl anladık? (2) Bu örüntü ne kadar yaygın? — real seeded prevalence only, honest empty state (3) Buradaki asıl gerilim ne? — co-active needs, never A/B (4) Kim ne yapabilir? — org vs personal responsibility, no blame (5) Nasıl kapanabilir? — channels with trade-offs + safety note. Actions: Yanlış anlaşılanı düzelt / Bir şey ekle / Böyle gönder.
+- Full E2E tested (8/8 backend, all frontend flows pass, iteration_2). Toast overlap fixed via pointer-events.
 
 ## Backlog / Next (P1/P2)
 - Pattern detail modal deep-dive; near-duplicate pattern merging (fuzzy match).
