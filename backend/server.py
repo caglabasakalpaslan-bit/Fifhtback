@@ -255,6 +255,7 @@ Gereklilikler:
 def _fallback_interpret(text: str, song: Optional[SongRef]) -> Interpretation:
     """Deterministic Turkish extractor so the demo never fails if the LLM is unavailable."""
     lower = text.lower()
+    ftype = "OTHER"
     if any(w in lower for w in ["teşekkür", "tesekkur", "minnet", "harika", "müthiş", "mutesekkir", "takdir"]):
         ftype = "POSITIVE"
     elif any(w in lower for w in ["talep", "rica", "istiyorum", "lütfen", "lutfen", "erişim", "erisim", "ihtiyacım"]):

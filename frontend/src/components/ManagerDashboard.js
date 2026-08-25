@@ -104,6 +104,8 @@ export const ManagerDashboard = ({ refreshKey }) => {
       .then((d) => active && setPatterns(d))
       .finally(() => active && setLoading(false));
     return () => { active = false; };
+    // getPatterns is a stable module import; re-fetch only when refreshKey changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshKey]);
 
   const filtered = useMemo(

@@ -53,10 +53,16 @@ export const PatternRoom = () => {
       .then(setData)
       .catch(() => toast.error("Analiz yüklenemedi."))
       .finally(() => setLoading(false));
+    // Run once on mount to load the cached analysis.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const refreshBoard = () => getActionBoard().then(setBoard).catch(() => {});
-  useEffect(() => { if (tab === "board") refreshBoard(); }, [tab]);
+  useEffect(() => {
+    if (tab === "board") refreshBoard();
+    // refreshBoard is a stable inline fetch; only `tab` should re-trigger it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab]);
 
   // signalIndex -> cluster order index (for coloring)
   const signalCluster = useMemo(() => {

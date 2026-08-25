@@ -56,6 +56,8 @@ export const SolutionJourney = ({ interpretation, setInterpretation, text, song,
       return [BASE_STEPS[0], DISTINCTION_STEP, ...BASE_STEPS.slice(1)];
     }
     return BASE_STEPS;
+    // BASE_STEPS/DISTINCTION_STEP are module-level constants; only `distinction` is reactive.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [distinction]);
 
   const meta = TYPE_META[interpretation.feedback_type] || TYPE_META.OTHER;
