@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import re
 import json
+import asyncio
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field
@@ -117,6 +118,86 @@ class EvaluateResult(BaseModel):
     interpretation: Interpretation
     supported: bool
     evaluation_note: str
+
+
+# ---------------- Pattern Room models ----------------
+class PRCluster(BaseModel):
+    id: str
+    name: str
+    mechanism: str
+    signal_indices: List[int]
+    summary: str = ""
+    is_new: bool = False
+    changed: bool = False
+
+
+class PRPastPattern(BaseModel):
+    tried: str
+    conditions: str
+    changed: str
+    when_failed: str
+
+
+class PRTopPattern(BaseModel):
+    rank: int
+    cluster_id: str
+    name: str
+    mechanism: str
+    why_selected: str
+    why_formed: str
+    inference: str
+    uncertain: str
+    why_top5: str
+    evidence: List[str]
+    estimated_cost: str
+    what_improves: str
+    gain_if_reduced: str
+    affected_work: str
+    confidence: str
+    past_patterns: List[PRPastPattern] = []
+    next_moves: List[str] = []
+
+
+class PatternRoomAnalysis(BaseModel):
+    signals: List[str]
+    clusters: List[PRCluster]
+    patterns: List[PRTopPattern]
+    source: str = "curated"
+    new_signal_indices: List[int] = []
+
+
+class AddSignalsRequest(BaseModel):
+    signals: List[str]
+
+
+class ActionItem(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    pattern_name: str
+    mechanism: str = ""
+    cluster_id: str = ""
+    evidence_snapshot: List[str] = []
+    hypothesis: str = ""
+    intervention: str = ""
+    status: Literal["DETECTED", "INVESTIGATING", "TESTING", "RESOLVED", "REJECTED"] = "DETECTED"
+    outcome: str = ""
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+
+
+class ActionCreate(BaseModel):
+    pattern_name: str
+    mechanism: str = ""
+    cluster_id: str = ""
+    evidence_snapshot: List[str] = []
+    hypothesis: str = ""
+    intervention: str = ""
+
+
+class ActionUpdate(BaseModel):
+    status: Optional[Literal["DETECTED", "INVESTIGATING", "TESTING", "RESOLVED", "REJECTED"]] = None
+    hypothesis: Optional[str] = None
+    intervention: Optional[str] = None
+    outcome: Optional[str] = None
 
 
 class Pattern(BaseModel):
@@ -430,7 +511,366 @@ async def evaluate_grounding(text: str, interp: Interpretation) -> tuple:
         return True, default_note
 
 
+# ---------------- Pattern Room (Cluster / Impact / Solution agents) ----------------
+PATTERN_ROOM_SIGNALS = [
+    "Onaylar günler sürüyor.",
+    "Aynı kararı tekrar tekrar konuşuyoruz.",
+    "Geliştirme başladıktan sonra spesifikasyonlar değişiyor.",
+    "Çoğu zaman tek bir kıdemli kişiyi bekliyorum.",
+    "Daha fazla kişi işe aldık ama teslimat hızlanmadı.",
+    "İki ekip de işin sahibinin diğeri olduğunu sanmış.",
+    "Kimse sonuçlandıramadığı için toplantıları tekrarlıyoruz.",
+    "İş, geç gelen geri bildirimden sonra geri gönderiliyor.",
+    "Herkes meşgul ama bazı işler el değmeden bekliyor.",
+    "Önemli bilgiler üç farklı araca dağılmış durumda.",
+    "Çok fazla toplantı var ama yeterince karar çıkmıyor.",
+    "Başlayabilmek için onay bekliyoruz.",
+    "Son sözün kimde olduğundan kimse emin değil.",
+    "Gereksinimler yolun ortasında değişiyor, baştan yapıyoruz.",
+    "Aynı rapor iki farklı ekip tarafından hazırlanıyor.",
+    "Geri bildirim ancak iş bittikten sonra geliyor.",
+    "Her onay için tek bir kişi darboğaz oluyor.",
+    "Bu hafta hangi işin öncelikli olduğunu bilemiyoruz.",
+    "Tasarım ile geliştirme arasındaki devirlerde bağlam kayboluyor.",
+    "Yeni bir araç aldık ama hâlâ veriyi elle kopyalıyoruz.",
+    "Kararlar bir hafta sonra yeniden açılıyor.",
+    "Bir talep, sahibi çıkana kadar üç ekip arasında gidip geldi.",
+    "Son dakika değişikliklerden sonra sunumları tekrar tekrar düzenliyoruz.",
+    "Araçlarımızın yarısı birbiriyle konuşmuyor.",
+]
+
+
+def _curated_pattern_room(signals: Optional[List[str]] = None) -> PatternRoomAnalysis:
+    S = PATTERN_ROOM_SIGNALS
+    ev = lambda idxs: [S[i] for i in idxs]
+    clusters = [
+        PRCluster(id="c1", name="Karar Akışı / Sahiplik Darboğazı", mechanism="karar gecikmesi + belirsiz sahiplik",
+                  signal_indices=[0, 1, 3, 6, 10, 11, 12, 16, 20],
+                  summary="Kararların nerede, kim tarafından sonuçlandırılacağı belirsiz; iş onay beklerken duruyor."),
+        PRCluster(id="c2", name="Yeniden İş Döngüsü", mechanism="yeniden iş (rework)",
+                  signal_indices=[2, 7, 13, 15, 22],
+                  summary="Geç gelen geri bildirim ve değişen gereksinimler yüzünden aynı iş defalarca yapılıyor."),
+        PRCluster(id="c3", name="Sahiplik & Devir Karışıklığı", mechanism="belirsiz sahiplik + devir sürtüşmesi",
+                  signal_indices=[5, 18, 21],
+                  summary="İşin sahibi net değil; ekipler arası devirlerde bağlam ve sorumluluk kayboluyor."),
+        PRCluster(id="c4", name="Kapasite vs. Öncelik", mechanism="kapasite kısıtı + önceliklendirme çatışması",
+                  signal_indices=[4, 8, 17],
+                  summary="Kişi eklemek hızı artırmıyor; öncelik netliği olmadan bazı işler el değmeden bekliyor."),
+        PRCluster(id="c5", name="Bilgi & Araç Kopukluğu", mechanism="bilgi boşluğu + araç/sistem sürtüşmesi + süreç tekrarı",
+                  signal_indices=[9, 14, 19, 23],
+                  summary="Bilgi araçlara dağılmış, sistemler konuşmuyor; aynı iş elle ve tekrar üretiliyor."),
+    ]
+    patterns = [
+        PRTopPattern(
+            rank=1, cluster_id="c1", name="Karar Akışı / Sahiplik Darboğazı", mechanism="karar gecikmesi + belirsiz sahiplik",
+            why_selected="En yüksek frekans (9 sinyal), en fazla akışı etkiliyor ve birden çok ekipte tekrar ediyor; yüzeyde farklı görünen şikâyetler aynı mekanizmaya bağlanıyor.",
+            why_formed="Yüzeyde 'çok toplantı', 'onay bekliyoruz', 'tek kişiyi bekliyorum', 'kararlar yeniden açılıyor' farklı konular gibi görünse de hepsi tek bir mekanizmayı işaret ediyor: kararın nerede ve kim tarafından kesinleştiğinin belirsiz olması.",
+            inference="Çıkarım: karar hakkı ve sahiplik dağınık olduğu için iş, değer üretmeden onay/karar kuyruğunda bekliyor.",
+            uncertain="Belirsiz: gecikmenin ne kadarı tek bir kişiden, ne kadarı tanımsız süreçten kaynaklanıyor — bu ayrım henüz veriyle netleşmedi.",
+            why_top5="Frekans + akış sayısı + tekrar + bloke iş + ekipler arası yayılım ölçütlerinin hepsinde en yüksek.",
+            evidence=ev([0, 1, 3, 6, 10, 11, 12, 16, 20]),
+            estimated_cost="Tahmini: teslimatların önemli bir kısmında karar bekleme süresi ekleniyor; kesin finansal rakam için döngü süresi verisi gerekir (nitel: yüksek).",
+            what_improves="Karar hakkı netleşirse bekleme süresi düşer, toplantı tekrarları azalır ve teslimat öngörülebilirliği artar.",
+            gain_if_reduced="Tahmini olarak akışların çoğunda 'karar bekleme' adımı kısalır; yeniden açılan karar sayısı azalır.",
+            affected_work="Onay gerektiren tüm iş akışları, sprint planlaması, ekipler arası teslimatlar.",
+            confidence="Yüksek — 9 bağımsız sinyal ve birden çok ekipte tutarlı işaret.",
+            past_patterns=[
+                PRPastPattern(tried="Kararlar için tek sorumlu (karar sahibi) atama", conditions="Karar tipi ve eşik önceden tanımlandığında", changed="Onay bekleme süresi kısaldı, tekrar toplantılar azaldı", when_failed="Sorumlu aşırı yüklendiğinde yeni bir darboğaza dönüştü"),
+                PRPastPattern(tried="Hafif karar kaydı (kim, ne zaman, neden)", conditions="Kararlar geç geç yeniden açılıyorsa", changed="Aynı kararın tekrar tartışılması azaldı", when_failed="Kayıt güncel tutulmadığında etkisini yitirdi"),
+            ],
+            next_moves=[
+                "Denemeye değer: en çok bekleyen 3 karar tipi için tek bir 'karar sahibi' ve karar eşiği tanımlamak.",
+                "Benzer vakalarda karar kaydı tutulunca aynı kararın yeniden açılması azaldı.",
+                "Şu koşulda yardımcı olabilir: bekleme süresi tek kişiye bağlıysa, o kararlar için vekâlet/eşik belirlemek.",
+            ],
+        ),
+        PRTopPattern(
+            rank=2, cluster_id="c2", name="Yeniden İş Döngüsü", mechanism="yeniden iş (rework)",
+            why_selected="Beş sinyal doğrudan tamamlanan işin geri dönmesine işaret ediyor; harcanan emeğin bir kısmı tekrar üretiliyor.",
+            why_formed="'Spesifikasyon değişiyor', 'geç geri bildirim', 'baştan yapıyoruz', 'sunumları tekrar düzenliyoruz' aynı mekanizmayı gösteriyor: doğrulama/geri bildirim iş bittikten sonra geliyor.",
+            inference="Çıkarım: geri bildirim ve netlik döngünün sonunda geldiği için tamamlanan iş yeniden yapılıyor.",
+            uncertain="Belirsiz: rework'ün ne kadarı kaçınılabilir (erken hizalama) ne kadarı doğal keşiften kaynaklanıyor.",
+            why_top5="Yüksek tekrar ve görünür emek kaybı; birden çok fonksiyonu etkiliyor.",
+            evidence=ev([2, 7, 13, 15, 22]),
+            estimated_cost="Tahmini: geliştirme/üretim eforunun bir bölümü tekrar harcanıyor (nitel: orta-yüksek).",
+            what_improves="Erken hizalama ve ara kontrol noktaları eklenirse geri dönen iş miktarı azalır.",
+            gain_if_reduced="Tahmini olarak teslim başına tekrar sayısı düşer, teslim süresi kısalır.",
+            affected_work="Ürün/tasarım/geliştirme teslimatları, raporlama, sunum hazırlığı.",
+            confidence="Orta-Yüksek — tutarlı ama kök nedeni (erken hizalama mı, kapsam kayması mı) tam ayrışmadı.",
+            past_patterns=[
+                PRPastPattern(tried="İş başlamadan kısa hizalama / kabul kriteri", conditions="Kapsam belirsizliği yüksekse", changed="Sona kalan sürprizler ve geri dönüş azaldı", when_failed="Kriterler yüzeysel yazıldığında etkisiz kaldı"),
+            ],
+            next_moves=[
+                "Denemeye değer: en çok geri dönen iş türü için başlamadan önce tek sayfalık kabul kriteri.",
+                "Benzer vakalarda ara kontrol noktası eklenince sondaki tekrar azaldı.",
+                "Şu koşulda yardımcı olabilir: geri bildirim erkene çekilebiliyorsa küçük, erken incelemeler.",
+            ],
+        ),
+        PRTopPattern(
+            rank=3, cluster_id="c5", name="Bilgi & Araç Kopukluğu", mechanism="bilgi boşluğu + araç sürtüşmesi",
+            why_selected="Dört sinyal bilginin dağınıklığına ve sistemlerin kopukluğuna işaret ediyor; elle tekrar iş üretiyor.",
+            why_formed="'Bilgiler üç araca dağılmış', 'araçlar konuşmuyor', 'elle kopyalıyoruz', 'aynı rapor iki ekipte' — mekanizma: kaynak bilgi tek ve erişilebilir değil.",
+            inference="Çıkarım: tek bir güvenilir kaynak olmadığı için bilgi elle taşınıyor ve tekrarlanıyor.",
+            uncertain="Belirsiz: kopukluğun ne kadarı araç, ne kadarı alışkanlık/süreç kaynaklı.",
+            why_top5="Görünür manuel emek ve tekrar; birçok ekip etkileniyor.",
+            evidence=ev([9, 14, 19, 23]),
+            estimated_cost="Tahmini: düzenli olarak elle veri taşıma ve mükerrer üretim eforu (nitel: orta).",
+            what_improves="Tek güvenilir kaynak ve entegrasyon ile elle kopyalama ve mükerrer rapor azalır.",
+            gain_if_reduced="Tahmini olarak manuel aktarım adımları ve çift üretim azalır.",
+            affected_work="Raporlama, operasyon, ekipler arası bilgi paylaşımı.",
+            confidence="Orta — sinyaller net ama hangi aracın kritik olduğu belirsiz.",
+            past_patterns=[
+                PRPastPattern(tried="Tek 'doğruluk kaynağı' belirleme", conditions="Aynı veri birden çok yerde tutuluyorsa", changed="Mükerrer üretim ve tutarsızlık azaldı", when_failed="Sahiplik atanmadığında kaynak güncelliğini yitirdi"),
+            ],
+            next_moves=[
+                "Denemeye değer: en çok elle taşınan veri için tek kaynak ve sahibini belirlemek.",
+                "Benzer vakalarda iki sistem entegre edilince elle kopyalama düştü.",
+                "Şu koşulda yardımcı olabilir: mükerrer rapor varsa tek şablonda birleştirmek.",
+            ],
+        ),
+        PRTopPattern(
+            rank=4, cluster_id="c3", name="Sahiplik & Devir Karışıklığı", mechanism="belirsiz sahiplik + devir sürtüşmesi",
+            why_selected="Az sayıda ama yüksek etkili: işin sahibi belirsiz olduğunda talepler ekipler arasında dolaşıyor.",
+            why_formed="'İki ekip de diğeri sahip sandı', 'devirde bağlam kayıp', 'üç ekip arasında gidip geldi' — mekanizma: sahiplik ve devir kuralı tanımsız.",
+            inference="Çıkarım: net sahiplik ve devir standardı olmadığı için iş sahipsiz kalıp gecikiyor.",
+            uncertain="Belirsiz: sorun ekip sınırlarında mı yoksa devir anındaki bilgi aktarımında mı yoğunlaşıyor.",
+            why_top5="Ekipler arası yayılım ve bloke iş ölçütlerinde yüksek.",
+            evidence=ev([5, 18, 21]),
+            estimated_cost="Tahmini: sahipsiz taleplerin beklemesi ve devir kayıpları (nitel: orta).",
+            what_improves="Net sahiplik ve devir kontrol listesi ile sahipsiz kalan iş ve bağlam kaybı azalır.",
+            gain_if_reduced="Tahmini olarak ekipler arası gidip gelme ve devir kaynaklı gecikme azalır.",
+            affected_work="Ekipler arası talepler, tasarım-geliştirme devri, çapraz fonksiyon işleri.",
+            confidence="Orta — güçlü işaret, örneklem küçük.",
+            past_patterns=[
+                PRPastPattern(tried="Devir kontrol listesi + net sahip", conditions="İş ekip sınırında el değiştiriyorsa", changed="Bağlam kaybı ve sahipsiz bekleme azaldı", when_failed="Liste zorunlu tutulmadığında atlanıyordu"),
+            ],
+            next_moves=[
+                "Denemeye değer: çapraz ekip işleri için tek sahip ve kısa devir kontrol listesi.",
+                "Benzer vakalarda devir anında bağlam notu eklenince tekrar sorular azaldı.",
+                "Şu koşulda yardımcı olabilir: sınırda kalan işler için varsayılan sahip belirlemek.",
+            ],
+        ),
+        PRTopPattern(
+            rank=5, cluster_id="c4", name="Kapasite vs. Öncelik", mechanism="kapasite kısıtı + önceliklendirme çatışması",
+            why_selected="Kişi eklemenin hızı artırmaması, öncelik netliğinin kapasiteden daha belirleyici olduğunu düşündürüyor.",
+            why_formed="'Daha çok kişi ama hız yok', 'herkes meşgul ama işler bekliyor', 'öncelik belirsiz' — mekanizma: kapasite değil, akış ve öncelik.",
+            inference="Çıkarım: darboğaz çoğunlukla kapasite değil; öncelik ve akış netsizliği kaynaklı olabilir.",
+            uncertain="Belirsiz: gerçek kapasite kısıtı ile öncelik belirsizliğinin payı henüz ayrışmadı.",
+            why_top5="Kaynak kararlarını doğrudan etkilediği için yüksek stratejik değer.",
+            evidence=ev([4, 8, 17]),
+            estimated_cost="Tahmini: eklenen kapasitenin karşılığını vermemesi (nitel: orta).",
+            what_improves="Öncelik netliği ve akış sınırı (WIP) ile bekleyen işler ve dağınıklık azalır.",
+            gain_if_reduced="Tahmini olarak aynı ekip aynı kapasiteyle daha öngörülebilir teslim yapar.",
+            affected_work="Planlama, kaynak tahsisi, haftalık önceliklendirme.",
+            confidence="Orta — güçlü hipotez, doğrulama için akış verisi gerekir.",
+            past_patterns=[
+                PRPastPattern(tried="Görünür öncelik + aynı anda iş sınırı (WIP)", conditions="Herkes meşgul ama işler bekliyorsa", changed="Bekleyen iş azaldı, akış hızlandı", when_failed="Sınır uygulanmadığında eski düzene dönüldü"),
+            ],
+            next_moves=[
+                "Denemeye değer: haftalık tek net öncelik listesi ve aynı anda iş sınırı.",
+                "Benzer vakalarda WIP sınırı konunca bekleyen işler eridi.",
+                "Şu koşulda yardımcı olabilir: darboğaz kapasite değil akışsa, kişi eklemek yerine önceliği netleştirmek.",
+            ],
+        ),
+    ]
+    return PatternRoomAnalysis(signals=list(S), clusters=clusters, patterns=patterns, source="curated")
+
+
+async def _get_signal_pool() -> List[str]:
+    doc = await db.pattern_room_meta.find_one({"_id": "pool"}, {"_id": 0})
+    if doc and doc.get("signals"):
+        return doc["signals"]
+    await db.pattern_room_meta.update_one({"_id": "pool"}, {"$set": {"signals": list(PATTERN_ROOM_SIGNALS)}}, upsert=True)
+    return list(PATTERN_ROOM_SIGNALS)
+
+
+def _curated_for_pool(pool: List[str]) -> PatternRoomAnalysis:
+    """Curated clustering for the original 24 + a catch-all cluster for any appended signals."""
+    base = _curated_pattern_room()
+    base.signals = list(pool)
+    if len(pool) > len(PATTERN_ROOM_SIGNALS):
+        extra = list(range(len(PATTERN_ROOM_SIGNALS), len(pool)))
+        base.clusters.append(PRCluster(
+            id="c_new", name="Yeni Sinyaller (kümelenmeyi bekliyor)",
+            mechanism="henüz sınıflandırılmadı", signal_indices=extra,
+            summary="Yeni eklenen sinyaller; canlı analiz çalıştığında mekanizmaya göre yerleşecek.",
+            is_new=True,
+        ))
+    return base
+
+
+PATTERN_ROOM_PROMPT = """Sen Fifthback içinde bir kurumsal örüntü motoru olarak çalışan ÜÇ rolün birleşimisin. Tüm çıktı TÜRKÇE olmalı.
+
+Sana anonim iş-sistemi sinyalleri (bir liste) verilecek. Bunlar çalışan puanlaması DEĞİL; kişilik, motivasyon, yetkinlik veya duygu TEŞHİSİ YAPMA. Yalnızca iş sisteminin sürtünmesini analiz et.
+
+ROL 1 — KÜMELEME AJANI:
+Sinyalleri YÜZEY kelimelere göre DEĞİL, altta yatan örgütsel MEKANİZMAYA göre grupla. Örneğin "çok toplantı", "onay bekliyoruz", "geç geri bildirim", "işi baştan yapıyoruz" aynı mekanizmaya (ör. KARAR AKIŞI DARBOĞAZI) ait olabilir.
+Olası mekanizmalar: karar gecikmesi, belirsiz sahiplik, devir sürtüşmesi, yeniden iş (rework), yetkinlik uyumsuzluğu, kapasite kısıtı, bilgi boşluğu, süreç tekrarı, önceliklendirme çatışması, araç/sistem sürtüşmesi. Kanıt uymuyorsa YENİ mekanizma tanımlayabilirsin. 4-7 küme üret.
+
+ROL 2 — ETKİ AJANI:
+Yalnızca GÖZLEMLENEBİLİR kanıta göre EN ETKİLİ 5 örüntüyü sırala. Ölçütler: frekans, etkilenen akış sayısı, tekrar, bloke iş, yeniden iş, karar gecikmesi, ekipler arası yayılım. Girdi olmadan kesin finansal rakam UYDURMA; "tahmini" veya nitel ifade kullan.
+
+ROL 3 — ÇÖZÜM ÖRÜNTÜSÜ AJANI:
+Her örüntü için yapısal olarak benzer geçmiş/örnek vakaları hatırla: ne denenmişti, hangi koşulda işe yaradı, ne değişti, ne zaman işe yaramadı. Sonra EN FAZLA 3 müdahale öner. "Bu çözümdür" DEME. Şu kalıpları kullan: "Denemeye değer…", "Benzer vakalarda … iyileşti", "Şu koşulda yardımcı olabilir…".
+
+KATI JSON üret:
+{
+  "clusters": [{"id":"c1","name":"Türkçe küme adı","mechanism":"mekanizma(lar)","signal_indices":[sinyal listesindeki 0-tabanlı indeksler],"summary":"kısa Türkçe özet"}],
+  "patterns": [ // EN ETKİLİ 5, rank 1..5
+    {"rank":1,"cluster_id":"c1","name":"...","mechanism":"...",
+     "why_selected":"Fif bunu neden seçti","why_formed":"bu küme neden oluştu","inference":"çıkarım nedir","uncertain":"hâlâ belirsiz olan ne","why_top5":"neden ilk 5'e girdi",
+     "evidence":["kümedeki sinyallerin birebir metinleri"],
+     "estimated_cost":"tahmini/nitel örgütsel maliyet-etki","what_improves":"çözülürse ne iyileşir","gain_if_reduced":"sürtünme azalırsa olası kazanç","affected_work":"etkilenen iş/akışlar",
+     "confidence":"Yüksek/Orta/Düşük + kısa gerekçe",
+     "past_patterns":[{"tried":"...","conditions":"...","changed":"...","when_failed":"..."}],
+     "next_moves":["Denemeye değer: ...","Benzer vakalarda ...","Şu koşulda yardımcı olabilir: ..."]}
+  ]
+}
+Yalnızca JSON ver."""
+
+
+async def analyze_pattern_room_llm(signals: List[str]) -> PatternRoomAnalysis:
+    if not EMERGENT_LLM_KEY:
+        return _curated_for_pool(signals)
+    try:
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"patternroom-{uuid.uuid4()}",
+            system_message=PATTERN_ROOM_PROMPT,
+        ).with_model("anthropic", "claude-sonnet-4-6")
+        numbered = "\n".join(f"[{i}] {s}" for i, s in enumerate(signals))
+        resp = await asyncio.wait_for(
+            chat.send_message(UserMessage(text=f"Anonim sinyaller ({len(signals)}):\n{numbered}")),
+            timeout=45,
+        )
+        raw = resp if isinstance(resp, str) else str(resp)
+        m = re.search(r'\{.*\}', raw, re.DOTALL)
+        data = json.loads(m.group(0) if m else raw)
+
+        clusters = []
+        for c in data.get("clusters", []):
+            idxs = [int(i) for i in (c.get("signal_indices") or []) if isinstance(i, (int, float)) and 0 <= int(i) < len(signals)]
+            if not idxs:
+                continue
+            clusters.append(PRCluster(
+                id=str(c.get("id") or f"c{len(clusters)+1}"),
+                name=str(c.get("name", "Küme")).strip(),
+                mechanism=str(c.get("mechanism", "")).strip(),
+                signal_indices=idxs,
+                summary=str(c.get("summary", "")).strip(),
+            ))
+        patterns = []
+        for p in data.get("patterns", [])[:5]:
+            patterns.append(PRTopPattern(
+                rank=int(p.get("rank", len(patterns) + 1)),
+                cluster_id=str(p.get("cluster_id", "")).strip(),
+                name=str(p.get("name", "")).strip(),
+                mechanism=str(p.get("mechanism", "")).strip(),
+                why_selected=str(p.get("why_selected", "")).strip(),
+                why_formed=str(p.get("why_formed", "")).strip(),
+                inference=str(p.get("inference", "")).strip(),
+                uncertain=str(p.get("uncertain", "")).strip(),
+                why_top5=str(p.get("why_top5", "")).strip(),
+                evidence=[str(e).strip() for e in (p.get("evidence") or []) if str(e).strip()],
+                estimated_cost=str(p.get("estimated_cost", "")).strip(),
+                what_improves=str(p.get("what_improves", "")).strip(),
+                gain_if_reduced=str(p.get("gain_if_reduced", "")).strip(),
+                affected_work=str(p.get("affected_work", "")).strip(),
+                confidence=str(p.get("confidence", "")).strip(),
+                past_patterns=[PRPastPattern(
+                    tried=str(pp.get("tried", "")).strip(), conditions=str(pp.get("conditions", "")).strip(),
+                    changed=str(pp.get("changed", "")).strip(), when_failed=str(pp.get("when_failed", "")).strip(),
+                ) for pp in (p.get("past_patterns") or [])],
+                next_moves=[str(n).strip() for n in (p.get("next_moves") or []) if str(n).strip()][:3],
+            ))
+        if len(clusters) >= 2 and len(patterns) >= 3:
+            return PatternRoomAnalysis(signals=list(signals), clusters=clusters, patterns=patterns, source="live")
+        return _curated_for_pool(signals)
+    except Exception as e:
+        logger.error(f"Pattern Room LLM failed, using curated: {e}")
+        return _curated_for_pool(signals)
+
+
 # ---------------- Routes ----------------
+@api_router.get("/pattern-room/signals")
+async def pattern_room_signals():
+    return {"signals": await _get_signal_pool()}
+
+
+@api_router.get("/pattern-room/analysis", response_model=PatternRoomAnalysis)
+async def pattern_room_analysis():
+    cached = await db.pattern_room_cache.find_one({"_id": "latest"}, {"_id": 0})
+    if cached:
+        return PatternRoomAnalysis(**cached)
+    result = _curated_for_pool(await _get_signal_pool())
+    await db.pattern_room_cache.update_one({"_id": "latest"}, {"$set": result.model_dump()}, upsert=True)
+    return result
+
+
+@api_router.post("/pattern-room/analyze", response_model=PatternRoomAnalysis)
+async def pattern_room_analyze():
+    pool = await _get_signal_pool()
+    result = await analyze_pattern_room_llm(pool)
+    await db.pattern_room_cache.update_one({"_id": "latest"}, {"$set": result.model_dump()}, upsert=True)
+    return result
+
+
+@api_router.post("/pattern-room/add-signals", response_model=PatternRoomAnalysis)
+async def pattern_room_add_signals(req: AddSignalsRequest):
+    new = [s.strip() for s in req.signals if s and s.strip()]
+    if not new:
+        raise HTTPException(status_code=400, detail="En az bir sinyal ekle.")
+
+    prev_cached = await db.pattern_room_cache.find_one({"_id": "latest"}, {"_id": 0})
+    prev_names = {c["name"].strip().lower() for c in (prev_cached.get("clusters") if prev_cached else [])}
+
+    pool = await _get_signal_pool()
+    old_len = len(pool)
+    pool = pool + new
+    await db.pattern_room_meta.update_one({"_id": "pool"}, {"$set": {"signals": pool}}, upsert=True)
+
+    result = await analyze_pattern_room_llm(pool)
+    new_idx = list(range(old_len, len(pool)))
+    result.new_signal_indices = new_idx
+    # Mark which clusters are new or were changed by the added signals.
+    for c in result.clusters:
+        contains_new = any(i in new_idx for i in c.signal_indices)
+        if c.name.strip().lower() not in prev_names:
+            c.is_new = True
+        elif contains_new:
+            c.changed = True
+
+    await db.pattern_room_cache.update_one({"_id": "latest"}, {"$set": result.model_dump()}, upsert=True)
+    return result
+
+
+@api_router.get("/action-board", response_model=List[ActionItem])
+async def action_board_list():
+    docs = await db.action_board.find({}, {"_id": 0}).to_list(500)
+    docs.sort(key=lambda d: d.get("created_at", ""), reverse=True)
+    return [ActionItem(**d) for d in docs]
+
+
+@api_router.post("/action-board", response_model=ActionItem)
+async def action_board_create(req: ActionCreate):
+    now = datetime.now(timezone.utc).isoformat()
+    item = ActionItem(**req.model_dump(), created_at=now, updated_at=now)
+    await db.action_board.insert_one(item.model_dump())
+    return item
+
+
+@api_router.patch("/action-board/{item_id}", response_model=ActionItem)
+async def action_board_update(item_id: str, req: ActionUpdate):
+    doc = await db.action_board.find_one({"id": item_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Kayıt bulunamadı.")
+    updates = {k: v for k, v in req.model_dump().items() if v is not None}
+    updates["updated_at"] = datetime.now(timezone.utc).isoformat()
+    await db.action_board.update_one({"id": item_id}, {"$set": updates})
+    doc.update(updates)
+    return ActionItem(**doc)
+
+
 @api_router.get("/")
 async def root():
     return {"message": "Fifthback API"}
@@ -576,6 +1016,11 @@ async def seed_patterns():
         for p in SEED_PATTERNS:
             await db.patterns.insert_one(Pattern(**p).model_dump())
         logger.info("Seeded demo patterns.")
+    if await db.pattern_room_cache.count_documents({"_id": "latest"}) == 0:
+        await db.pattern_room_cache.update_one(
+            {"_id": "latest"}, {"$set": _curated_pattern_room().model_dump()}, upsert=True
+        )
+        logger.info("Seeded Pattern Room analysis.")
 
 
 app.include_router(api_router)

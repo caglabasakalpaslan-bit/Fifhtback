@@ -24,6 +24,16 @@ export const SONG_SUGGESTIONS = [
   { title: "Dog Days Are Over", artist: "Florence + The Machine" },
 ];
 
+export const CLUSTER_COLORS = [
+  { bg: "bg-[#FDF2EC]", border: "border-[#E9BCA6]", text: "text-[#B04D27]", dot: "#C85A32", solid: "#C85A32" },
+  { bg: "bg-[#EDF5F0]", border: "border-[#B7D4C4]", text: "text-[#2F5344]", dot: "#3F6B56", solid: "#3F6B56" },
+  { bg: "bg-[#FEF3C7]", border: "border-[#E7C766]", text: "text-[#92400E]", dot: "#D97706", solid: "#D97706" },
+  { bg: "bg-[#EEF1F5]", border: "border-[#B9C4D2]", text: "text-[#334155]", dot: "#475569", solid: "#475569" },
+  { bg: "bg-[#F3ECF7]", border: "border-[#CDB6DE]", text: "text-[#6B21A8]", dot: "#7C3AED", solid: "#7C3AED" },
+  { bg: "bg-[#E7F4F5]", border: "border-[#A9D3D6]", text: "text-[#0E5A63]", dot: "#0E7490", solid: "#0E7490" },
+  { bg: "bg-[#FDECEF]", border: "border-[#EBB4C0]", text: "text-[#9F1239]", dot: "#E11D48", solid: "#E11D48" },
+];
+
 export const DEMO_PRESETS = [
   {
     key: "handoff",

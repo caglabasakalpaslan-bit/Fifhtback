@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { Navbar } from "@/components/Navbar";
 import { EmployeeVoice } from "@/components/EmployeeVoice";
 import { ManagerDashboard } from "@/components/ManagerDashboard";
+import { PatternRoom } from "@/components/PatternRoom";
 
 function App() {
   const [view, setView] = useState("employee");
@@ -13,11 +14,11 @@ function App() {
     <div className="App min-h-screen paper-grain">
       <Navbar view={view} setView={setView} />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {view === "employee" ? (
+        {view === "employee" && (
           <EmployeeVoice onConfirmed={() => setRefreshKey((k) => k + 1)} />
-        ) : (
-          <ManagerDashboard refreshKey={refreshKey} />
         )}
+        {view === "manager" && <ManagerDashboard refreshKey={refreshKey} />}
+        {view === "patternroom" && <PatternRoom />}
       </main>
       <footer className="border-t border-[#E7E0D8] py-6 mt-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-[#8A847C]">

@@ -27,3 +27,33 @@ export const evaluateAnswer = async (payload) => {
   const { data } = await axios.post(`${API}/evaluate`, payload);
   return data;
 };
+
+export const getPatternRoom = async () => {
+  const { data } = await axios.get(`${API}/pattern-room/analysis`);
+  return data;
+};
+
+export const reanalyzePatternRoom = async () => {
+  const { data } = await axios.post(`${API}/pattern-room/analyze`);
+  return data;
+};
+
+export const addPatternRoomSignals = async (signals) => {
+  const { data } = await axios.post(`${API}/pattern-room/add-signals`, { signals });
+  return data;
+};
+
+export const getActionBoard = async () => {
+  const { data } = await axios.get(`${API}/action-board`);
+  return data;
+};
+
+export const createAction = async (payload) => {
+  const { data } = await axios.post(`${API}/action-board`, payload);
+  return data;
+};
+
+export const updateAction = async (id, payload) => {
+  const { data } = await axios.patch(`${API}/action-board/${id}`, payload);
+  return data;
+};

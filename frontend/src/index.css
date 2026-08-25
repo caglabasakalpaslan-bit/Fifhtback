@@ -33,6 +33,14 @@ body {
 @keyframes vinyl-spin { to { transform: rotate(360deg); } }
 .vinyl-spin { animation: vinyl-spin 4s linear infinite; }
 
+/* Pattern Room signal float */
+@keyframes signal-float {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+}
+.signal-float { animation: signal-float 4s ease-in-out infinite; }
+
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 

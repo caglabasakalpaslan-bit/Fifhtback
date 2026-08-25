@@ -6,6 +6,7 @@ export const Navbar = ({ view, setView }) => {
   const tabs = [
     { key: "employee", label: "Çalışan Sesi" },
     { key: "manager", label: "Yönetici Görünümü" },
+    { key: "patternroom", label: "Pattern Room" },
   ];
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#FAF8F5]/85 border-b border-[#E7E0D8]">
