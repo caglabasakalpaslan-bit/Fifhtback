@@ -438,7 +438,7 @@ export const PatternRoom = () => {
 
                 <Tabs defaultValue="cam" className="mt-1">
                   <TabsList className="grid grid-cols-4 bg-[#F4EFEA]">
-                    <TabsTrigger value="cam" data-testid="pr-tab-cam"><Brain className="h-3.5 w-3.5 mr-1" /> FF CAM</TabsTrigger>
+                    <TabsTrigger value="cam" data-testid="pr-tab-cam"><Brain className="h-3.5 w-3.5 mr-1" /> Fifthback</TabsTrigger>
                     <TabsTrigger value="impact" data-testid="pr-tab-impact"><TrendingUp className="h-3.5 w-3.5 mr-1" /> Etki</TabsTrigger>
                     <TabsTrigger value="past" data-testid="pr-tab-past"><History className="h-3.5 w-3.5 mr-1" /> Geçmiş</TabsTrigger>
                     <TabsTrigger value="next" data-testid="pr-tab-next"><Compass className="h-3.5 w-3.5 mr-1" /> Hamle</TabsTrigger>

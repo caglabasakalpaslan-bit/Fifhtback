@@ -2,27 +2,33 @@ import React, { useState } from "react";
 import "@/App.css";
 import { Toaster } from "sonner";
 import { Navbar } from "@/components/Navbar";
-import { EmployeeVoice } from "@/components/EmployeeVoice";
-import { ManagerDashboard } from "@/components/ManagerDashboard";
-import { PatternRoom } from "@/components/PatternRoom";
+import { Entry } from "@/surfaces/Entry";
+import { EmployeeHome } from "@/surfaces/EmployeeHome";
+import { ManagerView } from "@/surfaces/ManagerView";
+import { PatternMap } from "@/surfaces/PatternMap";
+import { BRAND } from "@/data/copy";
 
 function App() {
-  const [view, setView] = useState("employee");
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [view, setView] = useState("entry");
+  const [homeKey, setHomeKey] = useState(0);
+
+  const handleSaved = (target) => {
+    setHomeKey((k) => k + 1);
+    if (target === "home") setView("home");
+  };
 
   return (
     <div className="App min-h-screen paper-grain">
       <Navbar view={view} setView={setView} />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {view === "employee" && (
-          <EmployeeVoice onConfirmed={() => setRefreshKey((k) => k + 1)} />
-        )}
-        {view === "manager" && <ManagerDashboard refreshKey={refreshKey} />}
-        {view === "patternroom" && <PatternRoom />}
+        {view === "entry" && <Entry onSaved={handleSaved} />}
+        {view === "home" && <EmployeeHome key={homeKey} onStart={() => setView("entry")} />}
+        {view === "manager" && <ManagerView />}
+        {view === "patterns" && <PatternMap />}
       </main>
       <footer className="border-t border-[#E7E0D8] py-6 mt-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-[#8A847C]">
-          <span className="font-serif italic text-sm">Fifthback — sesin duyuldu.</span>
+          <span className="font-serif italic text-sm">{BRAND.name} — {BRAND.line}</span>
           <span className="font-mono uppercase tracking-[0.16em]">Form yok · Kimlik yok</span>
         </div>
       </footer>

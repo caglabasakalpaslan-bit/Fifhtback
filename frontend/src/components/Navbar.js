@@ -1,12 +1,14 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Disc3, ShieldCheck } from "lucide-react";
+import { BRAND, NAV } from "../data/copy";
 
 export const Navbar = ({ view, setView }) => {
   const tabs = [
-    { key: "employee", label: "Çalışan Sesi" },
-    { key: "manager", label: "Yönetici Görünümü" },
-    { key: "patternroom", label: "Pattern Room" },
+    { key: "entry", label: NAV.entry },
+    { key: "home", label: NAV.home },
+    { key: "manager", label: NAV.manager },
+    { key: "patterns", label: NAV.patterns },
   ];
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#FAF8F5]/85 border-b border-[#E7E0D8]">
@@ -16,9 +18,9 @@ export const Navbar = ({ view, setView }) => {
             <Disc3 className="h-5 w-5 text-[#C85A32] vinyl-spin" strokeWidth={1.75} />
           </div>
           <div className="leading-none">
-            <span className="font-serif text-xl font-medium tracking-tight">Fifthback</span>
-            <span className="hidden sm:inline ml-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[#8A847C]">
-              sesin duyuldu
+            <span className="font-serif text-xl font-medium tracking-tight">{BRAND.name}</span>
+            <span className="hidden lg:inline ml-2 text-[11px] text-[#8A847C]">
+              {BRAND.line}
             </span>
           </div>
         </div>

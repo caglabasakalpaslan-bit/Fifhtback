@@ -1,0 +1,106 @@
+// ADAPTER LAYER — not an engine.
+//
+// The backend already decides what clusters exist, which signals belong to them,
+// and what the five-angle analysis says. This file only puts a human face on
+// that output:
+//
+//   existing cluster_id  ->  human STORY title (primary)
+//   existing mechanism   ->  secondary label, kept small
+//   existing evidence    ->  replaced for display by paraphrases (privacy)
+//
+// No clustering, no scoring of people, no new source of truth. If the backend
+// returns a cluster this file does not know, the UI falls back to the backend's
+// own name rather than inventing one.
+
+// story title + paraphrased provenance, keyed by the EXISTING curated cluster ids
+export const STORY_BY_CLUSTER = {
+  c1: {
+    title: "Kararlar bir yerde takılıyor.",
+    mechanism: "karar gecikmesi · belirsiz sahiplik",
+    provenance: [
+      "Başlayabilmek için onay bekliyoruz.",
+      "Son sözün kimde olduğu belli değil.",
+      "Her onayda aynı kişiyi bekliyoruz.",
+    ],
+  },
+  c2: {
+    title: "Aynı işi ikinci kez yapıyoruz.",
+    mechanism: "yeniden iş · geç geri bildirim",
+    provenance: [
+      "İş bittikten sonra “aslında şöyle olacaktı” deniyor.",
+      "Gereksinimler yolun ortasında değişiyor.",
+      "Bitmiş işi tekrar tekrar düzenliyoruz.",
+    ],
+  },
+  c3: {
+    title: "İşin sahibi kim, belli değil.",
+    mechanism: "belirsiz sahiplik · devir sürtüşmesi",
+    provenance: [
+      "Herkes bir başkasının yaptığını sanıyor.",
+      "Devirlerde bağlam kayboluyor.",
+      "İş, sahibi çıkana kadar ekipler arasında dolaştı.",
+    ],
+  },
+  c4: {
+    title: "Herkes meşgul ama işler ilerlemiyor.",
+    mechanism: "öncelik belirsizliği · akış tıkanması",
+    provenance: [
+      "Bu hafta hangi işin öncelikli olduğunu bilmiyoruz.",
+      "Herkes meşgul ama bazı işler el değmeden bekliyor.",
+      "Daha kalabalığız ama teslimat hızlanmadı.",
+    ],
+  },
+  c5: {
+    title: "Bilgi dağınık, aynı şeyi elle taşıyoruz.",
+    mechanism: "bilgi boşluğu · araç kopukluğu",
+    provenance: [
+      "Aradığım bilgiyi ilk bakışta hiçbir zaman bulamıyorum.",
+      "Araçların yarısı birbiriyle konuşmuyor.",
+      "Aynı veriyi iki yere ayrı ayrı giriyoruz.",
+    ],
+  },
+  c_new: {
+    title: "Yeni anlatılanlar henüz yerine oturmadı.",
+    mechanism: "kümelenmeyi bekliyor",
+    provenance: [],
+  },
+};
+
+// Human-language titles for the EXISTING seeded manager patterns, matched by title.
+export const STORY_BY_PATTERN_TITLE = {
+  "Tasarım ↔ Yazılım devir sürtüşmesi": "Devirde iş yarım kalıyor.",
+  "Toplantı yoğunluğu odaklanmayı aşındırıyor": "Toplantılar işin yerini alıyor.",
+  "Yeni çalışanlar için sessiz işe alışma boşlukları": "Yeni gelen sessizce bekliyor.",
+  "Perde arkası çalışmanın takdir edilmesi": "Görünmeyen emek fark ediliyor.",
+  "Önce-yazılı (async) dokümantasyon alışkanlığı": "Yazıya dökmek işi kolaylaştırdı.",
+};
+
+// İŞ HAYATI SÖZLÜĞÜ — natural human sentences, not consulting categories.
+// `cluster` points at the existing curated cluster the phrase belongs to, so
+// selecting a phrase reuses the backend's clustering instead of bypassing it.
+export const DICTIONARY = [
+  { phrase: "Söylesem olmuyor, sussam gönlüm razı değil.", cluster: "c3" },
+  { phrase: "İşimden değil, işin yapılış şeklinden yoruldum.", cluster: "c4" },
+  { phrase: "Herkes biliyor ama kimse söylemiyor.", cluster: "c3" },
+  { phrase: "Toplantılardan iş yapmaya zaman kalmıyor.", cluster: "c1" },
+  { phrase: "Bir şey yanlış ama adını koyamıyorum.", cluster: "c3" },
+  { phrase: "Ne yaparsak yapalım karar yine başa dönüyor.", cluster: "c1" },
+  { phrase: "Öncelikler sürekli değişiyor.", cluster: "c4" },
+  { phrase: "Kimse son kararın kimde olduğunu bilmiyor.", cluster: "c1" },
+  { phrase: "Bunu yöneticime söylesem yanlış anlaşılır.", cluster: "c3" },
+  { phrase: "Ben mi abartıyorum, yoksa gerçekten böyle mi?", cluster: "c3" },
+  { phrase: "Bitirdiğimiz iş geri dönüyor.", cluster: "c2" },
+  { phrase: "Aradığım bilgiyi hiçbir zaman bulamıyorum.", cluster: "c5" },
+  // the dictionary is not only complaints
+  { phrase: "Zor bir işi birlikte çıkardık.", cluster: null, positive: true },
+  { phrase: "Takıldığımda gerçekten yardım geldi.", cluster: null, positive: true },
+];
+
+export const storyFor = (cluster) => STORY_BY_CLUSTER[cluster?.id] || null;
+
+// Human title first, backend name only as fallback. Never invents a title.
+export const humanTitle = (clusterId, backendName) =>
+  STORY_BY_CLUSTER[clusterId]?.title || backendName;
+
+export const secondaryLabel = (clusterId, backendMechanism) =>
+  STORY_BY_CLUSTER[clusterId]?.mechanism || backendMechanism;
