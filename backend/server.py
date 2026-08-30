@@ -13,16 +13,27 @@ from typing import List, Optional, Literal
 import uuid
 from datetime import datetime, timezone
 
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+try:
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+except ImportError:  # package unavailable locally -> curated/fallback paths only
+    LlmChat = None
+    UserMessage = None
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Mongo when it is configured and importable; otherwise an in-process store so the
+# app still boots for local dev, CI and screenshots. Nothing else in this file changes.
+mongo_url = os.environ.get('MONGO_URL')
+if mongo_url:
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[os.environ.get('DB_NAME', 'fifthback')]
+else:
+    from local_store import LocalClient
+    client = LocalClient()
+    db = client['fifthback']
 
-EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY')
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY') if LlmChat else None
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
