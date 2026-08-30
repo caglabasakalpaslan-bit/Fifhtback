@@ -25,7 +25,7 @@ export const PressureBar = ({ pressure, compact = false }) => {
       </div>
       {!compact && pressure.coverage !== undefined && pressure.coverage < 1 && (
         <p className="mt-1.5 text-[11px] text-[#A8A29E]">
-          Bu okuma {Math.round(pressure.coverage * 4)}/4 boyuta dayanıyor — geri kalanı henüz ölçülmüyor.
+          Elimizdeki bilgiyle yapılan bir okuma — bazı yönler henüz bilinmiyor.
         </p>
       )}
     </div>

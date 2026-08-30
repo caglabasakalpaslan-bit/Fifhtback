@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { ShieldCheck, Loader2, Users, Repeat, Activity, MessageSquareOff, TrendingUp } from "lucide-react";
+import { ShieldCheck, Loader2, Users, Repeat, Activity, TrendingUp, ChevronDown } from "lucide-react";
 import { getPatterns } from "../lib/api";
 import { MANAGER, DEMO_NOTE } from "../data/copy";
 import { STORY_BY_PATTERN_TITLE } from "../data/stories";
@@ -8,8 +8,8 @@ import { pressureFromManagerPattern } from "../lib/pressure";
 import { canShowAggregate, MIN_MANAGER_N } from "../lib/privacy";
 import { PressureBar } from "../components/PressureBar";
 
-const Axis = ({ icon: Icon, label, value, gated }) => (
-  <div className="flex-1 min-w-[92px]">
+const Axis = ({ icon: Icon, label, value, gated, wide }) => (
+  <div className={wide ? "w-full" : "flex-1 min-w-[92px]"}>
     <div className="flex items-center gap-1 text-[#8A847C]">
       <Icon className="h-3 w-3" />
       <span className="text-[10px] font-mono uppercase tracking-[0.12em]">{label}</span>
@@ -20,6 +20,7 @@ const Axis = ({ icon: Icon, label, value, gated }) => (
 
 export const ManagerView = () => {
   const [patterns, setPatterns] = useState(null);
+  const [expanded, setExpanded] = useState({});
 
   useEffect(() => {
     getPatterns().then(setPatterns).catch(() => setPatterns([]));
@@ -75,13 +76,29 @@ export const ManagerView = () => {
               </div>
 
               {visible ? (
-                <div className="mt-4 flex flex-wrap gap-4 border-t border-[#F0EAE2] pt-3" data-testid="manager-axes">
-                  <Axis icon={Repeat} label={MANAGER.axes.repetition} value={`${n} anonim sinyal`} />
-                  <Axis icon={Users} label={MANAGER.axes.spread} value={`${p.affected_teams?.length || 0} ekip`} />
-                  <Axis icon={Activity} label={MANAGER.axes.impact} value={p.blocker ? "İşi yavaşlatıyor" : "Sınırlı"} />
-                  {/* The engine does not measure this. We say so instead of guessing. */}
-                  <Axis icon={MessageSquareOff} label={MANAGER.axes.voice} value="Henüz ölçülmüyor" gated />
-                  <Axis icon={TrendingUp} label={MANAGER.axes.change} value={pressure.change?.label || "—"} />
+                <div className="mt-4 border-t border-[#F0EAE2] pt-3" data-testid="manager-axes">
+                  {/* the three signals that actually carry information */}
+                  <div className="flex flex-wrap gap-4">
+                    <Axis icon={Repeat} label={MANAGER.axes.repetition} value={`${n} anonim sinyal`} />
+                    <Axis icon={Users} label={MANAGER.axes.spread} value={`${p.affected_teams?.length || 0} ekip`} />
+                  </div>
+                  <div className="mt-3">
+                    <Axis icon={Activity} label={MANAGER.axes.blocker} value={p.blocker || "—"} wide />
+                  </div>
+                  <button
+                    data-testid="manager-more"
+                    onClick={() => setExpanded((e) => ({ ...e, [p.id]: !e[p.id] }))}
+                    className="mt-3 flex items-center gap-1 text-[12px] text-[#8A847C]"
+                  >
+                    Ayrıntı
+                    <ChevronDown className={`h-3 w-3 transition-transform ${expanded[p.id] ? "rotate-180" : ""}`} />
+                  </button>
+                  {expanded[p.id] && (
+                    <div className="mt-2 flex flex-wrap gap-4">
+                      <Axis icon={TrendingUp} label={MANAGER.axes.change} value={pressure.change?.label || "—"} />
+                      <Axis icon={Activity} label="Ne zamandır" value={p.unresolved_for || "—"} />
+                    </div>
+                  )}
                 </div>
               ) : (
                 <p className="mt-4 border-t border-[#F0EAE2] pt-3 text-[13px] text-[#A8A29E]" data-testid="manager-gated">
@@ -97,6 +114,9 @@ export const ManagerView = () => {
         <ShieldCheck className="h-4 w-4 text-[#3F6B56] shrink-0 mt-0.5" />
         <p className="text-[13px] text-[#3F6B56]">{MANAGER.never}</p>
       </div>
+      <p className="mt-3 text-[12px] text-[#A8A29E]">
+        Konuşma kolaylığı henüz ölçülmüyor, bu yüzden hiçbir hikâyede gösterilmiyor.
+      </p>
     </div>
   );
 };

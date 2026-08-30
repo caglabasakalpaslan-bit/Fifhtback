@@ -13,6 +13,37 @@ const TONE = {
   green: "bg-emerald-50 text-emerald-800 border-emerald-300",
 };
 
+// Compact journey: what already happened, then the step that comes next.
+const JOURNEY = ["NEW", "MATCHED", "SHARED", "MOVING", "RESOLVED"];
+const JOURNEY_STEP = {
+  NEW: "Söyledin",
+  MATCHED: "Benzer hikâyeler bulundu",
+  SHARED: "Paylaştın",
+  MOVING: "Değişim var",
+  RESOLVED: "Çözüldü",
+};
+
+const Journey = ({ state }) => {
+  const idx = Math.max(0, JOURNEY.indexOf(state));
+  const next = JOURNEY[idx + 1];
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 text-[12px]" data-testid="journey-line">
+      {JOURNEY.slice(0, idx + 1).map((s, i) => (
+        <React.Fragment key={s}>
+          {i > 0 && <span className="text-[#C9C0B6]">→</span>}
+          <span className="text-[#3A3632]">{JOURNEY_STEP[s]}</span>
+        </React.Fragment>
+      ))}
+      {next && (
+        <>
+          <span className="text-[#C9C0B6]">→</span>
+          <span className="text-[#A8A29E]">{JOURNEY_STEP[next]}</span>
+        </>
+      )}
+    </div>
+  );
+};
+
 const StateChip = ({ state }) => {
   const meta = STATES[state] || STATES.NEW;
   return (
@@ -69,6 +100,10 @@ export const EmployeeHome = ({ onStart }) => {
                   Benzer hikâye: <span className="text-[#1A1816]">{s.storyTitle}</span>
                 </p>
               )}
+
+              <div className="mt-3.5 rounded-xl bg-[#F7F3EE] px-3.5 py-2.5">
+                <Journey state={s.state} />
+              </div>
 
               <div className="mt-4 flex items-center justify-between border-t border-[#F0EAE2] pt-3">
                 <span className="flex items-center gap-1.5 text-[12px] text-[#8A847C]">

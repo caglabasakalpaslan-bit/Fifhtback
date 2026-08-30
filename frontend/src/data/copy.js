@@ -57,11 +57,12 @@ export const HOME = {
   sub: "Anlattıkların ve şu an nerede oldukları.",
   empty: "Henüz bir şey anlatmadın.",
   emptyCta: "İlk hikâyeni anlat",
+  journeyLabel: "Nerede",
   visibility: {
     private: "Yalnızca bende",
     shared: "Anonim olarak paylaşıldı",
-    privateHint: "Bu yalnızca sende duruyor. Kuruma hiçbir şey gitmedi.",
-    sharedHint: "Anonim olarak örüntülere katıldı. Kim olduğun görünmüyor.",
+    privateHint: "Şimdilik sadece sende.",
+    sharedHint: "Anonim paylaşıldı — kim olduğun görünmüyor.",
     share: "Anonim olarak paylaş",
     unshare: "Paylaşımdan çek",
   },
@@ -84,6 +85,7 @@ export const MANAGER = {
     spread: "Yayılım",
     repetition: "Tekrar",
     impact: "İşe etkisi",
+    blocker: "Takılma noktası",
     voice: "Konuşma kolaylığı",
     change: "Değişim",
   },
@@ -117,9 +119,9 @@ export const DETAIL = {
 
 export const PRESSURE = {
   label: "Sıkışıklık",
-  high: "Yoğun sıkışıklık",
-  medium: "Belirgin sürtüşme",
-  low: "Hafif sürtüşme",
+  high: "Sıkışıklık yüksek",
+  medium: "Sıkışıklık orta",
+  low: "Sıkışıklık düşük",
   none: "Yeterli veri yok",
 };
 

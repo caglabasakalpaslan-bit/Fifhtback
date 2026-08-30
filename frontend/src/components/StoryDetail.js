@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ShieldCheck, Quote, Sparkles } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "./ui/dialog";
 import { DETAIL, PRESSURE, DEMO_NOTE } from "../data/copy";
-import { STORY_BY_CLUSTER, humanTitle, secondaryLabel } from "../data/stories";
+import { STORY_BY_CLUSTER, humanTitle, secondaryLabel, whyTogether } from "../data/stories";
 import { canShowProvenance } from "../lib/privacy";
 import { PressureBar } from "./PressureBar";
 
@@ -73,7 +73,7 @@ export const StoryDetail = ({ pattern, pressure, open, onClose, isDemo }) => {
 
         <div className="max-h-[46vh] overflow-y-auto px-6">
           <Angle label={DETAIL.angles.why} defaultOpen testId="angle-why">
-            {pattern.why_formed}
+            {whyTogether(pattern.cluster_id, pattern.why_formed)}
           </Angle>
           <Angle label={DETAIL.angles.impact} testId="angle-impact">
             <p>{pattern.affected_work}</p>

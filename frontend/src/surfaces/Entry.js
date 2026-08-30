@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PenLine, Mic, Compass, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { ENTRY, REFLECT, BRAND } from "../data/copy";
+import { ENTRY, REFLECT } from "../data/copy";
 import { DICTIONARY, STORY_BY_CLUSTER } from "../data/stories";
 import { interpretFeedback } from "../lib/api";
 import { addSignal } from "../lib/mySignals";
@@ -89,8 +89,7 @@ export const Entry = ({ onSaved }) => {
 
   return (
     <div className="py-12 max-w-2xl mx-auto" data-testid="entry-surface">
-      <p className="text-[13px] text-[#8A847C]">{BRAND.name} — {BRAND.line}</p>
-      <h1 className="mt-4 font-serif text-6xl leading-none text-[#1A1816]" data-testid="entry-title">{ENTRY.title}</h1>
+      <h1 className="font-serif text-6xl leading-none text-[#1A1816]" data-testid="entry-title">{ENTRY.title}</h1>
       <p className="mt-3 text-[17px] text-[#57534E]">{ENTRY.sub}</p>
 
       <div className="mt-7 flex flex-wrap items-center gap-2">

@@ -17,6 +17,7 @@ export const STORY_BY_CLUSTER = {
   c1: {
     title: "Kararlar bir yerde takılıyor.",
     mechanism: "karar gecikmesi · belirsiz sahiplik",
+    why: "Farklı görünen şikâyetlerin hepsi aynı yere çıkıyor: kararın kimde olduğu belli değil.",
     provenance: [
       "Başlayabilmek için onay bekliyoruz.",
       "Son sözün kimde olduğu belli değil.",
@@ -26,6 +27,7 @@ export const STORY_BY_CLUSTER = {
   c2: {
     title: "Aynı işi ikinci kez yapıyoruz.",
     mechanism: "yeniden iş · geç geri bildirim",
+    why: "Hepsi aynı sebepten: doğrulama iş bittikten sonra geliyor.",
     provenance: [
       "İş bittikten sonra “aslında şöyle olacaktı” deniyor.",
       "Gereksinimler yolun ortasında değişiyor.",
@@ -35,6 +37,7 @@ export const STORY_BY_CLUSTER = {
   c3: {
     title: "İşin sahibi kim, belli değil.",
     mechanism: "belirsiz sahiplik · devir sürtüşmesi",
+    why: "Ortak nokta şu: işin sahibi baştan belli değil.",
     provenance: [
       "Herkes bir başkasının yaptığını sanıyor.",
       "Devirlerde bağlam kayboluyor.",
@@ -44,6 +47,7 @@ export const STORY_BY_CLUSTER = {
   c4: {
     title: "Herkes meşgul ama işler ilerlemiyor.",
     mechanism: "öncelik belirsizliği · akış tıkanması",
+    why: "Hepsi aynı şeyi gösteriyor: sorun kapasite değil, neyin önce geldiğinin belirsizliği.",
     provenance: [
       "Bu hafta hangi işin öncelikli olduğunu bilmiyoruz.",
       "Herkes meşgul ama bazı işler el değmeden bekliyor.",
@@ -53,6 +57,7 @@ export const STORY_BY_CLUSTER = {
   c5: {
     title: "Bilgi dağınık, aynı şeyi elle taşıyoruz.",
     mechanism: "bilgi boşluğu · araç kopukluğu",
+    why: "Ortak nokta şu: güvenilir tek bir kaynak yok, bilgi elle taşınıyor.",
     provenance: [
       "Aradığım bilgiyi ilk bakışta hiçbir zaman bulamıyorum.",
       "Araçların yarısı birbiriyle konuşmuyor.",
@@ -62,6 +67,7 @@ export const STORY_BY_CLUSTER = {
   c_new: {
     title: "Yeni anlatılanlar henüz yerine oturmadı.",
     mechanism: "kümelenmeyi bekliyor",
+    why: "Bu anlatılanlar henüz ortak bir mekanizmaya bağlanmadı.",
     provenance: [],
   },
 };
@@ -95,6 +101,9 @@ export const DICTIONARY = [
   { phrase: "Zor bir işi birlikte çıkardık.", cluster: null, positive: true },
   { phrase: "Takıldığımda gerçekten yardım geldi.", cluster: null, positive: true },
 ];
+
+export const whyTogether = (clusterId, backendWhyFormed) =>
+  STORY_BY_CLUSTER[clusterId]?.why || backendWhyFormed;
 
 export const storyFor = (cluster) => STORY_BY_CLUSTER[cluster?.id] || null;
 
