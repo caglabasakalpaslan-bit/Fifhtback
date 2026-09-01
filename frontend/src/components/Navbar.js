@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Disc3, ShieldCheck } from "lucide-react";
+import { Disc3 } from "lucide-react";
 import { BRAND, NAV } from "../data/copy";
 
 export const Navbar = ({ view, setView }) => {
@@ -25,7 +25,7 @@ export const Navbar = ({ view, setView }) => {
           </div>
         </div>
 
-        <nav className="flex items-center gap-1 rounded-full border border-[#E7E0D8] bg-white p-1 shadow-sm">
+        <nav className="flex items-center gap-1 mx-auto rounded-full border border-[#E7E0D8] bg-white p-1 shadow-sm">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -46,11 +46,6 @@ export const Navbar = ({ view, setView }) => {
             </button>
           ))}
         </nav>
-
-        <div className="hidden md:flex items-center gap-1.5 text-[#3F6B56]" data-testid="privacy-chip">
-          <ShieldCheck className="h-4 w-4" strokeWidth={2} />
-          <span className="text-xs font-medium">Kimlik bilgisi saklanmaz</span>
-        </div>
       </div>
     </header>
   );

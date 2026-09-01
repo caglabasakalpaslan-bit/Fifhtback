@@ -27,9 +27,8 @@ function App() {
         {view === "patterns" && <PatternMap />}
       </main>
       <footer className="border-t border-[#E7E0D8] py-6 mt-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-[#8A847C]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center text-xs text-[#8A847C]">
           <span className="font-serif italic text-sm">{BRAND.name} — {BRAND.line}</span>
-          <span className="font-mono uppercase tracking-[0.16em]">Form yok · Kimlik yok</span>
         </div>
       </footer>
       <Toaster position="bottom-center" richColors closeButton style={{ pointerEvents: "none" }} toastOptions={{ style: { fontFamily: "Plus Jakarta Sans", pointerEvents: "auto" } }} />
