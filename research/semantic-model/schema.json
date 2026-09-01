@@ -1,0 +1,395 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fifthback.local/research/semantic-model/schema.json",
+  "title": "Fifthback Semantic Model",
+  "version": "0.1.0",
+  "status": "documentation-only",
+  "description": "Machine-readable companion to ontology.md. Descriptive of the meaning already encoded in backend/server.py and frontend/src/{data,lib}. Not imported or executed by the application.",
+  "language_policy": {
+    "domain_terms": "tr",
+    "prose": "en",
+    "rationale": "The product speaks Turkish; a translated ontology drifts from the copy the user reads."
+  },
+
+  "commitments": [
+    "Fifthback models friction in a work system, not people.",
+    "No Person entity exists at any layer.",
+    "A claim may only assert what a verbatim quote supports.",
+    "Things cluster by mechanism, not by shared words.",
+    "An unmeasured dimension stays null and is displayed as unmeasured."
+  ],
+
+  "entities": {
+    "Anlati": {
+      "gloss": "Utterance",
+      "definition": "What a person said in their own words, in one sitting. The only legitimate home of verbatim employee language.",
+      "code": ["backend/server.py:InterpretRequest.text", "frontend/src/lib/mySignals.js"],
+      "fields": {
+        "text": { "type": "string", "required": true },
+        "medium": { "type": "string", "enum": ["written", "spoken"], "required": true },
+        "song": { "type": "object", "ref": "SongRef", "required": false },
+        "created_at": { "type": "string", "format": "date-time", "required": true }
+      },
+      "carries_identity": false,
+      "default_disclosure": "D0"
+    },
+    "Sinyal": {
+      "gloss": "Signal",
+      "definition": "One evidence-bearing observation: a short neutral label plus the exact span of the Anlati supporting it.",
+      "code": ["backend/server.py:Signal"],
+      "fields": {
+        "label": { "type": "string", "required": true, "guidance": "2-5 words, neutral" },
+        "evidence": { "type": "string", "required": true, "constraint": "verbatim substring of the parent Anlati" }
+      },
+      "cardinality_per_anlati": { "min": 1, "max": 4 },
+      "naming_hazard": "The word 'sinyal' denotes three different things in the codebase. See ambiguities.md section 1."
+    },
+    "HavuzSatiri": {
+      "gloss": "Pool Line",
+      "definition": "An already-anonymous single-sentence statement in the Pattern Room pool: the 24 seeded examples plus anything a manager appends.",
+      "code": ["backend/server.py:PATTERN_ROOM_SIGNALS", "backend/server.py:AddSignalsRequest", "pattern_room_meta.pool"],
+      "fields": {
+        "text": { "type": "string", "required": true },
+        "pool_index": { "type": "integer", "required": true, "note": "cluster membership is by index, which makes the pool append-only in practice" }
+      },
+      "relation_to_signal": "closer to a miniature Anlati than to a Sinyal"
+    },
+    "Mekanizma": {
+      "gloss": "Mechanism",
+      "definition": "The structural reason a set of statements co-occur. A claim about how the work system behaves, not a topic label.",
+      "code": ["backend/server.py:PRCluster.mechanism", "backend/server.py:PRTopPattern.mechanism"],
+      "representation_today": "free text",
+      "governing_vocabulary": "mechanisms",
+      "extension_rule": "PATTERN_ROOM_PROMPT permits defining a new mechanism when the evidence does not fit an existing one."
+    },
+    "Kume": {
+      "gloss": "Cluster",
+      "definition": "A set of Pool Lines bound by one mechanism. Engine-side object; decides membership.",
+      "code": ["backend/server.py:PRCluster"],
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "name": { "type": "string", "required": true },
+        "mechanism": { "type": "string", "required": true },
+        "signal_indices": { "type": "array", "items": "integer", "required": true },
+        "summary": { "type": "string", "required": false },
+        "is_new": { "type": "boolean", "default": false },
+        "changed": { "type": "boolean", "default": false }
+      },
+      "current_members": ["c1", "c2", "c3", "c4", "c5", "c_new"]
+    },
+    "Hikaye": {
+      "gloss": "Story",
+      "definition": "The human-facing face of a Cluster: a sentence an employee would actually say. Presentation only; never decides membership.",
+      "code": ["frontend/src/data/stories.js:STORY_BY_CLUSTER"],
+      "fields": {
+        "title": { "type": "string", "required": true, "role": "primary" },
+        "mechanism": { "type": "string", "required": true, "role": "secondary label" },
+        "why": { "type": "string", "required": true },
+        "provenance": { "type": "array", "items": "string", "required": true, "constraint": "paraphrased, never verbatim" }
+      },
+      "fallback_rule": "Unknown cluster falls back to the backend's own name; a title is never invented."
+    },
+    "Oruntu": {
+      "gloss": "Pattern",
+      "definition": "A cluster promoted to organisational attention, carrying mass, spread, age and status.",
+      "shapes": {
+        "PRTopPattern": {
+          "code": "backend/server.py:PRTopPattern",
+          "character": "qualitative, mechanism-first",
+          "carries": ["rank", "why_selected", "why_formed", "inference", "uncertain", "why_top5", "evidence", "estimated_cost", "what_improves", "gain_if_reduced", "affected_work", "confidence", "past_patterns", "next_moves"]
+        },
+        "Pattern": {
+          "code": "backend/server.py:Pattern",
+          "character": "quantitative, status-first",
+          "carries": ["title", "feedback_type", "frequency", "affected_teams", "unresolved_for", "blocker", "status", "summary", "song_sentiment", "seeded"]
+        }
+      },
+      "note": "The two shapes are not interchangeable; lib/pressure.js has a separate adapter for each."
+    },
+    "Sikisiklik": {
+      "gloss": "Pressure",
+      "definition": "A derived reading over a Pattern. Coverage is part of the reading, not metadata.",
+      "code": ["frontend/src/lib/pressure.js:computePressure"],
+      "fields": {
+        "score": { "type": ["number", "null"], "range": [0, 1] },
+        "band": { "type": "string", "enum": ["high", "medium", "low", "none"] },
+        "coverage": { "type": "number", "range": [0, 1] },
+        "components": { "type": "object", "ref": "pressure_components" }
+      },
+      "rules": [
+        "Weights renormalise over present components only.",
+        "Absent components stay null and render as 'Yeterli veri yok'.",
+        "POSITIVE or RESOLVED patterns are not reported as friction."
+      ]
+    },
+    "EtkinIhtiyac": {
+      "gloss": "Active Need",
+      "definition": "A need the text supports, held co-actively with other needs.",
+      "code": ["backend/server.py:ActiveNeed"],
+      "fields": {
+        "title": { "type": "string", "required": true },
+        "detail": { "type": "string", "required": true }
+      },
+      "hard_rule": "Never presented as an A-vs-B dilemma. The relation catalogue has no exclusivity edge."
+    },
+    "Sorumluluk": {
+      "gloss": "Responsibility",
+      "definition": "Two lists, organisational and personal, phrased as possibility rather than blame.",
+      "code": ["backend/server.py:Responsibility"],
+      "fields": {
+        "organizational": { "type": "array", "items": "string", "max": 3 },
+        "personal": { "type": "array", "items": "string", "max": 3 }
+      }
+    },
+    "Kanal": {
+      "gloss": "Channel",
+      "definition": "A possible next step with an honest trade-off attached.",
+      "code": ["backend/server.py:Channel"],
+      "fields": {
+        "title": { "type": "string", "required": true },
+        "detail": { "type": "string", "required": true },
+        "tradeoff": { "type": "string", "required": true }
+      },
+      "safety_rule": "Confronting a manager may never be the only channel offered."
+    },
+    "AyirtEdiciSoru": {
+      "gloss": "Distinction",
+      "definition": "The single question that would most change what the feedback means, asked only when it would change it.",
+      "code": ["backend/server.py:DistinctionResult"],
+      "fields": {
+        "should_ask": { "type": "boolean", "required": true },
+        "question": { "type": ["string", "null"] },
+        "options": { "type": "array", "items": "string", "min": 3, "max": 5, "constraint": "multi-select, non-exclusive" },
+        "stop_reason": { "type": ["string", "null"], "note": "a first-class outcome, not a failure" }
+      }
+    },
+    "Temellendirme": {
+      "gloss": "Grounding evaluation",
+      "definition": "A check on whether a refined interpretation is still supported by the person's own words.",
+      "code": ["backend/server.py:EvaluateResult"],
+      "fields": {
+        "supported": { "type": "boolean", "required": true },
+        "evaluation_note": { "type": "string", "required": true }
+      }
+    },
+    "GecmisVaka": {
+      "gloss": "Past Case",
+      "definition": "A structurally similar prior case.",
+      "code": ["backend/server.py:PRPastPattern"],
+      "fields": {
+        "tried": { "type": "string", "required": true },
+        "conditions": { "type": "string", "required": true },
+        "changed": { "type": "string", "required": true },
+        "when_failed": { "type": "string", "required": true, "note": "required; a case with no failure mode is a slogan" }
+      }
+    },
+    "Eylem": {
+      "gloss": "Action",
+      "definition": "A tracked, falsifiable intervention against a Pattern.",
+      "code": ["backend/server.py:ActionItem"],
+      "fields": {
+        "pattern_name": { "type": "string", "required": true },
+        "mechanism": { "type": "string" },
+        "cluster_id": { "type": "string" },
+        "evidence_snapshot": { "type": "array", "items": "string" },
+        "hypothesis": { "type": "string" },
+        "intervention": { "type": "string" },
+        "status": { "type": "string", "enum": ["DETECTED", "INVESTIGATING", "TESTING", "RESOLVED", "REJECTED"] },
+        "outcome": { "type": "string" }
+      }
+    },
+    "Yayginlik": {
+      "gloss": "Prevalence",
+      "definition": "Whether an interpretation matched a real seeded pattern, and that pattern's real numbers. Never synthesised.",
+      "code": ["backend/server.py:Prevalence", "backend/server.py:_match_prevalence"],
+      "matching": { "method": "5-char Turkish stem prefix overlap", "threshold": 2 },
+      "no_match_behaviour": "found=false and an honest empty state"
+    }
+  },
+
+  "non_entities": {
+    "Kisi": {
+      "gloss": "Person",
+      "status": "forbidden",
+      "reason": "No identity, no stable pseudonymous id, no department, age or gender.",
+      "code_reference": "frontend/src/data/copy.js:ENTRY.privacy"
+    },
+    "Performans": { "gloss": "Performance / motivation / personality", "status": "forbidden", "code_reference": "frontend/src/data/copy.js:MANAGER.never" },
+    "DuyguDurumu": { "gloss": "Mood diagnosis", "status": "forbidden", "code_reference": "backend/server.py:SYSTEM_PROMPT" }
+  },
+
+  "pressure_components": {
+    "repetition": { "weight": 0.3, "source": "PRTopPattern.evidence.length | Pattern.frequency", "nullable": true },
+    "impact": { "weight": 0.3, "source": "qualitative word in estimated_cost | presence of blocker", "nullable": true },
+    "spread": { "weight": 0.2, "source": "Pattern.affected_teams.length", "nullable": true },
+    "duration": { "weight": 0.2, "source": "Pattern.unresolved_for (free text)", "nullable": true },
+    "speaking_cost": { "weight": null, "source": null, "nullable": true, "status": "declared as a manager axis but never measured; see ambiguities.md section 4" }
+  },
+
+  "relations": [
+    { "name": "yields", "from": "Anlati", "to": "Sinyal", "cardinality": "1..4" },
+    { "name": "quotes", "from": "Sinyal", "to": "Anlati", "cardinality": "1", "constraint": "verbatim substring" },
+    { "name": "raises", "from": "Anlati", "to": "EtkinIhtiyac", "cardinality": "1..4" },
+    { "name": "co_active_with", "from": "EtkinIhtiyac", "to": "EtkinIhtiyac", "cardinality": "n..n", "symmetric": true },
+    { "name": "becomes", "from": "Anlati", "to": "HavuzSatiri", "cardinality": "0..1", "precondition": "explicit share by the author" },
+    { "name": "belongs_to", "from": "HavuzSatiri", "to": "Kume", "cardinality": "0..1", "note": "unassigned lines sit in c_new" },
+    { "name": "explained_by", "from": "Kume", "to": "Mekanizma", "cardinality": "1..n" },
+    { "name": "presented_as", "from": "Kume", "to": "Hikaye", "cardinality": "0..1" },
+    { "name": "promoted_to", "from": "Kume", "to": "Oruntu", "cardinality": "0..1" },
+    { "name": "reads_as", "from": "Oruntu", "to": "Sikisiklik", "cardinality": "1" },
+    { "name": "matched_to", "from": "Anlati", "to": "Oruntu", "cardinality": "0..1", "method": "_match_prevalence" },
+    { "name": "informed_by", "from": "Oruntu", "to": "GecmisVaka", "cardinality": "0..n" },
+    { "name": "tracked_by", "from": "Oruntu", "to": "Eylem", "cardinality": "0..n" },
+    { "name": "similar_to", "from": "Mekanizma", "to": "Mekanizma", "cardinality": "n..n", "symmetric": true, "method": "5-char stem overlap; drives pattern-map distance" },
+    { "name": "refines", "from": "Temellendirme", "to": "Oruntu", "cardinality": "1", "constraint": "may downgrade a claim, never invent one" }
+  ],
+
+  "forbidden_relations": [
+    { "pattern": "* -> Kisi", "reason": "No Person entity exists." },
+    { "name": "excludes", "from": "EtkinIhtiyac", "to": "EtkinIhtiyac", "reason": "Needs are co-active; forcing a dilemma is a golden-rule violation." },
+    { "name": "caused_by", "from": "Sinyal", "to": "Sinyal", "reason": "Causality between two statements is not extractable from a single text." }
+  ],
+
+  "mechanisms": [
+    {
+      "id": "karar-gecikmesi", "tr": "karar gecikmesi", "en": "decision latency",
+      "test": "Is the work waiting on a decision that exists but has not been made? If the decision has been made and is merely unknown, it is bilgi-boslugu.",
+      "confusable_with": ["belirsiz-sahiplik", "bilgi-boslugu"], "clusters": ["c1"]
+    },
+    {
+      "id": "belirsiz-sahiplik", "tr": "belirsiz sahiplik", "en": "unclear ownership",
+      "test": "Would the work move if one named party accepted it? If it would still not move because no one knows what to decide, it is karar-gecikmesi.",
+      "confusable_with": ["karar-gecikmesi", "devir-surtusmesi"], "clusters": ["c1", "c3"]
+    },
+    {
+      "id": "devir-surtusmesi", "tr": "devir sürtüşmesi", "en": "handoff friction",
+      "test": "Does the loss happen at the boundary between two teams, at the moment of transfer? Continuous ambiguity is belirsiz-sahiplik.",
+      "confusable_with": ["belirsiz-sahiplik"], "clusters": ["c3"]
+    },
+    {
+      "id": "yeniden-is", "tr": "yeniden iş (rework)", "en": "rework",
+      "test": "Was finished work redone? If it was never finished because it kept waiting, it is karar-gecikmesi.",
+      "confusable_with": ["surec-tekrari", "karar-gecikmesi"], "clusters": ["c2"]
+    },
+    {
+      "id": "yetkinlik-uyumsuzlugu", "tr": "yetkinlik uyumsuzluğu", "en": "skill mismatch",
+      "test": "Structural only: work routed to a team without the capability. Never applied to an individual.",
+      "risk": "The one mechanism that can slide into judging people; see ambiguities.md section 6.",
+      "confusable_with": [], "clusters": []
+    },
+    {
+      "id": "kapasite-kisiti", "tr": "kapasite kısıtı", "en": "capacity constraint",
+      "test": "Would more hands actually move it? If adding people has already failed to help, it is onceliklendirme-catismasi.",
+      "confusable_with": ["onceliklendirme-catismasi"], "clusters": ["c4"]
+    },
+    {
+      "id": "bilgi-boslugu", "tr": "bilgi boşluğu", "en": "information gap",
+      "test": "Does the needed fact exist somewhere but cannot be found? If it does not exist yet, it is karar-gecikmesi.",
+      "confusable_with": ["arac-sistem-surtusmesi", "karar-gecikmesi"], "clusters": ["c5"]
+    },
+    {
+      "id": "surec-tekrari", "tr": "süreç tekrarı", "en": "process duplication",
+      "test": "Is the same output produced twice in parallel? Sequential redoing of one output is yeniden-is.",
+      "confusable_with": ["yeniden-is"], "clusters": ["c5"]
+    },
+    {
+      "id": "onceliklendirme-catismasi", "tr": "önceliklendirme çatışması", "en": "prioritisation conflict",
+      "test": "Is everyone busy while specific work sits untouched? That separates it from kapasite-kisiti.",
+      "confusable_with": ["kapasite-kisiti"], "clusters": ["c4"]
+    },
+    {
+      "id": "arac-sistem-surtusmesi", "tr": "araç/sistem sürtüşmesi", "en": "tool/system friction",
+      "test": "Does the friction persist after the information is found, in moving it between systems? Otherwise bilgi-boslugu.",
+      "confusable_with": ["bilgi-boslugu"], "clusters": ["c5"]
+    }
+  ],
+
+  "clusters": {
+    "c1": { "name": "Karar Akışı / Sahiplik Darboğazı", "mechanism_string": "karar gecikmesi + belirsiz sahiplik", "mechanism_ids": ["karar-gecikmesi", "belirsiz-sahiplik"], "signal_indices": [0, 1, 3, 6, 10, 11, 12, 16, 20], "story_title": "Kararlar bir yerde takılıyor." },
+    "c2": { "name": "Yeniden İş Döngüsü", "mechanism_string": "yeniden iş (rework)", "mechanism_ids": ["yeniden-is"], "signal_indices": [2, 7, 13, 15, 22], "story_title": "Aynı işi ikinci kez yapıyoruz." },
+    "c3": { "name": "Sahiplik & Devir Karışıklığı", "mechanism_string": "belirsiz sahiplik + devir sürtüşmesi", "mechanism_ids": ["belirsiz-sahiplik", "devir-surtusmesi"], "signal_indices": [5, 18, 21], "story_title": "İşin sahibi kim, belli değil." },
+    "c4": { "name": "Kapasite vs. Öncelik", "mechanism_string": "kapasite kısıtı + önceliklendirme çatışması", "mechanism_ids": ["kapasite-kisiti", "onceliklendirme-catismasi"], "signal_indices": [4, 8, 17], "story_title": "Herkes meşgul ama işler ilerlemiyor." },
+    "c5": { "name": "Bilgi & Araç Kopukluğu", "mechanism_string": "bilgi boşluğu + araç/sistem sürtüşmesi + süreç tekrarı", "mechanism_ids": ["bilgi-boslugu", "arac-sistem-surtusmesi", "surec-tekrari"], "signal_indices": [9, 14, 19, 23], "story_title": "Bilgi dağınık, aynı şeyi elle taşıyoruz." },
+    "c_new": { "name": "Yeni Sinyaller (kümelenmeyi bekliyor)", "mechanism_string": "henüz sınıflandırılmadı", "mechanism_ids": [], "signal_indices": "dynamic", "story_title": "Yeni anlatılanlar henüz yerine oturmadı." }
+  },
+
+  "provenance_tiers": {
+    "P0": { "name": "birinci ağızdan iç kaynak", "en": "first-person internal", "definition": "The person's own words, typed or spoken into the product by them.", "identity_retained": false, "may_contribute_mass": true },
+    "P1": { "name": "aktarılan iç kaynak", "en": "relayed internal", "definition": "Anonymous lines entered on someone else's behalf: manager-pasted signals, workshop notes, retro exports.", "identity_retained": false, "may_contribute_mass": true, "caveat": "Wording is the relayer's, so it cannot support a verbatim-evidence claim." },
+    "P2": { "name": "örnek / demo", "en": "synthetic demo", "definition": "The 24 seeded pool lines, dictionary phrases and seeded manager patterns.", "identity_retained": false, "may_contribute_mass": false, "must_be_labelled": "DEMO_NOTE / PATTERNS.demoBadge" },
+    "P3": { "name": "dış kamusal kaynak", "en": "external public", "definition": "Publicly posted statements about work life originating outside the organisation.", "identity_retained": false, "may_contribute_mass": false, "purpose": "vocabulary and hypothesis generation only" }
+  },
+
+  "disclosure_classes": {
+    "D0": { "name": "yalnızca bende", "en": "private to author", "storage": "browser localStorage only", "code": "frontend/src/lib/mySignals.js", "leaves_device": false },
+    "D1": { "name": "anonim havuz", "en": "org-anonymous aggregate", "visible_as": "part of a cluster, never alone", "threshold": "MIN_AGGREGATE_N" },
+    "D2": { "name": "yönetici görünümü", "en": "manager-scope aggregate", "threshold": "MIN_MANAGER_N", "rationale": "a manager already knows who reports to them, so the bar is higher" },
+    "D3": { "name": "dışa açık", "en": "external / publishable", "examples": ["demo data", "research write-ups", "marketing"], "requires": "P2 or P3 provenance, or a paraphrased aggregate above every threshold" }
+  },
+
+  "privacy_thresholds": {
+    "MIN_AGGREGATE_N": 5,
+    "MIN_MANAGER_N": 8,
+    "MIN_PROVENANCE_N": 4,
+    "MIN_BUCKET_N": 2,
+    "complement_suppression": true,
+    "source_of_truth": "frontend/src/lib/privacy.js",
+    "note": "These numbers are duplicated here for reference. privacy.js is authoritative; if the two disagree, privacy.js wins and this file is stale."
+  },
+
+  "gating_rules": [
+    { "id": "G-01", "rule": "A signal may never be disclosed above the maximum class its provenance permits.", "max_by_provenance": { "P0": "D2", "P1": "D2", "P2": "D3", "P3": "D3" } },
+    { "id": "G-02", "rule": "P0 content reaches D1 only by an explicit act of the author.", "code": "EmployeeHome share toggle" },
+    { "id": "G-03", "rule": "P3 external signals may inform mechanism vocabulary and hypotheses but must never contribute to any frequency, prevalence or mass count.", "protects": "INV-04" },
+    { "id": "G-04", "rule": "P2 demo content must be visibly labelled wherever it is shown alongside real content.", "protects": "INV-04" },
+    { "id": "G-05", "rule": "Any breakdown with a non-empty bucket below MIN_BUCKET_N is suppressed entirely, so a complement cannot expose a minority of one.", "code": "splitOrSuppress" },
+    { "id": "G-06", "rule": "Displayed provenance is paraphrased and requires at least MIN_PROVENANCE_N contributing signals.", "protects": "INV-06" }
+  ],
+
+  "invariants": [
+    { "id": "INV-01", "rule": "Signal.evidence is a verbatim substring of the Anlati.", "enforced_in": ["backend/server.py:SYSTEM_PROMPT", "backend/server.py:_fallback_interpret"], "failure_looks_like": "a quote appears that the person never typed" },
+    { "id": "INV-02", "rule": "Needs are co-active; never an A/B dilemma.", "enforced_in": ["backend/server.py:SYSTEM_PROMPT", "backend/server.py:DISTINCTION_PROMPT"], "failure_looks_like": "the UI offers mutually exclusive needs" },
+    { "id": "INV-03", "rule": "No person is modelled, scored or diagnosed.", "enforced_in": ["backend/server.py:SYSTEM_PROMPT", "backend/server.py:PATTERN_ROOM_PROMPT", "frontend/src/data/copy.js:MANAGER.never"], "failure_looks_like": "any per-individual attribute appears" },
+    { "id": "INV-04", "rule": "No fabricated statistic, benchmark or currency figure.", "enforced_in": ["backend/server.py:_match_prevalence", "backend/server.py:PATTERN_ROOM_PROMPT"], "failure_looks_like": "a number appears with no engine field behind it" },
+    { "id": "INV-05", "rule": "Aggregates are gated by anonymity thresholds.", "enforced_in": ["frontend/src/lib/privacy.js"], "failure_looks_like": "a breakdown renders below threshold" },
+    { "id": "INV-06", "rule": "Displayed provenance is paraphrased, never verbatim.", "enforced_in": ["frontend/src/data/stories.js", "frontend/src/data/copy.js:DETAIL.provenanceNote"], "failure_looks_like": "a real employee sentence is shown to a manager" },
+    { "id": "INV-07", "rule": "Unknown input falls back to the engine's own name.", "enforced_in": ["frontend/src/data/stories.js:humanTitle"], "failure_looks_like": "an invented title appears for an unmapped cluster" },
+    { "id": "INV-08", "rule": "POSITIVE and RESOLVED are not reported as friction.", "enforced_in": ["frontend/src/lib/pressure.js:pressureFromManagerPattern"], "failure_looks_like": "praise shows a sikisiklik band" },
+    { "id": "INV-09", "rule": "Unmeasured dimensions stay null and say so.", "enforced_in": ["frontend/src/lib/pressure.js:computePressure"], "failure_looks_like": "a guessed value fills a gap" },
+    { "id": "INV-10", "rule": "Every promoted pattern is rejectable.", "enforced_in": ["backend/server.py:ActionItem"], "failure_looks_like": "the board can only ever confirm" },
+    { "id": "INV-11", "rule": "No channel requires confrontation as the only path.", "enforced_in": ["backend/server.py:SYSTEM_PROMPT"], "failure_looks_like": "the sole suggestion is to confront a manager" },
+    { "id": "INV-12", "rule": "Interventions are offered as precedent, not prescription.", "enforced_in": ["backend/server.py:PATTERN_ROOM_PROMPT", "backend/server.py:PRPastPattern.when_failed"], "failure_looks_like": "'this is the solution' phrasing appears" }
+  ],
+
+  "lifecycles": {
+    "employee_story": { "owner": "the person", "states": ["NEW", "MATCHED", "FOLLOWING", "SHARED", "MOVING", "RESOLVED"], "code": "frontend/src/lib/mySignals.js", "note": "SHARED is a disclosure change, not progress." },
+    "manager_pattern": { "owner": "the organisation", "states": ["NEW", "ACTIVE", "STUCK", "RESOLVED"], "code": "backend/server.py:Pattern", "note": "STUCK is the only state that increases pressure." },
+    "action_board": { "owner": "whoever runs the intervention", "states": ["DETECTED", "INVESTIGATING", "TESTING", "RESOLVED", "REJECTED"], "code": "backend/server.py:ActionItem", "note": "The only lifecycle with a disconfirming terminal state." }
+  },
+
+  "evidence_grades": {
+    "E0": { "name": "tekil anlatı", "en": "single account", "definition": "One utterance. Sufficient to reflect back to its author; never sufficient to claim a pattern." },
+    "E1": { "name": "tekrar", "en": "repetition within one context", "definition": "Several independent statements of the same mechanism inside one team." },
+    "E2": { "name": "yayılım", "en": "cross-team convergence", "definition": "The same mechanism appears in statements from unrelated teams." },
+    "E3": { "name": "dış doğrulama", "en": "external corroboration", "definition": "A P3 corpus shows the same mechanism elsewhere. Raises confidence in the mechanism's existence; adds no mass to this organisation's pattern." },
+    "E4": { "name": "müdahale sonucu", "en": "intervention outcome", "definition": "An Eylem moved to RESOLVED or REJECTED with a recorded before/after. The only grade that can disconfirm." }
+  },
+
+  "obsidian_note_types": {
+    "signal": { "folder": "10-Signals", "required_frontmatter": ["type", "id", "provenance", "disclosure", "captured"], "optional_frontmatter": ["mechanism", "cluster", "evidence_grade", "tags"] },
+    "mechanism": { "folder": "20-Mechanisms", "required_frontmatter": ["type", "id", "tr", "en", "test"], "optional_frontmatter": ["confusable_with", "clusters", "tags"] },
+    "story": { "folder": "30-Stories", "required_frontmatter": ["type", "id", "cluster", "mechanism"], "optional_frontmatter": ["signal_count", "tags"] },
+    "pattern": { "folder": "40-Patterns", "required_frontmatter": ["type", "id", "cluster", "mechanism", "status"], "optional_frontmatter": ["frequency", "affected_teams", "unresolved_for", "pressure_band", "coverage", "tags"] },
+    "action": { "folder": "50-Actions", "required_frontmatter": ["type", "id", "pattern", "status", "hypothesis", "falsifier"], "optional_frontmatter": ["intervention", "outcome", "tags"] },
+    "question": { "folder": "60-Research", "required_frontmatter": ["type", "id", "status"], "optional_frontmatter": ["mechanism", "tags"] },
+    "hypothesis": { "folder": "60-Research", "required_frontmatter": ["type", "id", "mechanism", "status", "falsifier", "evidence_grade"], "optional_frontmatter": ["question", "tags"] },
+    "source": { "folder": "70-Sources", "required_frontmatter": ["type", "id", "provenance", "disclosure", "accessed"], "optional_frontmatter": ["sensitivity", "mechanism", "tags"] }
+  },
+
+  "open_gaps": [
+    "Cost of speaking up is declared as a manager axis but never measured, and has no mechanism.",
+    "POSITIVE feedback has no positive mechanism vocabulary to cluster into.",
+    "There is no event log, so trend over time is not answerable.",
+    "Cross-organisation comparison is deliberately out of scope."
+  ]
+}
