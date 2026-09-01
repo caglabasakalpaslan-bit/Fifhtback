@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PenLine, Mic, Compass, ShieldCheck, ArrowRight, Loader2 } from "lucide-react";
+import { PenLine, Mic, Compass, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { ENTRY, REFLECT } from "../data/copy";
 import { DICTIONARY, STORY_BY_CLUSTER } from "../data/stories";
 import { interpretFeedback } from "../lib/api";
 import { addSignal } from "../lib/mySignals";
 import { VoiceCapture } from "../components/VoiceCapture";
+import { Welcome } from "./Welcome";
+import { hasSeenWelcome } from "../lib/entryContext";
 
 const PathButton = ({ icon: Icon, label, active, onClick, testId }) => (
   <button
@@ -22,6 +24,8 @@ const PathButton = ({ icon: Icon, label, active, onClick, testId }) => (
 
 export const Entry = ({ onSaved }) => {
   const [mode, setMode] = useState("write"); // write | speak | find
+  // First visit gets one short welcome/context step before "Söyle".
+  const [welcomed, setWelcomed] = useState(() => hasSeenWelcome());
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [reflection, setReflection] = useState(null);
@@ -48,6 +52,8 @@ export const Entry = ({ onSaved }) => {
       setLoading(false);
     }
   };
+
+  if (!welcomed) return <Welcome onContinue={() => setWelcomed(true)} />;
 
   if (reflection) {
     const { story, interpretation } = reflection;
@@ -126,8 +132,11 @@ export const Entry = ({ onSaved }) => {
 
           {mode === "speak" && <VoiceCapture onConfirm={(t) => submit(t)} onCancel={() => setMode("write")} />}
 
+          {/* The phrases live here and only here — never duplicated below the fold. */}
           {mode === "find" && (
             <div data-testid="dictionary-full">
+              <p className="text-[11px] font-mono uppercase tracking-[0.16em] text-[#8A847C]">{ENTRY.dictionaryLabel}</p>
+              <p className="mt-1 mb-3 text-[13px] text-[#8A847C]">{ENTRY.dictionaryHint}</p>
               {DICTIONARY.map((d) => (
                 <button
                   key={d.phrase}
@@ -142,29 +151,6 @@ export const Entry = ({ onSaved }) => {
         </motion.div>
       </AnimatePresence>
 
-      {/* İŞ HAYATI SÖZLÜĞÜ — natural sentences, always visible under the fold */}
-      {mode !== "find" && (
-        <div className="mt-10" data-testid="dictionary-strip">
-          <p className="text-[11px] font-mono uppercase tracking-[0.16em] text-[#8A847C]">{ENTRY.dictionaryLabel}</p>
-          <p className="mt-1 text-[13px] text-[#8A847C]">{ENTRY.dictionaryHint}</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {DICTIONARY.slice(0, 8).map((d) => (
-              <button
-                key={d.phrase}
-                data-testid="dictionary-chip"
-                onClick={() => submit(d.phrase, d.cluster)}
-                className="rounded-full border border-[#E7E0D8] bg-white px-3.5 py-2 text-[14px] text-[#3A3632] hover:border-[#C85A32] transition-colors"
-              >
-                “{d.phrase}”
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      <p className="mt-8 flex items-center gap-1.5 text-[12px] text-[#8A847C]">
-        <ShieldCheck className="h-3.5 w-3.5 text-[#3F6B56]" /> {ENTRY.privacy}
-      </p>
     </div>
   );
 };

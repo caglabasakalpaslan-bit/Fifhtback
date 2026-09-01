@@ -14,20 +14,53 @@ export const NAV = {
   patterns: "Örüntü Haritası",
 };
 
+// FIRST-TIME WELCOME — shown once, before the Söyle surface.
+// The opening story is expected to be rewritten: keep `body` a plain list of
+// paragraphs and `questions` a plain list, so copy can change without touching
+// the component. Order of paragraphs = order on screen, first one leads.
+export const WELCOME = {
+  title: "Bugün buraya hoş geldin.",
+  body: [
+    "Kimsenin hayatı aynı değil. Kimi dün yaşadığı bir şeyi anlatır, kimi yıllardır taşıdığı bir meseleyi.",
+    "Fifthback insanları kalıplara ayırmak yerine, anlattıkları hikâyelerden yola çıkar.",
+    "Söylediklerini benzer deneyimlerle birlikte anlamlandırır; tekrar eden örüntüleri ve çözümü görebilmek için önce ayırt edilmesi gereken soruları karşımıza çıkarır.",
+    "Burada amaç yalnızca sorunu tarif etmek değildir. Bir şey denediğinde, istersen daha sonra geri gelip ne yaptığını ve neyin değiştiğini paylaşabilirsin. Bu deneyim, kimliğin açığa çıkmadan, benzer bir durumda olan başka insanların önünü görmesine yardımcı olabilir.",
+  ],
+  // Only two, and only context — never identity.
+  questions: [
+    {
+      key: "experience",
+      label: "Çalışma deneyimin hangi aralıkta?",
+      options: ["0–1 yıl", "1–3 yıl", "3–7 yıl", "7+ yıl"],
+    },
+    {
+      key: "leads",
+      label: "Şu anda ekip yönetiyor musun?",
+      options: ["Evet", "Hayır"],
+    },
+  ],
+  support:
+    "Fifthback yaş, cinsiyet ya da departman üzerinden insanları sınıflandırmaz. Bu iki bilgi yalnızca anlattığını daha doğru bağlama yerleştirebilmek için kullanılır.",
+  privacy:
+    "Kimliğini istemeyiz. Paylaşımın üzerinde kontrol sende kalır. Kişisel hikâyeler başkalarına birebir aktarılmaz; sistem gerekli olduğunda anonimleştirilmiş ve birleştirilmiş örüntüler üzerinden çalışır.",
+  cta: "Devam et",
+};
+
 export const ENTRY = {
   title: "Söyle.",
-  sub: "Aklında ne varsa, yazarak ya da konuşarak anlat.",
+  sub: "Aklında ne varsa yazabilirsin, konuşarak anlatabilirsin ya da hikâyelerden sana en yakın olanla başlayabilirsin.",
   paths: {
     write: "Yaz",
     speak: "Konuş",
     find: "Bir hikâyede kendini bul",
   },
   writePlaceholder: "Aklında ne var?",
-  writeHint: "Tek bir cümle bile yeterli. Kendi kelimelerinle yaz.",
+  writeHint: "Tek bir cümle bile yeter. Kendi kelimelerinle yaz.",
   submit: "Gönder",
+  // Shown ONLY inside the "Bir hikâyede kendini bul" mode — never as a second,
+  // always-visible strip under the writing area.
   dictionaryLabel: "İş Hayatı Sözlüğü",
   dictionaryHint: "Sana tanıdık gelen bir cümleden başlayabilirsin.",
-  privacy: "Kimliğin kaydedilmez. Yaş, cinsiyet ya da departman sorulmaz.",
 };
 
 export const VOICE = {
