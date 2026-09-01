@@ -82,23 +82,25 @@ export const STORY_BY_PATTERN_TITLE = {
 };
 
 // İŞ HAYATI SÖZLÜĞÜ — natural human sentences, not consulting categories.
+// `featured` marks the few the mode opens with; the rest stay here and are
+// revealed on request. Routing is the same for every phrase.
 // `cluster` points at the existing curated cluster the phrase belongs to, so
 // selecting a phrase reuses the backend's clustering instead of bypassing it.
 export const DICTIONARY = [
-  { phrase: "Söylesem olmuyor, sussam gönlüm razı değil.", cluster: "c3" },
-  { phrase: "İşimden değil, işin yapılış şeklinden yoruldum.", cluster: "c4" },
+  { phrase: "Söylesem olmuyor, sussam gönlüm razı değil.", cluster: "c3", featured: true },
+  { phrase: "İşimden değil, işin yapılış şeklinden yoruldum.", cluster: "c4", featured: true },
   { phrase: "Herkes biliyor ama kimse söylemiyor.", cluster: "c3" },
-  { phrase: "Toplantılardan iş yapmaya zaman kalmıyor.", cluster: "c1" },
+  { phrase: "Toplantılardan iş yapmaya zaman kalmıyor.", cluster: "c1", featured: true },
   { phrase: "Bir şey yanlış ama adını koyamıyorum.", cluster: "c3" },
-  { phrase: "Ne yaparsak yapalım karar yine başa dönüyor.", cluster: "c1" },
+  { phrase: "Ne yaparsak yapalım karar yine başa dönüyor.", cluster: "c1", featured: true },
   { phrase: "Öncelikler sürekli değişiyor.", cluster: "c4" },
   { phrase: "Kimse son kararın kimde olduğunu bilmiyor.", cluster: "c1" },
   { phrase: "Bunu yöneticime söylesem yanlış anlaşılır.", cluster: "c3" },
-  { phrase: "Ben mi abartıyorum, yoksa gerçekten böyle mi?", cluster: "c3" },
+  { phrase: "Ben mi abartıyorum, yoksa gerçekten böyle mi?", cluster: "c3", featured: true },
   { phrase: "Bitirdiğimiz iş geri dönüyor.", cluster: "c2" },
   { phrase: "Aradığım bilgiyi hiçbir zaman bulamıyorum.", cluster: "c5" },
   // the dictionary is not only complaints
-  { phrase: "Zor bir işi birlikte çıkardık.", cluster: null, positive: true },
+  { phrase: "Zor bir işi birlikte çıkardık.", cluster: null, positive: true, featured: true },
   { phrase: "Takıldığımda gerçekten yardım geldi.", cluster: null, positive: true },
 ];
 

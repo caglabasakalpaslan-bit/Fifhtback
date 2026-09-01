@@ -21,10 +21,8 @@ export const NAV = {
 export const WELCOME = {
   title: "Bugün buraya hoş geldin.",
   body: [
-    "Kimsenin hayatı aynı değil. Kimi dün yaşadığı bir şeyi anlatır, kimi yıllardır taşıdığı bir meseleyi.",
-    "Fifthback insanları kalıplara ayırmak yerine, anlattıkları hikâyelerden yola çıkar.",
-    "Söylediklerini benzer deneyimlerle birlikte anlamlandırır; tekrar eden örüntüleri ve çözümü görebilmek için önce ayırt edilmesi gereken soruları karşımıza çıkarır.",
-    "Burada amaç yalnızca sorunu tarif etmek değildir. Bir şey denediğinde, istersen daha sonra geri gelip ne yaptığını ve neyin değiştiğini paylaşabilirsin. Bu deneyim, kimliğin açığa çıkmadan, benzer bir durumda olan başka insanların önünü görmesine yardımcı olabilir.",
+    "Kimsenin hayatı aynı değil. Fifthback seni kalıplara ayırmak yerine, anlattığın hikâyeden yola çıkar.",
+    "Söylediklerini benzer deneyimlerle birlikte anlamlandırır; tekrar eden örüntüleri ve çözümü görebilmek için ayırt edilmesi gereken soruları ortaya çıkarır. Bir şey denediğinde, istersen daha sonra geri gelip neyin değiştiğini paylaşabilirsin.",
   ],
   // Only two, and only context — never identity.
   questions: [
@@ -40,9 +38,8 @@ export const WELCOME = {
     },
   ],
   support:
-    "Fifthback yaş, cinsiyet ya da departman üzerinden insanları sınıflandırmaz. Bu iki bilgi yalnızca anlattığını daha doğru bağlama yerleştirebilmek için kullanılır.",
-  privacy:
-    "Kimliğini istemeyiz. Paylaşımın üzerinde kontrol sende kalır. Kişisel hikâyeler başkalarına birebir aktarılmaz; sistem gerekli olduğunda anonimleştirilmiş ve birleştirilmiş örüntüler üzerinden çalışır.",
+    "Yaş, cinsiyet ve departman sormuyoruz. Bu iki bilgi yalnızca anlattığını doğru bağlama yerleştirmeye yardımcı olur.",
+  privacy: "Kimliğini istemeyiz. Paylaşımın üzerinde kontrol sende kalır.",
   cta: "Devam et",
 };
 
@@ -61,6 +58,7 @@ export const ENTRY = {
   // always-visible strip under the writing area.
   dictionaryLabel: "İş Hayatı Sözlüğü",
   dictionaryHint: "Sana tanıdık gelen bir cümleden başlayabilirsin.",
+  dictionaryMore: "Başka hikâyeler göster",
 };
 
 export const VOICE = {

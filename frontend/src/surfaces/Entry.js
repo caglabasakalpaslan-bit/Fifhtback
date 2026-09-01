@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PenLine, Mic, Compass, ArrowRight, Loader2 } from "lucide-react";
+import { PenLine, Mic, Compass, ArrowRight, Loader2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { ENTRY, REFLECT } from "../data/copy";
 import { DICTIONARY, STORY_BY_CLUSTER } from "../data/stories";
@@ -26,6 +26,7 @@ export const Entry = ({ onSaved }) => {
   const [mode, setMode] = useState("write"); // write | speak | find
   // First visit gets one short welcome/context step before "Söyle".
   const [welcomed, setWelcomed] = useState(() => hasSeenWelcome());
+  const [allPhrases, setAllPhrases] = useState(false);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [reflection, setReflection] = useState(null);
@@ -137,15 +138,26 @@ export const Entry = ({ onSaved }) => {
             <div data-testid="dictionary-full">
               <p className="text-[11px] font-mono uppercase tracking-[0.16em] text-[#8A847C]">{ENTRY.dictionaryLabel}</p>
               <p className="mt-1 mb-3 text-[13px] text-[#8A847C]">{ENTRY.dictionaryHint}</p>
-              {DICTIONARY.map((d) => (
+              {/* A short list first; the rest are here, one click away. Same routing. */}
+              {(allPhrases ? DICTIONARY : DICTIONARY.filter((d) => d.featured)).map((d) => (
                 <button
                   key={d.phrase}
+                  data-testid="dictionary-phrase"
                   onClick={() => submit(d.phrase, d.cluster)}
                   className="block w-full text-left rounded-xl border border-[#E7E0D8] bg-white px-4 py-3 mb-2 font-serif text-[17px] text-[#1A1816] hover:border-[#C85A32] transition-colors"
                 >
                   “{d.phrase}”
                 </button>
               ))}
+              {!allPhrases && (
+                <button
+                  data-testid="dictionary-more"
+                  onClick={() => setAllPhrases(true)}
+                  className="mt-1 inline-flex items-center gap-1.5 text-[13px] text-[#8A847C] hover:text-[#C85A32] transition-colors"
+                >
+                  <Plus className="h-3.5 w-3.5" /> {ENTRY.dictionaryMore}
+                </button>
+              )}
             </div>
           )}
         </motion.div>
