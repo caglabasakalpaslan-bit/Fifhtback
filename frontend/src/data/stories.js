@@ -98,7 +98,7 @@ export const DICTIONARY = [
   { phrase: "İşimden değil, işin yapılış şeklinden yoruldum.", cluster: "c4", featured: true },
   { phrase: "Herkes biliyor ama kimse söylemiyor.", cluster: null },
   { phrase: "Toplantılardan iş yapmaya zaman kalmıyor.", cluster: "c1", featured: true },
-  { phrase: "Bir şey yanlış ama adını koyamıyorum.", cluster: "c3" },
+  { phrase: "Bir şey yanlış ama adını koyamıyorum.", cluster: null },
   { phrase: "Ne yaparsak yapalım karar yine başa dönüyor.", cluster: "c1", featured: true },
   { phrase: "Öncelikler sürekli değişiyor.", cluster: "c4" },
   { phrase: "Kimse son kararın kimde olduğunu bilmiyor.", cluster: "c1" },
