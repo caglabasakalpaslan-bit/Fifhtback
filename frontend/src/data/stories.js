@@ -84,19 +84,26 @@ export const STORY_BY_PATTERN_TITLE = {
 // İŞ HAYATI SÖZLÜĞÜ — natural human sentences, not consulting categories.
 // `featured` marks the few the mode opens with; the rest stay here and are
 // revealed on request. Routing is the same for every phrase.
+//
+// `cluster: null` is deliberate, not missing data. It means one of two things:
+//   - the phrase is positive, and no cluster describes positives; or
+//   - the phrase is about the cost of speaking up — voice safety, fear of
+//     being misunderstood, self-doubt — which no current cluster describes.
+// Both land on the honest "henüz eşleşmedi" state rather than being filed
+// under a mechanism that does not match. No new cluster is invented here.
 // `cluster` points at the existing curated cluster the phrase belongs to, so
 // selecting a phrase reuses the backend's clustering instead of bypassing it.
 export const DICTIONARY = [
-  { phrase: "Söylesem olmuyor, sussam gönlüm razı değil.", cluster: "c3", featured: true },
+  { phrase: "Söylesem olmuyor, sussam gönlüm razı değil.", cluster: null, featured: true },
   { phrase: "İşimden değil, işin yapılış şeklinden yoruldum.", cluster: "c4", featured: true },
-  { phrase: "Herkes biliyor ama kimse söylemiyor.", cluster: "c3" },
+  { phrase: "Herkes biliyor ama kimse söylemiyor.", cluster: null },
   { phrase: "Toplantılardan iş yapmaya zaman kalmıyor.", cluster: "c1", featured: true },
   { phrase: "Bir şey yanlış ama adını koyamıyorum.", cluster: "c3" },
   { phrase: "Ne yaparsak yapalım karar yine başa dönüyor.", cluster: "c1", featured: true },
   { phrase: "Öncelikler sürekli değişiyor.", cluster: "c4" },
   { phrase: "Kimse son kararın kimde olduğunu bilmiyor.", cluster: "c1" },
-  { phrase: "Bunu yöneticime söylesem yanlış anlaşılır.", cluster: "c3" },
-  { phrase: "Ben mi abartıyorum, yoksa gerçekten böyle mi?", cluster: "c3", featured: true },
+  { phrase: "Bunu yöneticime söylesem yanlış anlaşılır.", cluster: null },
+  { phrase: "Ben mi abartıyorum, yoksa gerçekten böyle mi?", cluster: null, featured: true },
   { phrase: "Bitirdiğimiz iş geri dönüyor.", cluster: "c2" },
   { phrase: "Aradığım bilgiyi hiçbir zaman bulamıyorum.", cluster: "c5" },
   // the dictionary is not only complaints
