@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ShieldCheck, Eye, EyeOff, Trash2 } from "lucide-react";
-import { HOME, STATES } from "../data/copy";
-import { loadSignals, updateSignal, removeSignal } from "../lib/mySignals";
+import { ShieldCheck, Eye, EyeOff, Trash2, Check, X } from "lucide-react";
+import { HOME, STATES, SHARED_CONFIRM } from "../data/copy";
+import { dedupeSignals, updateSignal, removeSignal } from "../lib/mySignals";
 
 const TONE = {
   blue: "bg-blue-50 text-blue-700 border-blue-200",
@@ -55,11 +55,14 @@ const StateChip = ({ state }) => {
 
 export const EmployeeHome = ({ onStart }) => {
   const [signals, setSignals] = useState([]);
-  useEffect(() => setSignals(loadSignals()), []);
+  // Collapses any repeated cards left over from before the submit guard existed.
+  useEffect(() => setSignals(dedupeSignals()), []);
+  const [justShared, setJustShared] = useState(null);
 
   const toggleShare = (s) => {
     const shared = !s.shared;
     setSignals(updateSignal(s.id, { shared, state: shared ? "SHARED" : s.clusterId ? "MATCHED" : "NEW" }));
+    setJustShared(shared ? s.id : null);
   };
 
   return (
@@ -104,6 +107,22 @@ export const EmployeeHome = ({ onStart }) => {
               <div className="mt-3.5 rounded-xl bg-[#F7F3EE] px-3.5 py-2.5">
                 <Journey state={s.state} />
               </div>
+
+              {justShared === s.id && (
+                <div className="mt-4 rounded-xl border border-[#B7D4C4] bg-[#EDF5F0] p-4" data-testid="share-confirm">
+                  <p className="flex items-center gap-1.5 font-serif text-[17px] text-[#2F5344]">
+                    <Check className="h-4 w-4" /> {SHARED_CONFIRM.title}
+                  </p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-[#3A3632]">{SHARED_CONFIRM.body}</p>
+                  <button
+                    data-testid="share-confirm-close"
+                    onClick={() => setJustShared(null)}
+                    className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-[#B7D4C4] px-3 py-1.5 text-[13px] text-[#2F5344]"
+                  >
+                    <X className="h-3.5 w-3.5" /> {SHARED_CONFIRM.back}
+                  </button>
+                </div>
+              )}
 
               <div className="mt-4 flex items-center justify-between border-t border-[#F0EAE2] pt-3">
                 <span className="flex items-center gap-1.5 text-[12px] text-[#8A847C]">

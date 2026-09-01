@@ -12,9 +12,12 @@
 // returns a cluster this file does not know, the UI falls back to the backend's
 // own name rather than inventing one.
 
-// story title + paraphrased provenance, keyed by the EXISTING curated cluster ids
+// story title + paraphrased provenance, keyed by the EXISTING curated cluster ids.
+// `plain` is the human sentence shown first; `mechanism` is the internal wording,
+// kept behind a disclosure so the taxonomy is never the hero.
 export const STORY_BY_CLUSTER = {
   c1: {
+    plain: "Karar bir yerde bekliyor; iş de onunla birlikte bekliyor olabilir.",
     title: "Kararlar bir yerde takılıyor.",
     mechanism: "karar gecikmesi · belirsiz sahiplik",
     why: "Farklı görünen şikâyetlerin hepsi aynı yere çıkıyor: kararın kimde olduğu belli değil.",
@@ -25,6 +28,7 @@ export const STORY_BY_CLUSTER = {
     ],
   },
   c2: {
+    plain: "İş bitiyor, sonra geri geliyor — doğrulama sona kalmış olabilir.",
     title: "Aynı işi ikinci kez yapıyoruz.",
     mechanism: "yeniden iş · geç geri bildirim",
     why: "Hepsi aynı sebepten: doğrulama iş bittikten sonra geliyor.",
@@ -35,6 +39,7 @@ export const STORY_BY_CLUSTER = {
     ],
   },
   c3: {
+    plain: "İşi kimin sahiplendiği net değil, o yüzden arada kalıyor olabilir.",
     title: "İşin sahibi kim, belli değil.",
     mechanism: "belirsiz sahiplik · devir sürtüşmesi",
     why: "Ortak nokta şu: işin sahibi baştan belli değil.",
@@ -45,6 +50,7 @@ export const STORY_BY_CLUSTER = {
     ],
   },
   c4: {
+    plain: "Ne önce yapılacağı net değil, bu yüzden işler bekliyor olabilir.",
     title: "Herkes meşgul ama işler ilerlemiyor.",
     mechanism: "öncelik belirsizliği · akış tıkanması",
     why: "Hepsi aynı şeyi gösteriyor: sorun kapasite değil, neyin önce geldiğinin belirsizliği.",
@@ -55,6 +61,7 @@ export const STORY_BY_CLUSTER = {
     ],
   },
   c5: {
+    plain: "Bilgi tek bir yerde durmuyor, o yüzden elle taşınıyor olabilir.",
     title: "Bilgi dağınık, aynı şeyi elle taşıyoruz.",
     mechanism: "bilgi boşluğu · araç kopukluğu",
     why: "Ortak nokta şu: güvenilir tek bir kaynak yok, bilgi elle taşınıyor.",
@@ -65,6 +72,7 @@ export const STORY_BY_CLUSTER = {
     ],
   },
   c_new: {
+    plain: "Bu henüz tanıdık bir yere oturmadı.",
     title: "Yeni anlatılanlar henüz yerine oturmadı.",
     mechanism: "kümelenmeyi bekliyor",
     why: "Bu anlatılanlar henüz ortak bir mekanizmaya bağlanmadı.",

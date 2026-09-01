@@ -4,10 +4,11 @@ import { Disc3 } from "lucide-react";
 import { BRAND, NAV } from "../data/copy";
 
 export const Navbar = ({ view, setView }) => {
+  // Yönetici Görünümü is not a primary surface: Fifthback is person-first, not
+  // a manager dashboard. The view still exists in App.js and is not deleted.
   const tabs = [
     { key: "entry", label: NAV.entry },
     { key: "home", label: NAV.home },
-    { key: "manager", label: NAV.manager },
     { key: "patterns", label: NAV.patterns },
   ];
   return (

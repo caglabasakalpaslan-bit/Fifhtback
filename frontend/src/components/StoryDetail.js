@@ -63,7 +63,7 @@ export const StoryDetail = ({ pattern, pressure, open, onClose, isDemo }) => {
             {title}
           </DialogTitle>
           {/* SECONDARY: mechanism, deliberately small. */}
-          <DialogDescription className="mt-1 text-[11px] font-mono uppercase tracking-[0.14em] text-[#8A847C] text-left">
+          <DialogDescription className="mt-1 text-[13px] text-[#8A847C] text-left">
             {DETAIL.mechanismLabel}: {mechanism}
           </DialogDescription>
           <div className="mt-4">
@@ -88,9 +88,9 @@ export const StoryDetail = ({ pattern, pressure, open, onClose, isDemo }) => {
             </p>
             {pattern.past_patterns?.map((pp, i) => (
               <div key={i} className="mt-2 rounded-lg border border-[#F0EAE2] bg-white p-3">
-                <p className="text-[13px]"><span className="text-[#1A1816] font-medium">Denenen:</span> {pp.tried}</p>
-                <p className="text-[13px] mt-1"><span className="text-[#3F6B56] font-medium">İşe yaradığında:</span> {pp.changed}</p>
-                <p className="text-[13px] mt-1"><span className="text-[#9F1239] font-medium">Yaramadığında:</span> {pp.when_failed}</p>
+                <p className="text-[13px]"><span className="text-[#1A1816] font-medium">{DETAIL.tried}</span>{" "} {pp.tried}</p>
+                <p className="text-[13px] mt-1"><span className="text-[#3F6B56] font-medium">{DETAIL.worked}</span>{" "} {pp.changed}</p>
+                <p className="text-[13px] mt-1"><span className="text-[#9F1239] font-medium">{DETAIL.failed}</span>{" "} {pp.when_failed}</p>
               </div>
             ))}
           </Angle>
@@ -111,7 +111,7 @@ export const StoryDetail = ({ pattern, pressure, open, onClose, isDemo }) => {
         <div className="mt-1 border-t border-[#EFE9E1] bg-[#F7F3EE] px-6 py-4">
           <div className="flex items-center gap-1.5 text-[#8A847C]">
             <Quote className="h-3.5 w-3.5" />
-            <span className="text-[11px] font-mono uppercase tracking-[0.14em]">{DETAIL.provenance}</span>
+            <span className="text-[13px]">{DETAIL.provenance}</span>
           </div>
           {showProvenance ? (
             <>

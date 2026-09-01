@@ -14,33 +14,17 @@ export const NAV = {
   patterns: "Örüntü Haritası",
 };
 
-// FIRST-TIME WELCOME — shown once, before the Söyle surface.
-// The opening story is expected to be rewritten: keep `body` a plain list of
-// paragraphs and `questions` a plain list, so copy can change without touching
-// the component. Order of paragraphs = order on screen, first one leads.
+// FIRST-TIME WELCOME — one short screen, then straight in.
+// The two context questions were removed from this step: nothing in the product
+// reads them, so they were blocking entry for no return. lib/entryContext.js is
+// kept intact so they can come back later, asked at a moment that earns them.
 export const WELCOME = {
   title: "Bugün buraya hoş geldin.",
   body: [
-    "Kimsenin hayatı aynı değil. Fifthback seni kalıplara ayırmak yerine, anlattığın hikâyeden yola çıkar.",
-    "Söylediklerini benzer deneyimlerle birlikte anlamlandırır; tekrar eden örüntüleri ve çözümü görebilmek için ayırt edilmesi gereken soruları ortaya çıkarır. Bir şey denediğinde, istersen daha sonra geri gelip neyin değiştiğini paylaşabilirsin.",
+    "Adını koymakta zorlandığın bir şeyi anlat. Fifthback ne olabileceğini birlikte görmeye çalışır.",
   ],
-  // Only two, and only context — never identity.
-  questions: [
-    {
-      key: "experience",
-      label: "Çalışma deneyimin hangi aralıkta?",
-      options: ["0–1 yıl", "1–3 yıl", "3–7 yıl", "7+ yıl"],
-    },
-    {
-      key: "leads",
-      label: "Şu anda ekip yönetiyor musun?",
-      options: ["Evet", "Hayır"],
-    },
-  ],
-  support:
-    "Yaş, cinsiyet ve departman sormuyoruz. Bu iki bilgi yalnızca anlattığını doğru bağlama yerleştirmeye yardımcı olur.",
-  privacy: "Kimliğini istemeyiz. Paylaşımın üzerinde kontrol sende kalır.",
-  cta: "Devam et",
+  privacy: "Anlattıkların bu cihazda kalır. Paylaşmayı sen seçersin.",
+  cta: "Başla",
 };
 
 export const ENTRY = {
@@ -76,7 +60,14 @@ export const VOICE = {
 };
 
 export const REFLECT = {
-  title: "Bunu nereye koyduğunu birlikte görelim",
+  title: "Bunu birlikte görelim",
+  // Similar is not the same. Never say other people have this exact problem.
+  similarLead: "Buna benzeyen bir sıkışmayı başkaları da tarif etmiş.",
+  similarCaveat: "Aynı durum değil — yalnızca benzer bir yerde takılmışlar.",
+  noneLead: "Bunu şimdilik tek başına anlatmışsın.",
+  noneBody: "Benzer bir şey anlatıldığında burada görünecek.",
+  technical: "Bunu nasıl adlandırıyoruz?",
+  back: "Geri dön",
   enough: "Bu kadarı yeterli. Anlatmak istediğin anlaşıldı.",
   skip: "Geç",
   similar: "Benzer hikâyeler",
@@ -94,9 +85,19 @@ export const HOME = {
     shared: "Anonim olarak paylaşıldı",
     privateHint: "Şimdilik sadece sende.",
     sharedHint: "Anonim paylaşıldı — kim olduğun görünmüyor.",
-    share: "Anonim olarak paylaş",
+    share: "Paylaşıma aç",
     unshare: "Paylaşımdan çek",
   },
+};
+
+// Shown after sharing. Deliberately describes what the code does today: the flag
+// is stored in this browser. No transfer happens in this preview, so no claim of
+// one is made here.
+export const SHARED_CONFIRM = {
+  title: "Paylaşıma açıldı.",
+  body: "Bu Fifthback artık paylaşılabilir olarak işaretli. Bu önizlemede kaydın bu cihazda tutulur; kuruma bir aktarım yapılmaz. Kimliğin hiçbir yerde istenmedi.",
+  seeMine: "Paylaştığımı gör",
+  back: "Benim Alanım'a dön",
 };
 
 export const STATES = {
@@ -137,13 +138,16 @@ export const DETAIL = {
     why: "Neden bunlar birlikte?",
     impact: "Etkisi ne?",
     history: "Ne zamandır, ne kadar tekrar ediyor?",
-    unknown: "Hâlâ neyi bilmiyoruz?",
-    next: "Ne denenebilir?",
+    unknown: "Burada hâlâ net olmayan ne?",
+    next: "Buradan sonra neyi deneyebilirsin?",
   },
   provenance: "Bunu oluşturan sinyaller",
   provenanceNote: "Örnekler gizliliği korumak için yeniden yazıldı. Kimsenin kendi cümlesi olduğu gibi gösterilmez.",
   provenanceGated: "Bu hikâye henüz yeterli sayıda sinyalden oluşmadığı için örnek gösterilmiyor.",
-  mechanismLabel: "Mekanizma",
+  mechanismLabel: "Bunu nasıl adlandırıyoruz?",
+  tried: "Daha önce ne denenmiş?",
+  worked: "Ne zaman işe yaramış?",
+  failed: "Ne zaman yetmemiş?",
   more: "Devamını aç",
   less: "Kapat",
 };
