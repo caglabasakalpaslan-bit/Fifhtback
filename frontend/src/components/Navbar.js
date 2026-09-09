@@ -1,54 +1,46 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { Disc3, ShieldCheck } from "lucide-react";
 
-export const Navbar = ({ view, setView }) => {
+// Public navigation: exactly two entrances. Internal views live under /internal and are not listed.
+export const Navbar = () => {
+  const { pathname } = useLocation();
+  const internal = pathname.startsWith("/internal");
   const tabs = [
-    { key: "fifth", label: "The Fifth" },
-    { key: "employee", label: "Çalışan Sesi" },
-    { key: "manager", label: "Yönetici Görünümü" },
-    { key: "patternroom", label: "Pattern Room" },
+    { to: "/anlat", label: "Anlat", testId: "nav-anlat" },
+    { to: "/kesfet", label: "Kendini Bul", testId: "nav-kesfet" },
   ];
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#FAF8F5]/85 border-b border-[#E7E0D8]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2.5" data-testid="brand-logo">
-          <div className="relative h-9 w-9 rounded-full bg-[#1A1816] flex items-center justify-center">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+        <Link to="/" className="flex items-center gap-2.5 min-w-0" data-testid="brand-logo">
+          <div className="relative h-9 w-9 shrink-0 rounded-full bg-[#1A1816] flex items-center justify-center">
             <Disc3 className="h-5 w-5 text-[#C85A32] vinyl-spin" strokeWidth={1.75} />
           </div>
-          <div className="leading-none">
+          <div className="leading-none truncate">
             <span className="font-serif text-xl font-medium tracking-tight">Fifthback</span>
-            <span className="hidden sm:inline ml-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[#8A847C]">
-              sesin duyuldu
-            </span>
+            <span className="hidden sm:inline ml-2 text-[11px] font-mono uppercase tracking-[0.18em] text-[#8A847C]">sesin duyuldu</span>
           </div>
-        </div>
+        </Link>
 
-        <nav className="flex items-center gap-1 rounded-full border border-[#E7E0D8] bg-white p-1 shadow-sm">
+        <nav className="flex items-center gap-1 rounded-full border border-[#E7E0D8] bg-white p-1 shadow-sm" aria-label="Ana gezinme">
           {tabs.map((t) => (
-            <button
-              key={t.key}
-              data-testid={`nav-${t.key}-tab`}
-              onClick={() => setView(t.key)}
-              className="relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors"
+            <NavLink
+              key={t.to}
+              to={t.to}
+              data-testid={t.testId}
+              className={({ isActive }) =>
+                `px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${isActive ? "bg-[#1A1816] text-[#FAF8F5]" : "text-[#57534E] hover:text-[#1A1816]"}`
+              }
             >
-              {view === t.key && (
-                <motion.span
-                  layoutId="nav-pill"
-                  className="absolute inset-0 rounded-full bg-[#1A1816]"
-                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                />
-              )}
-              <span className={`relative z-10 ${view === t.key ? "text-[#FAF8F5]" : "text-[#57534E]"}`}>
-                {t.label}
-              </span>
-            </button>
+              {t.label}
+            </NavLink>
           ))}
         </nav>
 
         <div className="hidden md:flex items-center gap-1.5 text-[#3F6B56]" data-testid="privacy-chip">
           <ShieldCheck className="h-4 w-4" strokeWidth={2} />
-          <span className="text-xs font-medium">Kimlik bilgisi saklanmaz</span>
+          <span className="text-xs font-medium">{internal ? "İç görünüm" : "Kimlik bilgisi saklanmaz"}</span>
         </div>
       </div>
     </header>

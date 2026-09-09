@@ -1127,6 +1127,13 @@ class FifthStart(BaseModel):
     story: Optional[str] = None            # door=tell: the user's own story
     story_card_id: Optional[str] = None    # door=find: chosen card
     familiar: Optional[str] = None         # door=find: "Burada sana tanıdık gelen ne?"
+    # Saved-record preparation (no archive UI yet). user_ref is an opaque pseudonymous id the
+    # client generates and keeps; kind says which public entrance produced this journey;
+    # context carries exploration metadata (world / figure / door) when the journey started
+    # from KENDİNİ BUL. None of this is sent to the model.
+    user_ref: Optional[str] = None
+    kind: Literal["anlat", "kesfet"] = "anlat"
+    context: Optional[dict] = None
 
 
 class FifthAnswer(BaseModel):
@@ -1149,7 +1156,11 @@ class FifthTurn(BaseModel):
     reveal: Optional[str] = None
     distinction: Optional[str] = None
     uncertain: Optional[str] = None
-    source: str = "llm"
+    source: str = "api"
+    kind: str = "anlat"
+    context: Optional[dict] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
 
 
 def _fifth_material(sess: dict) -> str:
@@ -1172,79 +1183,88 @@ def _fifth_material(sess: dict) -> str:
     return "\n\n".join(parts)
 
 
-def _fifth_fallback(sess: dict) -> dict:
-    """Deterministic path when the LLM is unavailable. Keeps the loop demonstrable, never diagnoses."""
-    src = sess.get("story") or sess.get("familiar") or ""
-    first = " ".join(src.split()[:12])
-    if sess.get("answer"):
-        return {
-            "mode": "REVEAL",
-            "noticed": [f"Anlattığın: \"{first}…\"", f"Soruya yanıtın: \"{sess['answer']}\""],
-            "candidates": ["Aynı şeyin tekrar etmesi", "Bağlamın değişmiş olması"],
-            "reveal": (
-                "Model şu an erişilebilir olmadığı için burada yalnızca senin sözlerin var. "
-                f"Anlattığında öne çıkan şey, yanıtında söylediğin \"{sess['answer']}\" noktası. "
-                "Belki asıl ayrım, bunun tek seferlik bir olay mı yoksa tekrar eden bir döngü mü olduğunda."
-            ),
-            "distinction": "Tek seferlik olay ile tekrar eden döngü arasında",
-            "uncertain": "Bu bir yedek çıktı; gerçek çekirdek çalışmadığı için yorum içermiyor.",
-        }
-    return {
-        "mode": "QUESTION",
-        "noticed": [f"Anlattığın: \"{first}…\""],
-        "candidates": ["Tek seferlik bir olay", "Tekrar eden bir döngü"],
-        "question": "Bu ilk kez mi oluyor, yoksa daha önce de benzer şekilde oldu mu?",
-        "options": ["İlk kez", "Daha önce de oldu", "Emin değilim"],
-        "why_ask": "Yanıt, tek seferlik olay okumasını ya da döngü okumasını eler.",
-    }
-
-
-# Fifth Core talks to the Anthropic Messages API directly over HTTP. The credential is
-# attached by the environment's egress proxy (HTTPS_PROXY), so no key is read or sent here.
+# ---------------- Fifth Core model access ----------------
+# One model, one prompt, one request per turn. Credential resolution, in order:
+#   1. an egress credential proxy (HTTPS_PROXY) — some runtimes attach the key at the proxy;
+#   2. ANTHROPIC_API_KEY from the environment/secret store — sent as x-api-key;
+#   3. neither → the core is honestly unavailable. No fake QUESTION/REVEAL is ever produced.
 FIFTH_MODEL = "claude-sonnet-4-6"
 ANTHROPIC_MESSAGES_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com").rstrip("/") + "/v1/messages"
 
 
-def _fifth_http_call(material: str) -> dict:
-    """One blocking POST to /v1/messages. Returns the raw response body (dict)."""
+class FifthUnavailable(Exception):
+    """The model could not be reached or refused our credential. Surfaced to the UI as 503."""
+
+
+class FifthBadOutput(Exception):
+    """The model answered but not with the strict JSON the core expects. Surfaced as 502."""
+
+
+def _fifth_credentials() -> dict:
     proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    return {"proxy": proxy, "api_key": api_key, "mode": "api_key" if api_key else ("proxy" if proxy else None)}
+
+
+def fifth_model_status() -> dict:
+    """Which credential path is configured (never the secret itself)."""
+    c = _fifth_credentials()
+    return {"model": FIFTH_MODEL, "credential_mode": c["mode"], "available": c["mode"] is not None}
+
+
+def _fifth_http_call(material: str) -> dict:
+    """One blocking POST to /v1/messages. Raises FifthUnavailable when there is no usable credential
+    or the API refuses/cannot be reached."""
+    c = _fifth_credentials()
+    if not c["mode"]:
+        raise FifthUnavailable("no credential: neither HTTPS_PROXY nor ANTHROPIC_API_KEY is set")
+    headers = {"content-type": "application/json", "anthropic-version": "2023-06-01"}
+    if c["api_key"]:
+        headers["x-api-key"] = c["api_key"]
     ca_bundle = os.environ.get("REQUESTS_CA_BUNDLE") or os.environ.get("SSL_CERT_FILE") or True
-    resp = requests.post(
-        ANTHROPIC_MESSAGES_URL,
-        headers={"content-type": "application/json", "anthropic-version": "2023-06-01"},
-        json={
-            "model": FIFTH_MODEL,
-            "max_tokens": 1024,
-            "system": FIFTH_CORE_PROMPT,
-            "messages": [{"role": "user", "content": material}],
-        },
-        # api.anthropic.com sits in NO_PROXY, so the proxy must be named explicitly for the
-        # credential to be injected; a bare request reaches the API unauthenticated (401).
-        proxies={"https": proxy} if proxy else None,
-        verify=ca_bundle,
-        timeout=60,
-    )
-    resp.raise_for_status()
+    try:
+        resp = requests.post(
+            ANTHROPIC_MESSAGES_URL,
+            headers=headers,
+            json={
+                "model": FIFTH_MODEL,
+                "max_tokens": 1024,
+                "system": FIFTH_CORE_PROMPT,
+                "messages": [{"role": "user", "content": material}],
+            },
+            # api.anthropic.com is often in NO_PROXY; naming the proxy explicitly is what lets a
+            # credential proxy inject the key. Without a proxy the request goes direct.
+            proxies={"https": c["proxy"]} if c["proxy"] else None,
+            verify=ca_bundle,
+            timeout=60,
+        )
+    except requests.RequestException as e:
+        raise FifthUnavailable(f"network: {e.__class__.__name__}") from e
+    if resp.status_code in (401, 403):
+        raise FifthUnavailable(f"auth refused ({resp.status_code}) via {c['mode']}")
+    if resp.status_code == 429 or resp.status_code >= 500:
+        raise FifthUnavailable(f"api {resp.status_code}")
+    if resp.status_code != 200:
+        raise FifthBadOutput(f"api {resp.status_code}: {resp.text[:200]}")
     return resp.json()
 
 
 async def fifth_core(sess: dict) -> dict:
-    """ONE model interaction. Returns the parsed core JSON (or the fallback)."""
+    """ONE model interaction. Returns the parsed core JSON with source="api".
+    Raises FifthUnavailable / FifthBadOutput instead of inventing output."""
+    body = await asyncio.to_thread(_fifth_http_call, _fifth_material(sess))
+    raw = "".join(b.get("text", "") for b in body.get("content", []) if b.get("type") == "text")
+    m = re.search(r'\{.*\}', raw, re.DOTALL)
     try:
-        body = await asyncio.to_thread(_fifth_http_call, _fifth_material(sess))
-        raw = "".join(b.get("text", "") for b in body.get("content", []) if b.get("type") == "text")
-        m = re.search(r'\{.*\}', raw, re.DOTALL)
         data = json.loads(m.group(0) if m else raw)
-        data["source"] = "llm"
-        data["model"] = body.get("model")
-        data["usage"] = body.get("usage")
-        logger.info("Fifth core: model=%s stop=%s usage=%s", body.get("model"), body.get("stop_reason"), body.get("usage"))
-        return data
-    except Exception as e:
-        logger.error(f"Fifth core failed, using fallback: {e}")
-        data = _fifth_fallback(sess)
-        data["source"] = "fallback"
-        return data
+    except (json.JSONDecodeError, TypeError) as e:
+        logger.error("Fifth core: unparseable model output: %s", raw[:300])
+        raise FifthBadOutput("model output was not JSON") from e
+    data["source"] = "api"
+    data["model"] = body.get("model")
+    data["usage"] = body.get("usage")
+    logger.info("Fifth core: model=%s stop=%s usage=%s", body.get("model"), body.get("stop_reason"), body.get("usage"))
+    return data
 
 
 def _fifth_normalize(sess: dict, data: dict) -> FifthTurn:
@@ -1263,7 +1283,9 @@ def _fifth_normalize(sess: dict, data: dict) -> FifthTurn:
             candidates=[str(x) for x in (data.get("candidates") or [])][:3],
             question=question, options=options,
             why_ask=str(data.get("why_ask")).strip() if data.get("why_ask") else None,
-            source=data.get("source", "llm"),
+            source=data.get("source", "api"),
+            kind=sess.get("kind", "anlat"), context=sess.get("context"),
+            created_at=sess.get("created_at"), updated_at=sess.get("updated_at"),
         )
 
     if not reveal:
@@ -1280,7 +1302,9 @@ def _fifth_normalize(sess: dict, data: dict) -> FifthTurn:
         reveal=reveal,
         distinction=str(data.get("distinction")).strip() if data.get("distinction") else None,
         uncertain=str(data.get("uncertain")).strip() if data.get("uncertain") else None,
-        source=data.get("source", "llm"),
+        source=data.get("source", "api"),
+        kind=sess.get("kind", "anlat"), context=sess.get("context"),
+        created_at=sess.get("created_at"), updated_at=sess.get("updated_at"),
     )
 
 
@@ -1289,17 +1313,62 @@ async def fifth_stories():
     return {"source": "prototype_seed", "avatars": FIFTH_AVATARS, "stories": FIFTH_STORY_CARDS}
 
 
+def _fifth_turn_from_record(sess: dict) -> FifthTurn:
+    """Rebuild the current turn from the stored session record (used to restore after refresh)."""
+    return FifthTurn(
+        session_id=sess["session_id"], nickname=sess["nickname"], avatar=sess["avatar"], door=sess["door"],
+        status=sess.get("status", "question"), mode="REVEAL" if sess.get("status") == "done" else "QUESTION",
+        noticed=sess.get("noticed") or [], candidates=sess.get("candidates") or [],
+        question=sess.get("question"), options=sess.get("options") or [], why_ask=sess.get("why_ask"),
+        reveal=sess.get("reveal"), distinction=sess.get("distinction"), uncertain=sess.get("uncertain"),
+        source=sess.get("source", "api"), kind=sess.get("kind", "anlat"), context=sess.get("context"),
+        created_at=sess.get("created_at"), updated_at=sess.get("updated_at"),
+    )
+
+
+async def _fifth_run(sess: dict) -> FifthTurn:
+    """Run the core and translate its failures into honest HTTP states."""
+    try:
+        data = await fifth_core(sess)
+    except FifthUnavailable as e:
+        logger.warning("Fifth core unavailable: %s", e)
+        raise HTTPException(status_code=503, detail="model_unavailable")
+    except FifthBadOutput as e:
+        logger.warning("Fifth core bad output: %s", e)
+        raise HTTPException(status_code=502, detail="model_bad_output")
+    return _fifth_normalize(sess, data)
+
+
+@api_router.get("/fifth/status")
+async def fifth_status():
+    """Is the core reachable in this runtime, and through which credential path? Never returns secrets."""
+    return fifth_model_status()
+
+
+@api_router.get("/fifth/session/{session_id}", response_model=FifthTurn)
+async def fifth_session(session_id: str):
+    sess = await db.fifth_sessions.find_one({"session_id": session_id}, {"_id": 0})
+    if not sess:
+        raise HTTPException(status_code=404, detail="Oturum bulunamadı.")
+    return _fifth_turn_from_record(sess)
+
+
 @api_router.post("/fifth/start", response_model=FifthTurn)
 async def fifth_start(req: FifthStart):
     nickname = (req.nickname or "").strip()
     if not nickname:
         raise HTTPException(status_code=400, detail="Önce bir takma ad seç.")
+    now = datetime.now(timezone.utc).isoformat()
     sess = {
-        "session_id": str(uuid.uuid4()),
+        "session_id": str(uuid.uuid4()),      # doubles as the stable journey id
+        "kind": req.kind,
+        "user_ref": (req.user_ref or "")[:64] or None,
+        "context": req.context or None,
         "nickname": nickname[:40],
         "avatar": (req.avatar or "🦊")[:4],
         "door": req.door,
-        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_at": now,
+        "updated_at": now,
         "status": "question",
     }
     if req.door == "tell":
@@ -1315,10 +1384,10 @@ async def fifth_start(req: FifthStart):
         sess["story_card"] = card
         sess["familiar"] = req.familiar.strip()
 
-    data = await fifth_core(sess)
-    turn = _fifth_normalize(sess, data)
+    turn = await _fifth_run(sess)   # 503/502 before anything is stored: retry is clean
     sess.update({
-        "status": turn.status, "question": turn.question, "options": turn.options,
+        "status": turn.status, "noticed": turn.noticed, "candidates": turn.candidates,
+        "question": turn.question, "options": turn.options, "why_ask": turn.why_ask,
         "reveal": turn.reveal, "distinction": turn.distinction, "uncertain": turn.uncertain,
         "source": turn.source,
     })
@@ -1337,16 +1406,17 @@ async def fifth_answer(req: FifthAnswer):
         raise HTTPException(status_code=400, detail="Bir yanıt yaz ya da seç.")
     sess["answer"] = req.answer.strip()[:500]
 
-    data = await fifth_core(sess)
-    turn = _fifth_normalize(sess, data)  # already_asked → always REVEAL
+    turn = await _fifth_run(sess)   # already_asked → always REVEAL; on 503 the session stays open for retry
+    now = datetime.now(timezone.utc).isoformat()
     await db.fifth_sessions.update_one(
         {"session_id": req.session_id},
         {"$set": {
-            "answer": sess["answer"], "status": "done", "reveal": turn.reveal,
-            "distinction": turn.distinction, "uncertain": turn.uncertain, "source": turn.source,
-            "answered_at": datetime.now(timezone.utc).isoformat(),
+            "answer": sess["answer"], "status": "done", "noticed": turn.noticed, "candidates": turn.candidates,
+            "reveal": turn.reveal, "distinction": turn.distinction, "uncertain": turn.uncertain, "source": turn.source,
+            "answered_at": now, "updated_at": now,
         }},
     )
+    turn.updated_at = now
     return turn
 
 

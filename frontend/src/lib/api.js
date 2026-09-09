@@ -73,3 +73,26 @@ export const answerFifth = async (session_id, answer) => {
   const { data } = await axios.post(`${API}/fifth/answer`, { session_id, answer }, { timeout: 90000 });
   return data;
 };
+
+export const getFifthStatus = async () => {
+  const { data } = await axios.get(`${API}/fifth/status`);
+  return data;
+};
+
+export const getFifthSession = async (session_id) => {
+  const { data } = await axios.get(`${API}/fifth/session/${session_id}`);
+  return data;
+};
+
+// Translate backend failure states into one small object the UI can render honestly.
+export const describeFifthError = (e) => {
+  const status = e?.response?.status;
+  const detail = e?.response?.data?.detail;
+  if (status === 503 || detail === "model_unavailable") return { kind: "unavailable" };
+  if (status === 502 || detail === "model_bad_output") return { kind: "bad_output" };
+  if (status === 409) return { kind: "done", message: detail };
+  if (status === 404) return { kind: "missing", message: detail };
+  if (status === 400) return { kind: "invalid", message: detail };
+  if (!e?.response) return { kind: "network" };
+  return { kind: "unknown", message: detail };
+};

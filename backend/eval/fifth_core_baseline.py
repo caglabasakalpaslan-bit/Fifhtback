@@ -107,7 +107,7 @@ def summarize(records: list) -> dict:
         "turn1_question": sum(t["mode"] == "QUESTION" for t in t1),
         "turn1_reveal": sum(t["mode"] == "REVEAL" for t in t1),
         "turns_total": len(all_turns),
-        "turns_from_llm": sum(t["source"] == "llm" for t in all_turns),
+        "turns_from_llm": sum(t["source"] == "api" for t in all_turns),
         "turns_from_fallback": sum(t["source"] == "fallback" for t in all_turns),
         "contract_ok": sum(bool(r["contract_ok"]) for r in records),
         "models_seen": models,

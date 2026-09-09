@@ -1,4 +1,8 @@
-"""Backend tests for THE FIFTH prototype core (one prompt, one model call, one session record).
+"""Backend tests for THE FIFTH core (one prompt, one model call, one session record).
+
+- GET  /api/fifth/status -> credential mode, never the secret
+- GET  /api/fifth/session/{id} -> restore a turn after refresh
+- when the model is unreachable the API answers 503 model_unavailable (no fabricated turn)
 
 - GET  /api/fifth/stories -> prototype seed cards + avatars
 - POST /api/fifth/start (door=tell) -> QUESTION (status=question) or REVEAL (status=done); Turkish
@@ -39,6 +43,30 @@ def _assert_turn_contract(t):
         assert t["question"] is None and t["options"] == []
 
 
+def test_status_reports_credential_mode_without_secrets(api):
+    r = api.get(f"{BASE_URL}/api/fifth/status", timeout=30)
+    assert r.status_code == 200, r.text
+    d = r.json()
+    assert d["model"] and d["credential_mode"] in ("proxy", "api_key", None)
+    assert isinstance(d["available"], bool)
+    assert "sk-" not in r.text  # never leak a key
+
+
+def test_session_restore_and_journey_metadata(api):
+    r = api.post(f"{BASE_URL}/api/fifth/start", json={
+        "nickname": "tilki", "avatar": "🦊", "door": "tell", "kind": "anlat", "user_ref": "test-user-ref",
+        "story": "Herkese yetişiyorum. İlk kez ben bir şey istedim, cevap iki gün gecikti. Kırıldım ama söylemedim.",
+    }, timeout=120)
+    if r.status_code == 503:
+        pytest.skip("model unavailable in this runtime — honest 503, nothing fabricated")
+    assert r.status_code == 200, r.text
+    t = r.json()
+    assert t["source"] == "api" and t["kind"] == "anlat" and t["created_at"]
+    r2 = api.get(f"{BASE_URL}/api/fifth/session/{t['session_id']}", timeout=30)
+    assert r2.status_code == 200 and r2.json()["session_id"] == t["session_id"]
+    assert r2.json()["status"] == t["status"] and r2.json()["question"] == t["question"]
+
+
 def test_stories_seed(api):
     r = api.get(f"{BASE_URL}/api/fifth/stories", timeout=30)
     assert r.status_code == 200, r.text
@@ -56,6 +84,8 @@ def test_door_tell_full_loop_stops_after_one_question(api):
     )
     r = api.post(f"{BASE_URL}/api/fifth/start",
                  json={"nickname": "tilki", "avatar": "🦊", "door": "tell", "story": story}, timeout=120)
+    if r.status_code == 503:
+        pytest.skip("model unavailable in this runtime — honest 503, nothing fabricated")
     assert r.status_code == 200, r.text
     t = r.json()
     _assert_turn_contract(t)
@@ -85,6 +115,8 @@ def test_door_find_with_card(api):
         "story_card_id": cards[0]["id"],
         "familiar": "Ben de teklif etmeyi bırakıyorum, kızmak yerine sessizce çekiliyorum.",
     }, timeout=120)
+    if r.status_code == 503:
+        pytest.skip("model unavailable in this runtime — honest 503, nothing fabricated")
     assert r.status_code == 200, r.text
     t = r.json()
     _assert_turn_contract(t)
