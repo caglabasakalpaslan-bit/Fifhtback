@@ -3,7 +3,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, ArrowRight, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
-import { answerFifth, getFifthSession, describeFifthError } from "../lib/api";
+import { answerFifth, getFifthSession, describeFifthError, enrichFifth } from "../lib/api";
+import { BaskaBirDilde } from "../components/BaskaBirDilde";
 import { setCurrentSession, clearCurrentSession, clearDraft, getCurrentSession } from "../lib/storage";
 import { BackLink } from "../components/BackLink";
 import { ModelUnavailable } from "../components/ModelUnavailable";
@@ -24,6 +25,17 @@ export const AnlatTurn = () => {
   const [failure, setFailure] = useState(null);
   const [missing, setMissing] = useState(false);
   const [pendingAnswer, setPendingAnswer] = useState(null);
+  const [enrichment, setEnrichment] = useState(null); // PipelineResult; null = not fetched yet
+
+  // Enrichment runs only after a completed Reveal, never blocks it, and never changes it.
+  useEffect(() => {
+    if (!turn || turn.status !== "done") return;
+    if (turn.enrichment) { setEnrichment(turn.enrichment); return; }
+    if (enrichment) return;
+    let cancelled = false;
+    enrichFifth(turn.session_id).then((r) => { if (!cancelled) setEnrichment(r); }).catch(() => { if (!cancelled) setEnrichment({ enrichment: { used: false, reason: "fetch_failed" } }); });
+    return () => { cancelled = true; };
+  }, [turn, enrichment]);
 
   useEffect(() => {
     if (turn) return;
@@ -107,6 +119,7 @@ export const AnlatTurn = () => {
             {turn.distinction && <p className="text-sm font-mono uppercase tracking-[0.12em] text-[#3F6B56]">{turn.distinction}</p>}
             <p className="font-serif text-2xl sm:text-3xl leading-snug">{turn.reveal}</p>
             {turn.uncertain && <p className="text-sm text-[#8A847C] border-t border-[#E7E0D8] pt-4">Emin olunmayan: {turn.uncertain}</p>}
+            {enrichment?.enrichment?.used && <BaskaBirDilde enrichment={enrichment.enrichment} />}
             <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
               <span className="text-sm text-[#8A847C]">Burada duruyoruz, {turn.nickname}.</span>
               <div className="flex items-center gap-4">

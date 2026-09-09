@@ -15,6 +15,7 @@ import uuid
 from datetime import datetime, timezone
 
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+from fifth_roles import run_after_reveal, PipelineResult
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -1161,6 +1162,7 @@ class FifthTurn(BaseModel):
     context: Optional[dict] = None
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
+    enrichment: Optional[PipelineResult] = None     # four-role result; filled only after a completed REVEAL, by /fifth/enrich
 
 
 def _fifth_material(sess: dict) -> str:
@@ -1212,9 +1214,10 @@ def fifth_model_status() -> dict:
     return {"model": FIFTH_MODEL, "credential_mode": c["mode"], "available": c["mode"] is not None}
 
 
-def _fifth_http_call(material: str) -> dict:
+def _fifth_http_call(material: str, system: str = None, max_tokens: int = 1024) -> dict:
     """One blocking POST to /v1/messages. Raises FifthUnavailable when there is no usable credential
-    or the API refuses/cannot be reached."""
+    or the API refuses/cannot be reached. `system` defaults to FIFTH_CORE_PROMPT (the core call);
+    the enrichment gate passes its own system prompt through the same credential path."""
     c = _fifth_credentials()
     if not c["mode"]:
         raise FifthUnavailable("no credential: neither HTTPS_PROXY nor ANTHROPIC_API_KEY is set")
@@ -1228,8 +1231,8 @@ def _fifth_http_call(material: str) -> dict:
             headers=headers,
             json={
                 "model": FIFTH_MODEL,
-                "max_tokens": 1024,
-                "system": FIFTH_CORE_PROMPT,
+                "max_tokens": max_tokens,
+                "system": system if system is not None else FIFTH_CORE_PROMPT,
                 "messages": [{"role": "user", "content": material}],
             },
             # api.anthropic.com is often in NO_PROXY; naming the proxy explicitly is what lets a
@@ -1323,6 +1326,7 @@ def _fifth_turn_from_record(sess: dict) -> FifthTurn:
         reveal=sess.get("reveal"), distinction=sess.get("distinction"), uncertain=sess.get("uncertain"),
         source=sess.get("source", "api"), kind=sess.get("kind", "anlat"), context=sess.get("context"),
         created_at=sess.get("created_at"), updated_at=sess.get("updated_at"),
+        enrichment=sess.get("enrichment"),
     )
 
 
@@ -1351,6 +1355,26 @@ async def fifth_session(session_id: str):
     if not sess:
         raise HTTPException(status_code=404, detail="Oturum bulunamadı.")
     return _fifth_turn_from_record(sess)
+
+
+def _gate_call(system: str, material: str) -> dict:
+    return _fifth_http_call(material, system=system, max_tokens=1500)
+
+
+@api_router.post("/fifth/enrich/{session_id}", response_model=PipelineResult)
+async def fifth_enrich(session_id: str):
+    """Four-role pipeline after the core: LIBRARIAN → SKEPTIC → STORYTELLER. QUESTION and CLOSE stop
+    before any role runs. The core is frozen and re-verified; enrichment.used=false is a normal outcome."""
+    sess = await db.fifth_sessions.find_one({"session_id": session_id}, {"_id": 0})
+    if not sess:
+        raise HTTPException(status_code=404, detail="Oturum bulunamadı.")
+    if sess.get("enrichment"):
+        return PipelineResult(**sess["enrichment"])
+    turn = _fifth_turn_from_record(sess)
+    result = await asyncio.to_thread(run_after_reveal, turn, sess, _gate_call, None, FifthUnavailable, FifthBadOutput)
+    if result.enrichment.reason != "model_unavailable":   # never persist a run that could not reach the model
+        await db.fifth_sessions.update_one({"session_id": session_id}, {"$set": {"enrichment": result.model_dump(), "updated_at": datetime.now(timezone.utc).isoformat()}})
+    return result
 
 
 @api_router.post("/fifth/start", response_model=FifthTurn)

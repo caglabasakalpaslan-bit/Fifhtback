@@ -67,6 +67,31 @@ def test_session_restore_and_journey_metadata(api):
     assert r2.json()["status"] == t["status"] and r2.json()["question"] == t["question"]
 
 
+def test_enrich_endpoint_stops_on_question_and_never_alters_core(api):
+    r = api.post(f"{BASE_URL}/api/fifth/start", json={
+        "nickname": "tilki", "avatar": "🦊", "door": "tell", "kind": "anlat",
+        "story": "Terfi teklif ettiler. Herkes sevindi, ben sevinemedim. Gece uyuyamadım ama nedenini kendime bile söyleyemiyorum. Belki istemiyorum, belki korkuyorum, ayıramıyorum.",
+    }, timeout=120)
+    if r.status_code == 503:
+        pytest.skip("model unavailable in this runtime — honest 503, nothing fabricated")
+    t = r.json()
+    e = api.post(f"{BASE_URL}/api/fifth/enrich/{t['session_id']}", timeout=180)
+    assert e.status_code == 200, e.text
+    res = e.json()
+    assert res["core_identical"] is True and res["core_reveal"]["session_id"] == t["session_id"]
+    assert res["core_reveal"]["distinction"] == t["distinction"] and res["core_reveal"]["reveal"] == t["reveal"]
+    if t["status"] == "question":
+        assert res["core_reveal"]["route"] == "QUESTION" and res["enrichment"]["used"] is False
+        assert res["librarian"] is None and res["total_calls"] == 0
+    else:
+        assert res["core_reveal"]["route"] in ("REVEAL", "CLOSE") and isinstance(res["enrichment"]["used"], bool)
+        if res["enrichment"]["used"]:
+            assert res["enrichment"]["myth_id"] and res["enrichment"]["record_id"] and res["enrichment"]["source_refs"]
+    # session restore now carries the stored pipeline result
+    s2 = api.get(f"{BASE_URL}/api/fifth/session/{t['session_id']}", timeout=30).json()
+    assert s2["enrichment"]["core_identical"] is True
+
+
 def test_stories_seed(api):
     r = api.get(f"{BASE_URL}/api/fifth/stories", timeout=30)
     assert r.status_code == 200, r.text

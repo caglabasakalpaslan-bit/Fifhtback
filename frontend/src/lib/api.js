@@ -96,3 +96,9 @@ export const describeFifthError = (e) => {
   if (!e?.response) return { kind: "network" };
   return { kind: "unknown", message: detail };
 };
+
+// Four-role enrichment after a completed Reveal (LIBRARIAN → SKEPTIC → STORYTELLER). Slow; call after render.
+export const enrichFifth = async (session_id) => {
+  const { data } = await axios.post(`${API}/fifth/enrich/${session_id}`, {}, { timeout: 120000 });
+  return data;
+};
