@@ -57,3 +57,19 @@ export const updateAction = async (id, payload) => {
   const { data } = await axios.patch(`${API}/action-board/${id}`, payload);
   return data;
 };
+
+// ---- The Fifth (prototype core) ----
+export const getFifthStories = async () => {
+  const { data } = await axios.get(`${API}/fifth/stories`);
+  return data;
+};
+
+export const startFifth = async (payload) => {
+  const { data } = await axios.post(`${API}/fifth/start`, payload, { timeout: 90000 });
+  return data;
+};
+
+export const answerFifth = async (session_id, answer) => {
+  const { data } = await axios.post(`${API}/fifth/answer`, { session_id, answer }, { timeout: 90000 });
+  return data;
+};

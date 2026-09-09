@@ -5,15 +5,17 @@ import { Navbar } from "@/components/Navbar";
 import { EmployeeVoice } from "@/components/EmployeeVoice";
 import { ManagerDashboard } from "@/components/ManagerDashboard";
 import { PatternRoom } from "@/components/PatternRoom";
+import { FifthCore } from "@/components/FifthCore";
 
 function App() {
-  const [view, setView] = useState("employee");
+  const [view, setView] = useState("fifth");
   const [refreshKey, setRefreshKey] = useState(0);
 
   return (
     <div className="App min-h-screen paper-grain">
       <Navbar view={view} setView={setView} />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {view === "fifth" && <FifthCore />}
         {view === "employee" && (
           <EmployeeVoice onConfirmed={() => setRefreshKey((k) => k + 1)} />
         )}

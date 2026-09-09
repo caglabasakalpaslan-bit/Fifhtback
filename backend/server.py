@@ -1024,6 +1024,308 @@ async def seed_patterns():
         logger.info("Seeded Pattern Room analysis.")
 
 
+
+# =====================================================================================
+# THE FIFTH — core prototype (single model call, single prompt, single session record)
+# NOTICE → PATTERN → DISTINGUISH → REVEAL/STOP are reasoning responsibilities inside ONE
+# prompt. They are NOT agents, services or workers.
+# =====================================================================================
+
+# PROTOTYPE SEED CONTENT — no proverb / pattern-map material exists in this repo yet.
+# These are temporary story cards for Door B ("Bir hikâyede kendimi bulacağım").
+# "lens" tags are lenses for reading the story, not truths about the reader.
+FIFTH_STORY_CARDS = [
+    {
+        "id": "s1",
+        "title": "Söz verildi, geri alındı",
+        "lens": "İlişki",
+        "text": "Bir arkadaşı, birlikte bir şey yapmaya söz veriyor. Gün gelince 'başka bir şey çıktı' diyor. "
+                "Bu üçüncü kez. Kişi kızmıyor; sadece bir daha teklif etmiyor.",
+    },
+    {
+        "id": "s2",
+        "title": "Herkes evet dedi, kimse yapmadı",
+        "lens": "Toplum / Sistem",
+        "text": "Toplantıda herkes fikri beğendi. İki hafta sonra hiçbir şey yapılmamış. "
+                "Kişi bunu kendine dert ediyor: 'Ben mi kötü anlattım, yoksa kimse istememiş miydi?'",
+    },
+    {
+        "id": "s3",
+        "title": "Yardım etmekten yorulan",
+        "lens": "Kişi",
+        "text": "Biri hep herkese yetişiyor. Bir gün kendi başına bir şey isteyince cevap gecikiyor. "
+                "'Ben de yorulabilirim' demek yerine daha çok yardım ediyor.",
+    },
+    {
+        "id": "s4",
+        "title": "Yeni yerde eski kural",
+        "lens": "Bağlam",
+        "text": "Eski işinde 'sorma, hallet' takdir görüyordu. Yeni yerde aynı şeyi yapınca "
+                "'niye danışmadın' deniyor. Kişi kendini hem doğru hem suçlu hissediyor.",
+    },
+    {
+        "id": "s5",
+        "title": "Ayrılık kararı yıllardır beklemede",
+        "lens": "Bağlam",
+        "text": "Hemen hemen her ay 'bu böyle gitmez' diyor. Ama her ay bir sebep çıkıyor: "
+                "bayram, sınav, hastalık. Karar hiç verilmiyor, hep erteleniyor.",
+    },
+]
+
+FIFTH_AVATARS = ["🦊", "🐢", "🦉", "🐙", "🐺", "🌱"]
+
+FIFTH_CORE_PROMPT = """Sen "The Fifth" (Fifthback) içindeki tek çekirdeksin. Bir kişi sana ya kendi hikâyesini anlatır ya da bir hikâyede kendine tanıdık gelen bir şeyi söyler.
+
+Görevin kişiye kim olduğunu söylemek DEĞİL. Görevin, anlatılanda karar değiştirici asıl ayrımı bulmak — ve gerekmedikçe soru sormamak.
+
+İçinden şu sırayla düşün (bunları kimseye adım adım anlatma, sadece sonucunu ver):
+1. FARK ET (NOTICE): Somut olarak ne olmuş, ne söylenmiş? Yorum değil, sinyal.
+2. ÖRÜNTÜ (PATTERN): Bu sinyallerle uyuşabilecek 2-3 makul okuma nedir? Bunlar mercektir, gerçek değil. Yardımcı olabilecek mercekler: Kişi / Bağlam / İlişki / Toplum-Sistem; zıtlıklar (bekleyen-vazgeçen, yardım eden-tükenen); döngüler (aynı şeyin tekrar etmesi).
+3. AYIRT ET (DISTINGUISH): Bilinseydi yargıyı GERÇEKTEN değiştirecek TEK eksik ayrım var mı? Ayrım demek: cevabına göre okumalardan biri elenir demek.
+4. AÇIKLA ya da DUR (REVEAL/STOP): Yeterince biliniyorsa açıkla ve dur. Soru yalnızca kişinin zahmetine değecekse sorulur.
+
+İKİ ÇIKTIDAN YALNIZCA BİRİNİ seç:
+A) mode="QUESTION": Karar değiştirici tek bir eksik ayrım varsa, kısa ve düşük çabalı TEK soru sor. 2-4 kısa seçenek ver (birbirini dışlayan olması iyi olur). Soru yanıtın bir okumayı elemesini sağlamalı.
+B) mode="REVEAL": Zaten yeterli bilgi varsa, Açıklama'yı üret ve dur.
+
+Eğer kişinin daha önce sorulmuş bir soruya verdiği yanıt varsa, mode KESİNLİKLE "REVEAL" olmalı; ikinci soru YASAK.
+
+Açıklama (reveal) nasıl olmalı:
+- 2-4 cümle, sıcak ama net, terapi dili değil, günlük Türkçe.
+- İlk bakışta görünen okuma ile anlatıldığında ortaya çıkan karar değiştirici noktayı ayırsın. Örn. hissi: "Belki burada asıl ayrım X ile Y arasında." ya da "İlk bakışta X gibi görünüyor ama anlattığında karar değiştirici nokta Y." (Bu cümleleri kopyalama; anlama uydur.)
+- Belirsizliği koru: emin olmadığın şeyi "belki", "gibi görünüyor" diye söyle. Bilinmeyeni açıkça söyle.
+- Kişiye tavsiye ya da görev verme. Sadece ayrımı görünür kıl.
+
+YASAKLAR:
+- Teşhis yok (kişilik, bozukluk, "sen ... birisin" yok).
+- Duyguları nesnel gerçek gibi sunma ("aslında öfkelisin" yok).
+- Zorla denge kurma ("iki taraf da haklı" gibi boş cümleler yok).
+- Aşırı soru yok: en fazla BİR soru, o da şart değilse hiç.
+- Genel terapi/koçluk dili yok.
+- Örüntüleri/atasözlerini evrensel yasa gibi sunma; onlar sadece mercek.
+- Hikâye kartı verildiyse onu "senin hayatın" gibi ele alma; kişinin tanıdık dediği şey esas veridir.
+
+TÜM ÇIKTI TÜRKÇE. YALNIZCA şu KATI JSON nesnesini ver, başka hiçbir şey yazma:
+{
+  "mode": "QUESTION" ya da "REVEAL",
+  "noticed": [anlatılandan 1-3 somut sinyal, her biri kısa tek cümle],
+  "candidates": [1-3 kısa aday okuma/mercek; kesinlik iddiası olmadan],
+  "question": mode QUESTION ise tek kısa soru, aksi halde null,
+  "options": mode QUESTION ise 2-4 kısa seçenek, aksi halde [],
+  "why_ask": mode QUESTION ise bu sorunun hangi okumayı eleyeceğine dair tek cümle, aksi halde null,
+  "reveal": mode REVEAL ise 2-4 cümlelik açıklama, aksi halde null,
+  "distinction": mode REVEAL ise "X ile Y arasında" biçiminde asıl ayrımın tek satırlık adı, aksi halde null,
+  "uncertain": mode REVEAL ise hâlâ bilinmeyen/emin olunmayan şeye dair tek cümle, aksi halde null
+}"""
+
+
+class FifthStart(BaseModel):
+    nickname: str
+    avatar: str = "🦊"
+    door: Literal["tell", "find"]
+    story: Optional[str] = None            # door=tell: the user's own story
+    story_card_id: Optional[str] = None    # door=find: chosen card
+    familiar: Optional[str] = None         # door=find: "Burada sana tanıdık gelen ne?"
+
+
+class FifthAnswer(BaseModel):
+    session_id: str
+    answer: str
+
+
+class FifthTurn(BaseModel):
+    session_id: str
+    nickname: str
+    avatar: str
+    door: str
+    status: Literal["question", "done"]
+    mode: Literal["QUESTION", "REVEAL"]
+    noticed: List[str] = []
+    candidates: List[str] = []
+    question: Optional[str] = None
+    options: List[str] = []
+    why_ask: Optional[str] = None
+    reveal: Optional[str] = None
+    distinction: Optional[str] = None
+    uncertain: Optional[str] = None
+    source: str = "llm"
+
+
+def _fifth_material(sess: dict) -> str:
+    """Render the session's material (story or card+familiar, plus optional Q/A) for the core."""
+    if sess["door"] == "tell":
+        parts = [f"KAPI: Hikâyemi anlatacağım\n\nKişinin hikâyesi:\n\"\"\"\n{sess['story']}\n\"\"\""]
+    else:
+        card = sess["story_card"]
+        parts = [
+            "KAPI: Bir hikâyede kendimi bulacağım\n\n"
+            f"Seçilen hikâye kartı — {card['title']} (mercek: {card['lens']}):\n\"\"\"\n{card['text']}\n\"\"\"\n\n"
+            f"Kişiye 'Burada sana tanıdık gelen ne?' diye soruldu. Yanıtı:\n\"\"\"\n{sess['familiar']}\n\"\"\""
+        ]
+    if sess.get("question") and sess.get("answer"):
+        parts.append(
+            f"[Daha önce sorulan tek soru] {sess['question']}\n"
+            f"[Kişinin yanıtı] {sess['answer']}\n\n"
+            "Artık ikinci soru sorulamaz. mode=\"REVEAL\" olmalı."
+        )
+    return "\n\n".join(parts)
+
+
+def _fifth_fallback(sess: dict) -> dict:
+    """Deterministic path when the LLM is unavailable. Keeps the loop demonstrable, never diagnoses."""
+    src = sess.get("story") or sess.get("familiar") or ""
+    first = " ".join(src.split()[:12])
+    if sess.get("answer"):
+        return {
+            "mode": "REVEAL",
+            "noticed": [f"Anlattığın: \"{first}…\"", f"Soruya yanıtın: \"{sess['answer']}\""],
+            "candidates": ["Aynı şeyin tekrar etmesi", "Bağlamın değişmiş olması"],
+            "reveal": (
+                "Model şu an erişilebilir olmadığı için burada yalnızca senin sözlerin var. "
+                f"Anlattığında öne çıkan şey, yanıtında söylediğin \"{sess['answer']}\" noktası. "
+                "Belki asıl ayrım, bunun tek seferlik bir olay mı yoksa tekrar eden bir döngü mü olduğunda."
+            ),
+            "distinction": "Tek seferlik olay ile tekrar eden döngü arasında",
+            "uncertain": "Bu bir yedek çıktı; gerçek çekirdek çalışmadığı için yorum içermiyor.",
+        }
+    return {
+        "mode": "QUESTION",
+        "noticed": [f"Anlattığın: \"{first}…\""],
+        "candidates": ["Tek seferlik bir olay", "Tekrar eden bir döngü"],
+        "question": "Bu ilk kez mi oluyor, yoksa daha önce de benzer şekilde oldu mu?",
+        "options": ["İlk kez", "Daha önce de oldu", "Emin değilim"],
+        "why_ask": "Yanıt, tek seferlik olay okumasını ya da döngü okumasını eler.",
+    }
+
+
+async def fifth_core(sess: dict) -> dict:
+    """ONE model interaction. Returns the parsed core JSON (or the fallback)."""
+    if not EMERGENT_LLM_KEY:
+        data = _fifth_fallback(sess)
+        data["source"] = "fallback"
+        return data
+    try:
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"fifth-{sess['session_id']}-{uuid.uuid4()}",
+            system_message=FIFTH_CORE_PROMPT,
+        ).with_model("anthropic", "claude-sonnet-4-6")
+        resp = await asyncio.wait_for(chat.send_message(UserMessage(text=_fifth_material(sess))), timeout=60)
+        raw = resp if isinstance(resp, str) else str(resp)
+        m = re.search(r'\{.*\}', raw, re.DOTALL)
+        data = json.loads(m.group(0) if m else raw)
+        data["source"] = "llm"
+        return data
+    except Exception as e:
+        logger.error(f"Fifth core failed, using fallback: {e}")
+        data = _fifth_fallback(sess)
+        data["source"] = "fallback"
+        return data
+
+
+def _fifth_normalize(sess: dict, data: dict) -> FifthTurn:
+    """Enforce the two-output contract: QUESTION (only if none asked yet) or REVEAL."""
+    mode = str(data.get("mode", "")).upper()
+    question = str(data.get("question")).strip() if data.get("question") else None
+    options = [str(o).strip() for o in (data.get("options") or []) if str(o).strip()][:4]
+    reveal = str(data.get("reveal")).strip() if data.get("reveal") else None
+    already_asked = bool(sess.get("question"))
+
+    if mode == "QUESTION" and not already_asked and question:
+        return FifthTurn(
+            session_id=sess["session_id"], nickname=sess["nickname"], avatar=sess["avatar"], door=sess["door"],
+            status="question", mode="QUESTION",
+            noticed=[str(x) for x in (data.get("noticed") or [])][:3],
+            candidates=[str(x) for x in (data.get("candidates") or [])][:3],
+            question=question, options=options,
+            why_ask=str(data.get("why_ask")).strip() if data.get("why_ask") else None,
+            source=data.get("source", "llm"),
+        )
+
+    if not reveal:
+        # The model asked a second question or returned nothing usable: stop honestly.
+        reveal = (
+            "Buraya kadar anlattıkların bir Açıklama için yeterli görünüyor ama net bir ayrım çıkaramadım. "
+            "Bunu bir kesinlik olarak değil, şu anki sınırım olarak oku."
+        )
+    return FifthTurn(
+        session_id=sess["session_id"], nickname=sess["nickname"], avatar=sess["avatar"], door=sess["door"],
+        status="done", mode="REVEAL",
+        noticed=[str(x) for x in (data.get("noticed") or [])][:3],
+        candidates=[str(x) for x in (data.get("candidates") or [])][:3],
+        reveal=reveal,
+        distinction=str(data.get("distinction")).strip() if data.get("distinction") else None,
+        uncertain=str(data.get("uncertain")).strip() if data.get("uncertain") else None,
+        source=data.get("source", "llm"),
+    )
+
+
+@api_router.get("/fifth/stories")
+async def fifth_stories():
+    return {"source": "prototype_seed", "avatars": FIFTH_AVATARS, "stories": FIFTH_STORY_CARDS}
+
+
+@api_router.post("/fifth/start", response_model=FifthTurn)
+async def fifth_start(req: FifthStart):
+    nickname = (req.nickname or "").strip()
+    if not nickname:
+        raise HTTPException(status_code=400, detail="Önce bir takma ad seç.")
+    sess = {
+        "session_id": str(uuid.uuid4()),
+        "nickname": nickname[:40],
+        "avatar": (req.avatar or "🦊")[:4],
+        "door": req.door,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "status": "question",
+    }
+    if req.door == "tell":
+        if not req.story or not req.story.strip():
+            raise HTTPException(status_code=400, detail="Önce hikâyeni anlat.")
+        sess["story"] = req.story.strip()
+    else:
+        card = next((c for c in FIFTH_STORY_CARDS if c["id"] == req.story_card_id), None)
+        if not card:
+            raise HTTPException(status_code=400, detail="Önce bir hikâye seç.")
+        if not req.familiar or not req.familiar.strip():
+            raise HTTPException(status_code=400, detail="Burada sana tanıdık gelen neydi?")
+        sess["story_card"] = card
+        sess["familiar"] = req.familiar.strip()
+
+    data = await fifth_core(sess)
+    turn = _fifth_normalize(sess, data)
+    sess.update({
+        "status": turn.status, "question": turn.question, "options": turn.options,
+        "reveal": turn.reveal, "distinction": turn.distinction, "uncertain": turn.uncertain,
+        "source": turn.source,
+    })
+    await db.fifth_sessions.insert_one(dict(sess))
+    return turn
+
+
+@api_router.post("/fifth/answer", response_model=FifthTurn)
+async def fifth_answer(req: FifthAnswer):
+    sess = await db.fifth_sessions.find_one({"session_id": req.session_id}, {"_id": 0})
+    if not sess:
+        raise HTTPException(status_code=404, detail="Oturum bulunamadı.")
+    if sess.get("status") == "done":
+        raise HTTPException(status_code=409, detail="Bu hikâye için Açıklama zaten verildi.")
+    if not req.answer or not req.answer.strip():
+        raise HTTPException(status_code=400, detail="Bir yanıt yaz ya da seç.")
+    sess["answer"] = req.answer.strip()[:500]
+
+    data = await fifth_core(sess)
+    turn = _fifth_normalize(sess, data)  # already_asked → always REVEAL
+    await db.fifth_sessions.update_one(
+        {"session_id": req.session_id},
+        {"$set": {
+            "answer": sess["answer"], "status": "done", "reveal": turn.reveal,
+            "distinction": turn.distinction, "uncertain": turn.uncertain, "source": turn.source,
+            "answered_at": datetime.now(timezone.utc).isoformat(),
+        }},
+    )
+    return turn
+
+
 app.include_router(api_router)
 
 

@@ -4,6 +4,7 @@ import { Disc3, ShieldCheck } from "lucide-react";
 
 export const Navbar = ({ view, setView }) => {
   const tabs = [
+    { key: "fifth", label: "The Fifth" },
     { key: "employee", label: "Çalışan Sesi" },
     { key: "manager", label: "Yönetici Görünümü" },
     { key: "patternroom", label: "Pattern Room" },
