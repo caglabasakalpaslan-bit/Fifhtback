@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "fifth/olympus/figure/v0.1",
+  "title": "The Fifth — exploratory-world figure (Olympus v0.1)",
+  "description": "One figure in an exploratory world (first world: Greek Olympus). A figure is a STORY DOORWAY, never a human category. Three layers are kept apart on purpose: (1) source_supported = what ancient sources actually say, with references and evidence status; (2) fifth_interpretation = what The Fifth reads in those stories (situations, tensions, expressions, questions, reveal material) — always marked as interpretation; (3) ux_story = user-facing material derived from layers 1–2 (orientation, story doors). Nothing in layer 3 may exist without a traceable origin in layer 1 via layer 2. Worlds are not required to have 12 figures.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "world_id", "name", "short_label", "one_sentence_intro", "membership", "source_supported", "fifth_interpretation", "ux_story", "overinterpretation_warnings", "record_status"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$", "description": "Stable machine id, e.g. 'zeus'."},
+    "world_id": {"type": "string", "description": "Which exploratory world this figure belongs to, e.g. 'greek_olympus'."},
+    "name": {"type": "string", "description": "Canonical name (English transliteration)."},
+    "name_tr": {"type": "string", "description": "Turkish form used in UI."},
+    "name_greek": {"type": "string", "description": "Ancient Greek form (Unicode)."},
+    "short_label": {"$ref": "#/$defs/shortLabel"},
+    "one_sentence_intro": {"type": "string", "minLength": 20, "maxLength": 240, "description": "One accessible Turkish sentence for someone who knows nothing. Must not tell the user who they are."},
+    "membership": {
+      "type": "object", "additionalProperties": false, "required": ["status", "note"],
+      "properties": {
+        "status": {"type": "string", "enum": ["canonical_twelve", "alternate", "special", "minor"], "description": "Olympus-specific: whether ancient lists count this figure among the Twelve. Other worlds define their own membership vocabulary via 'note'."},
+        "note": {"type": "string"}
+      }
+    },
+    "source_supported": {
+      "type": "object", "additionalProperties": false,
+      "required": ["domains", "major_myths", "related_figures", "source_references", "evidence_status"],
+      "description": "LAYER 1 — SOURCE-SUPPORTED MYTHOLOGY. Only claims that can be tied to a named ancient source or a named scholarly consensus.",
+      "properties": {
+        "epithets": {"type": "array", "items": {"type": "object", "required": ["epithet", "meaning"], "properties": {"epithet": {"type": "string"}, "meaning": {"type": "string"}, "source": {"type": "string"}}}},
+        "domains": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["domain", "evidence", "confidence"], "properties": {"domain": {"type": "string"}, "evidence": {"type": "string", "description": "Where this domain is attested."}, "confidence": {"$ref": "#/$defs/confidence"}}}},
+        "major_myths": {"type": "array", "minItems": 2, "items": {"type": "object", "additionalProperties": false, "required": ["myth_id", "title", "summary", "sources", "confidence"], "properties": {"myth_id": {"type": "string", "pattern": "^[a-z0-9_]+$"}, "title": {"type": "string"}, "summary": {"type": "string"}, "sources": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "variants": {"type": "string", "description": "Known contradictory or alternative versions. Keep variants as variants; do not merge."}, "confidence": {"$ref": "#/$defs/confidence"}}}},
+        "related_figures": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["figure", "relation"], "properties": {"figure": {"type": "string"}, "relation": {"type": "string"}, "myth_ref": {"type": "string"}}}},
+        "source_references": {"type": "array", "minItems": 2, "items": {"type": "object", "additionalProperties": false, "required": ["ref", "type"], "properties": {"ref": {"type": "string"}, "type": {"type": "string", "enum": ["primary_archaic", "primary_classical", "primary_hellenistic_roman", "primary_late_antique", "epigraphic_archaeological", "secondary_scholarship"]}, "note": {"type": "string"}}}},
+        "evidence_status": {"type": "object", "additionalProperties": false, "required": ["overall", "notes"], "properties": {"overall": {"type": "string", "enum": ["strong", "mixed", "thin"]}, "notes": {"type": "string", "description": "Where the record leans on late, Roman, Orphic or popular material; where sources contradict."}}}
+      }
+    },
+    "fifth_interpretation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["recurring_human_situations", "tensions", "constructive_expressions", "costly_expressions", "boundary_questions", "possible_fifth_questions", "possible_reveal_material", "interpretation_confidence"],
+      "description": "LAYER 2 — FIFTH INTERPRETATION. What The Fifth reads in the stories. Every item must point back to a myth_id. Polarity is NOT required: a tension may be a single open question. Never a personality claim.",
+      "properties": {
+        "recurring_human_situations": {"type": "array", "minItems": 2, "items": {"type": "object", "additionalProperties": false, "required": ["situation", "from_myths"], "properties": {"situation": {"type": "string"}, "from_myths": {"type": "array", "minItems": 1, "items": {"type": "string"}}}}},
+        "tensions": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["tension_id", "statement", "shape", "from_myths"], "properties": {"tension_id": {"type": "string", "pattern": "^[a-z0-9_]+$"}, "statement": {"type": "string", "description": "The tension in one sentence. If it is 'X ile Y arasında', say so; if it is an open question with no clean opposite, say that instead."}, "shape": {"type": "string", "enum": ["between_two", "gradient", "open_question", "sequence"], "description": "between_two = genuine polarity; gradient = same thing in different doses; open_question = no clean opposite exists; sequence = one thing turning into another over time."}, "from_myths": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "note": {"type": "string"}}}},
+        "constructive_expressions": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["expression", "from_myths"], "properties": {"expression": {"type": "string"}, "from_myths": {"type": "array", "items": {"type": "string"}}}}},
+        "costly_expressions": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["expression", "from_myths"], "properties": {"expression": {"type": "string"}, "from_myths": {"type": "array", "items": {"type": "string"}}, "cost_borne_by": {"type": "string", "enum": ["self", "others", "both"], "description": "Myths often put the cost on OTHERS, not the figure. Record honestly; do not invent a self-cost to balance the record."}}}},
+        "boundary_questions": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["question", "turns_from", "turns_into", "from_myths"], "properties": {"question": {"type": "string", "description": "When does X become Y? — written in Turkish, usable as-is in a Fifth Reveal."}, "turns_from": {"type": "string"}, "turns_into": {"type": "string"}, "from_myths": {"type": "array", "items": {"type": "string"}}}}},
+        "possible_fifth_questions": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["question", "options", "discriminates", "tension_ref"], "properties": {"question": {"type": "string", "description": "Turkish. Must satisfy Routing Rule v0.1 gate Q2–Q4: low-effort fact / observable event / own action / simple counterfactual the user knows; not already in the story; 2–4 one-line options."}, "options": {"type": "array", "minItems": 2, "maxItems": 4, "items": {"type": "string"}}, "discriminates": {"type": "string", "description": "Which two readings the answer separates."}, "tension_ref": {"type": "string"}}}},
+        "possible_reveal_material": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["distinction", "fragment", "tension_ref"], "properties": {"distinction": {"type": "string", "description": "Portable one-line 'X ile Y arasında' form, Turkish."}, "fragment": {"type": "string", "description": "A reusable Turkish sentence for a Reveal. Must keep uncertainty; no diagnosis; no advice."}, "tension_ref": {"type": "string"}}}},
+        "interpretation_confidence": {"type": "object", "additionalProperties": false, "required": ["level", "notes"], "properties": {"level": {"type": "string", "enum": ["grounded", "plausible", "speculative"], "description": "grounded = reading follows directly from repeated myth episodes; plausible = defensible but selective; speculative = mostly modern projection, keep flagged."}, "notes": {"type": "string"}}}
+      }
+    },
+    "ux_story": {
+      "type": "object", "additionalProperties": false, "required": ["orientation", "story_doors"],
+      "description": "LAYER 3 — UX / STORY IDEA. Everything the user might see. Derived only from layers 1–2.",
+      "properties": {
+        "orientation": {"type": "object", "additionalProperties": false, "required": ["know_nothing_hint"], "properties": {"know_nothing_hint": {"type": "string", "description": "Turkish, max ~2 sentences: what a total newcomer needs before choosing to enter this door."}, "visual_motifs": {"type": "array", "items": {"type": "string"}, "description": "Source-attested attributes only (for a future 3D scene), e.g. 'thunderbolt', 'owl', 'trident'."}}},
+        "story_doors": {"type": "array", "minItems": 3, "maxItems": 6, "items": {"type": "object", "additionalProperties": false, "required": ["door_id", "text_tr", "derived_from_myths", "tension_ref"], "properties": {"door_id": {"type": "string", "pattern": "^[a-z0-9_]+$"}, "text_tr": {"type": "string", "minLength": 30, "maxLength": 220, "description": "Second person, present tense, a situation the user could recognise without knowing the myth. Never 'sen ... gibisin'."}, "derived_from_myths": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "tension_ref": {"type": "string"}, "perspective": {"type": "string", "enum": ["the_figure", "the_other_party", "the_witness"], "description": "Whose position the door puts the user in. Doors from the position of a perpetrator of violence are not written; see warnings."}}}}
+      }
+    },
+    "overinterpretation_warnings": {"type": "array", "minItems": 2, "items": {"type": "string"}, "description": "What this record must NOT be used to say. Applies to writers, the model, and the UI."},
+    "record_status": {"type": "object", "additionalProperties": false, "required": ["schema_version", "content_version", "authored_by", "human_reviewed"], "properties": {"schema_version": {"type": "string"}, "content_version": {"type": "string"}, "authored_by": {"type": "string"}, "human_reviewed": {"type": "boolean"}, "review_notes": {"type": "string"}}}
+  },
+  "$defs": {
+    "shortLabel": {"type": "string", "minLength": 8, "maxLength": 60, "description": "3–6 Turkish words. Orientation for someone who knows nothing. Names a STORY TERRITORY, not a person type."},
+    "confidence": {"type": "string", "enum": ["attested_archaic_classical", "attested_hellenistic_roman", "attested_late_or_orphic", "scholarly_inference", "unsourced_popular"], "description": "attested_archaic_classical = Homer, Hesiod, Homeric Hymns, lyric, tragedy, Herodotus, Plato; attested_hellenistic_roman = Callimachus, Apollodorus, Ovid, Pausanias, Hyginus; attested_late_or_orphic = Nonnus, Orphic fragments, Apuleius; scholarly_inference = consensus reconstruction (e.g., from cult/epigraphy); unsourced_popular = widely repeated, no ancient source found — keep visible, do not build on it."}
+  }
+}

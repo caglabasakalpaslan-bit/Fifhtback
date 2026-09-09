@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "fifth/awareness/events/v0.1",
+  "title": "The Fifth — Awareness Map event model (v0.1, definition only)",
+  "description": "Events to preserve from day one so a future Farkındalık Haritası can show a user their own attention, resonance and repeated exploration across exploratory worlds. This is a DEFINITION, not an implementation: no collector, no analytics, no wiring exists yet. The map is a mirror of exploration behaviour, never a personality score, type, or diagnosis. Every field below is either already user-visible in the UI, or a content id, or a timestamp; nothing is inferred about the person.",
+  "principles": [
+    "Attention, resonance and repetition are the only three quantities the map may ever derive: what was looked at, what the user said felt like them, and what they came back to.",
+    "No aggregate may be labelled as a trait ('you are X'). Aggregates are described as 'you kept returning to…', 'you marked… as familiar'.",
+    "Events record the user's own actions and explicit statements. The system never writes an inferred emotional state into an event.",
+    "Pseudonymous by default: user_ref is an opaque id issued by the app; nickname/avatar are not stored in events. No email, no device fingerprint.",
+    "User-deletable as a whole and per event; deletion cascades to any derived map.",
+    "Voluntary return only: lived_outcome events exist only if the user comes back and chooses to say something.",
+    "Schema is append-only across versions: fields may be added, never repurposed. schema_version travels with every event."
+  ],
+  "envelope": {
+    "description": "Common fields on every event.",
+    "required": ["event_id", "event_type", "ts", "schema_version", "user_ref", "session_ref", "world_id"],
+    "properties": {
+      "event_id": {"type": "string", "format": "uuid"},
+      "event_type": {"type": "string", "enum": ["world_entered", "figure_viewed", "figure_info_opened", "story_door_viewed", "story_door_selected", "door_theme_attached", "resonance_marked", "core_conversation_started", "reveal_saved", "lived_outcome_returned", "world_left"]},
+      "ts": {"type": "string", "format": "date-time", "description": "UTC, server-stamped."},
+      "schema_version": {"type": "string", "const": "0.1"},
+      "user_ref": {"type": "string", "description": "Opaque pseudonymous id. Never an email or a device id."},
+      "session_ref": {"type": "string", "description": "One exploration visit. Distinct from fifth_session_id (a Core conversation)."},
+      "world_id": {"type": "string", "description": "e.g. 'greek_olympus'. Worlds may differ in size and structure; the map must not assume 12."},
+      "world_version": {"type": "string", "description": "Content version viewed, so later edits to content do not rewrite history."},
+      "client": {"type": "string", "description": "Coarse surface: 'web', 'mobile', '3d'. No user-agent strings."}
+    }
+  },
+  "events": {
+    "world_entered": {"purpose": "The user stepped into an exploratory world.", "payload": {"entry_point": {"type": "string", "enum": ["home", "after_anlat", "returning", "deep_link"], "description": "Where they came from; 'after_anlat' means they arrived from an ANLAT Reveal."}}},
+    "figure_viewed": {"purpose": "A figure came into focus (card opened, or in 3D: approached / selected). Not merely rendered on screen.", "payload": {"figure_id": {"type": "string"}, "dwell_ms": {"type": "integer", "description": "Time in focus, capped at 10 minutes to avoid idle inflation. Attention, not interest."}, "order_in_session": {"type": "integer", "description": "1 = first figure looked at in this visit."}}},
+    "figure_info_opened": {"purpose": "The user opened the orientation / 'who is this' layer for a figure who they may know nothing about.", "payload": {"figure_id": {"type": "string"}, "info_section": {"type": "string", "enum": ["orientation", "myths", "sources", "warnings"], "description": "Which layer they read. Reading 'warnings' or 'sources' is worth knowing for content quality, not for the map."}}},
+    "story_door_viewed": {"purpose": "A story door's text was shown in full to the user.", "payload": {"figure_id": {"type": "string"}, "door_id": {"type": "string"}, "position": {"type": "integer", "description": "Position among the doors shown (1-based)."}, "dwell_ms": {"type": "integer"}}},
+    "story_door_selected": {"purpose": "The user chose a door (tapped 'bu bana tanıdık' / 'buradan gir' or equivalent).", "payload": {"figure_id": {"type": "string"}, "door_id": {"type": "string"}, "doors_seen_before_select": {"type": "integer", "description": "How many doors of any figure were viewed in this session before this selection."}}},
+    "door_theme_attached": {"purpose": "System-side: the content layer's tension_ref for the selected door is attached to the selection, so the map can later group by theme without re-reading content. Written by the app, not the user; carries no inference — it copies a content id.", "payload": {"door_id": {"type": "string"}, "figure_id": {"type": "string"}, "tension_ref": {"type": "string", "description": "From the figure record, e.g. 'hera_target_vs_reach'."}, "tension_shape": {"type": "string", "enum": ["between_two", "gradient", "open_question", "sequence"]}, "derived_from_myths": {"type": "array", "items": {"type": "string"}}}},
+    "resonance_marked": {"purpose": "The user's explicit statement about a door or a Reveal. This is the only 'feeling' field in the model and it is the user's own words/choice, never inferred.", "payload": {"target_type": {"type": "string", "enum": ["story_door", "reveal", "figure"]}, "target_id": {"type": "string"}, "mark": {"type": "string", "enum": ["feels_like_me", "continued", "skipped", "not_me"], "description": "'feels_like_me' = user said so; 'continued' = proceeded without marking; 'skipped' = moved past; 'not_me' = explicitly declined."}, "free_text": {"type": "string", "maxLength": 280, "description": "Optional, user-typed. Stored verbatim, never summarised into a label."}}},
+    "core_conversation_started": {"purpose": "The user opened a Fifth Core conversation from a door (KENDİNİ BUL → ANLAT hand-off).", "payload": {"door_id": {"type": "string"}, "figure_id": {"type": "string"}, "fifth_session_id": {"type": "string", "description": "Links to the fifth_sessions record. The map never reads the conversation text; it only knows a conversation happened and what came of it via reveal_saved."}, "entry_material": {"type": "string", "enum": ["door_text_only", "door_plus_user_story"], "description": "Whether the user added their own story before starting."}}},
+    "reveal_saved": {"purpose": "The user chose to keep a Reveal. Saving is the user's act; unsaved Reveals leave no map trace beyond core_conversation_started.", "payload": {"fifth_session_id": {"type": "string"}, "door_id": {"type": "string", "description": "Null if the conversation started from ANLAT without a door."}, "figure_id": {"type": "string"}, "distinction": {"type": "string", "description": "The portable one-line distinction, verbatim. The only Reveal content the map stores."}, "route_path": {"type": "string", "enum": ["QUESTION_REVEAL", "REVEAL", "CLOSE"], "description": "Which route the Core took; useful later for routing evaluation, not for the map's display."}}},
+    "lived_outcome_returned": {"purpose": "The user came back voluntarily and said what happened. Never prompted by notification in v0.1; only available as a button on a saved Reveal.", "payload": {"fifth_session_id": {"type": "string"}, "days_since_reveal": {"type": "integer"}, "outcome_mark": {"type": "string", "enum": ["it_held", "it_shifted", "it_did_not_apply", "prefer_not_to_say"], "description": "User-chosen. 'it_held' = the distinction still describes it; 'it_shifted' = something changed; no valence (better/worse) is recorded."}, "free_text": {"type": "string", "maxLength": 500, "description": "Optional, verbatim."}}},
+    "world_left": {"purpose": "Session ended or user left the world; closes dwell accounting.", "payload": {"figures_viewed_count": {"type": "integer"}, "doors_selected_count": {"type": "integer"}}}
+  },
+  "map_derivations_allowed": {
+    "description": "What the future Farkındalık Haritası may compute from these events, and the exact language it may use. Anything not listed is out of scope until reviewed.",
+    "attention": {"from": ["figure_viewed.dwell_ms", "story_door_viewed.dwell_ms", "figure_info_opened"], "display_language": "'En çok burada durdun' — never 'seni en çok bu tanımlıyor'."},
+    "resonance": {"from": ["resonance_marked.mark == feels_like_me", "reveal_saved", "lived_outcome_returned.outcome_mark == it_held"], "display_language": "'Bunu tanıdık buldun' / 'Bunu sakladın' — user's own acts, quoted back."},
+    "repetition": {"from": ["story_door_selected across sessions", "figure_viewed across sessions", "door_theme_attached.tension_ref frequency"], "display_language": "'Buraya üç kez döndün' — a count, not a meaning."},
+    "forbidden": ["Any ranking of figures as 'your top gods'.", "Any percentage or score per figure or tension.", "Any sentence of the form 'sen … birisin'.", "Any inference from skipped/not_me beyond 'you passed this'.", "Cross-user comparison ('most people who chose this also…')."]
+  },
+  "retention_and_control": {"default_retention": "Until the user deletes; no silent expiry in v0.1 (decide before implementation).", "user_controls_required_before_implementation": ["view all events", "delete one event", "delete all", "export"], "note": "These controls are a precondition for collecting anything; the model is defined now so the first implementation does not have to guess which fields matter."},
+  "open_questions": [
+    "Should dwell_ms be collected at all in the 3D client, where 'looking at' is ambiguous? Alternative: record only explicit focus/select.",
+    "Whether door_theme_attached should be a separate event or a denormalised field on story_door_selected. Kept separate so content can be re-tagged without rewriting user events.",
+    "How CLOSE routes appear on the map: a CLOSE is a completed visit with no distinction; it should count as attention, not as resonance."
+  ]
+}
