@@ -7,6 +7,7 @@ import re
 import json
 import asyncio
 import logging
+import requests
 from pathlib import Path
 from pydantic import BaseModel, Field
 from typing import List, Optional, Literal
@@ -1198,23 +1199,46 @@ def _fifth_fallback(sess: dict) -> dict:
     }
 
 
+# Fifth Core talks to the Anthropic Messages API directly over HTTP. The credential is
+# attached by the environment's egress proxy (HTTPS_PROXY), so no key is read or sent here.
+FIFTH_MODEL = "claude-sonnet-4-6"
+ANTHROPIC_MESSAGES_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com").rstrip("/") + "/v1/messages"
+
+
+def _fifth_http_call(material: str) -> dict:
+    """One blocking POST to /v1/messages. Returns the raw response body (dict)."""
+    proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+    ca_bundle = os.environ.get("REQUESTS_CA_BUNDLE") or os.environ.get("SSL_CERT_FILE") or True
+    resp = requests.post(
+        ANTHROPIC_MESSAGES_URL,
+        headers={"content-type": "application/json", "anthropic-version": "2023-06-01"},
+        json={
+            "model": FIFTH_MODEL,
+            "max_tokens": 1024,
+            "system": FIFTH_CORE_PROMPT,
+            "messages": [{"role": "user", "content": material}],
+        },
+        # api.anthropic.com sits in NO_PROXY, so the proxy must be named explicitly for the
+        # credential to be injected; a bare request reaches the API unauthenticated (401).
+        proxies={"https": proxy} if proxy else None,
+        verify=ca_bundle,
+        timeout=60,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
 async def fifth_core(sess: dict) -> dict:
     """ONE model interaction. Returns the parsed core JSON (or the fallback)."""
-    if not EMERGENT_LLM_KEY:
-        data = _fifth_fallback(sess)
-        data["source"] = "fallback"
-        return data
     try:
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"fifth-{sess['session_id']}-{uuid.uuid4()}",
-            system_message=FIFTH_CORE_PROMPT,
-        ).with_model("anthropic", "claude-sonnet-4-6")
-        resp = await asyncio.wait_for(chat.send_message(UserMessage(text=_fifth_material(sess))), timeout=60)
-        raw = resp if isinstance(resp, str) else str(resp)
+        body = await asyncio.to_thread(_fifth_http_call, _fifth_material(sess))
+        raw = "".join(b.get("text", "") for b in body.get("content", []) if b.get("type") == "text")
         m = re.search(r'\{.*\}', raw, re.DOTALL)
         data = json.loads(m.group(0) if m else raw)
         data["source"] = "llm"
+        data["model"] = body.get("model")
+        data["usage"] = body.get("usage")
+        logger.info("Fifth core: model=%s stop=%s usage=%s", body.get("model"), body.get("stop_reason"), body.get("usage"))
         return data
     except Exception as e:
         logger.error(f"Fifth core failed, using fallback: {e}")

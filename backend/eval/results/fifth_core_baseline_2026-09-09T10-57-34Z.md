@@ -1,0 +1,139 @@
+# Fifth Core baseline — 2026-09-09T10-57-34Z
+
+Model: `claude-sonnet-4-6` · endpoint: `https://api.anthropic.com/v1/messages` · stories file: `eval/fifth_baseline_stories.json`
+
+## Summary
+
+- **stories**: 10
+- **turn1_question**: 2
+- **turn1_reveal**: 8
+- **turns_total**: 12
+- **turns_from_llm**: 12
+- **turns_from_fallback**: 0
+- **contract_ok**: 10
+- **models_seen**: ['claude-sonnet-4-6']
+- **avg_seconds_per_turn**: 15.53
+- **input_tokens**: 18821
+- **output_tokens**: 6519
+
+## Per story
+
+### b01 (İlişki) — turn1 QUESTION · source llm · 12.59s
+
+> Arkadaşım üçüncü kez son dakika planı iptal etti. Kızmadım ama bir daha teklif etmeyeceğim. Aslında kendime mi kızıyorum ona mı emin değilim.
+
+- noticed: ["Üçüncü kez iptal gerçekleşmiş, kızgınlık ifade edilmemiş ama 'bir daha teklif etmeyeceğim' denmiş.", 'Kızgınlığın kime yönelik olduğu belirsiz bırakılmış: arkadaşa mı, kendine mi.', 'Karar sessizce verilmiş, arkadaşa söylenmemiş.']
+- candidates: ['Arkadaşa kızıyor ama bunu ifade edemediği için kendine yöneltiyor olabilir.', 'Asıl rahatsızlık iptalden değil, tekrar teklif etmeye devam etmekten — yani kendi sınırını geç fark etmiş olmaktan kaynaklanıyor olabilir.', 'İkisi de yok; sadece ilişkinin nereye gittiğini anlamaya çalışıyor olabilir.']
+- question: Şu an aklında dönen hangisine daha yakın?
+- options: ['Arkadaşım bu iptalleri neden yaptığını bile açıklamadı, bu beni rahatsız ediyor.', 'Açıkladı ya da olağan sebepleri var ama ben yine de üçüncü kez kabul ettim, bu beni rahatsız ediyor.', 'İkisi de değil; ilişkinin bundan sonra nereye gideceğini bilmiyorum, bu beni rahatsız ediyor.']
+- why_ask: Cevaba göre asıl gerilimin arkadaşın davranışında mı yoksa kişinin kendi kararında mı olduğu netleşir ve iki okumadan biri elenir.
+
+**turn2** (answered: “Arkadaşım bu iptalleri neden yaptığını bile açıklamadı, bu beni rahatsız ediyor.”) — REVEAL · source llm · 14.62s
+- reveal: İlk bakışta bu bir 'ne kadar kez daha tahammül edeceğim' sorusu gibi görünüyor. Ama anlattığında asıl rahatsızlığın iptal değil, açıklamanın yokluğu olduğu çıkıyor ortaya. Yani arkadaşın 'planı bozmak' ile 'neden bozduğunu söylememek' arasında belki de ayrı şeyler bunlar — ve ikincisi sana ne hissettirdiğini hâlâ belli değil. Kendine kızma sorusu da belki oradan geliyor: iptal edilmek değil, açıklama beklemek mi seni bu noktaya taşıdı?
+- distinction: İptal edilmek ile açıklamasız bırakılmak arasında
+- uncertain: Arkadaşın bu sessizliğinin kasıtlı mı yoksa farkındasızlıktan mı olduğu bilinmiyor; bu fark, durumu nasıl taşıdığını etkileyebilir.
+- contract_ok: True
+
+### b02 (Toplum / Sistem) — turn1 REVEAL · source llm · 21.78s
+
+> Toplantıda fikrimi anlattım, herkes 'çok iyi' dedi. İki hafta geçti, kimse bir şey yapmadı. Ben mi kötü anlattım, yoksa aslında kimse istemedi mi bilmiyorum.
+
+- noticed: ['Fikir toplantıda sözel onay aldı ama iki haftada hiçbir somut adım atılmadı.', 'Kişi sorumluluğu önce kendine (kötü anlatmak) sonra gruba (istememek) yüklüyor, ikisi arasında sıkışmış.']
+- candidates: ["Fikir gerçekten beğenilmedi, 'çok iyi' kibarca geçiştirmeydi.", 'Fikir beğenildi ama kim yapacak, ne zaman başlanacak belli olmadığı için askıda kaldı.', 'Grup fikri sahiplenmedi; anlatım değil, sahiplenme eksikti.']
+- reveal: İlk bakışta 'anlatım kalitesi' sorunu gibi görünüyor ama iki haftalık sessizlik çoğunlukla anlatımla değil, sorumluluğun kimin üzerinde olduğuyla ilgili. 'Çok iyi' demek 'ben yapacağım' demek değil; onay verilmiş ama sahiplenilmemiş olabilir. Asıl ayrım şu: fikrin kötü karşılanması ile fikrin havada kalması farklı şeyler. Kötü karşılansaydı muhtemelen bir itiraz ya da sessiz bir ret olurdu; iki haftalık boşluk daha çok 'kim başlatacak' sorusunun yanıtsız kaldığına işaret ediyor gibi.
+- distinction: Fikrin reddedilmesi ile fikrin sahipsiz kalması arasında
+- uncertain: Toplantıda 'çok iyi'yi söyleyenlerin gerçekte ne düşündüğü ve harekete geçmek için birinin adım atmasını mı beklediği hâlâ belirsiz.
+- contract_ok: True
+
+### b03 (Kişi) — turn1 REVEAL · source llm · 13.97s
+
+> Herkese yetişiyorum, kim ne istese yapıyorum. Geçen hafta ilk kez ben bir şey istedim, cevap iki gün gecikti. Kırıldım ama söylemedim, tam tersine daha çok yardım ettim.
+
+- noticed: ['Herkese yetişiyor, herkesin isteğini karşılıyor.', 'İlk kez kendi istediği bir şeyi istedi, iki gün cevap gelmedi.', 'Kırılmasına rağmen bunu söylemedi; tam tersine daha fazla yardım etti.']
+- candidates: ["Kırılmayı ifade etmek yerine yardımı artırmak, 'görülmek için daha fazla ver' döngüsünü besliyor olabilir.", 'İki günlük gecikme gerçekten bir ihmal mi, yoksa kırılmanın büyüklüğü beklentinin ne kadar biriktiğini mi gösteriyor?', 'Kırılmayı söylememek bir korumayı da içeriyor olabilir — ilişkiyi, imajı ya da karşılıklılık beklentisini.']
+- reveal: İlk bakışta 'karşılıksız kalmak' gibi görünüyor. Ama anlatıdaki asıl kırılma noktası şu: kırıldığında bunu söylemek yerine daha çok yardım etmek, tam da görülmek istediği anda görünmez kılıyor kendini. Sanki 'belki daha fazla verirsem fark edilir' gibi — ama bu döngü tam tersi yönde işliyor olabilir.
+- distinction: Kırılmayı ifade etmek ile kırılmayı daha fazla yardımla örtmek arasında
+- uncertain: Bu 'söylememek'in arkasında ne var — karşılıklılık beklentisini kaybetme korkusu mu, yoksa zaten beklentisizlik mi — bunu bilmiyorum.
+- contract_ok: True
+
+### b04 (Bağlam) — turn1 REVEAL · source llm · 14.44s
+
+> Eski işimde sormadan halletmem takdir görüyordu. Yeni yerde aynı şeyi yaptım, 'niye danışmadın' dediler. Hem doğru yaptığımı düşünüyorum hem de kendimi suçlu hissediyorum.
+
+- noticed: ['Aynı davranış eski yerde takdir gördü, yeni yerde eleştirildi.', 'Kişi hem yaptığının doğru olduğunu düşünüyor hem suçluluk hissediyor — ikisi aynı anda var.', "Eleştiri içerik üzerine değil ('yanlış yaptın' değil), süreç üzerine ('niye danışmadın')."]
+- candidates: ['Kişi yanlış bir şey yaptı ve bunu kabul etmekte zorlanıyor olabilir.', 'Yaptığı doğruydu ama yeni yerin yazılı olmayan kuralını henüz bilmiyordu — hata içerikte değil, bağlamda.', 'Suçluluk hissi davranıştan değil, onaylanmama/yanlış anlaşılma hissinden geliyor olabilir.']
+- reveal: Eleştiri 'ne yaptın'a değil 'nasıl yaptın'a gelmiş — bu önemli bir ayrım. Eski yerde 'inisiyatif' olarak okunan şey, yeni yerde 'atlama' olarak okunmuş. Bu muhtemelen senin bir hatan değil, iki yerin farklı oyun kuralları. Suçluluk hissi gerçek ama kaynağı 'yanlış yapmak' olmayabilir; onaylanmamak ya da yeni ortamın dilini henüz bilmemek de aynı hissi üretebilir.
+- distinction: Yaptığın şeyin yanlış olması ile yapış biçiminin o ortamın koduna uymamış olması arasında
+- uncertain: Yeni yerin 'danışmak' beklentisi genel bir kültür mü, yoksa bu özel duruma özgü bir şey miydi — onu bilmiyorum.
+- contract_ok: True
+
+### b05 (Bağlam) — turn1 REVEAL · source llm · 13.39s
+
+> Her ay 'bu ilişki böyle gitmez' diyorum. Sonra bir şey çıkıyor: bayram, annemin ameliyatı, onun sınavı. Üç yıl oldu, karar hâlâ verilmedi.
+
+- noticed: ["Her ay 'bu ilişki böyle gitmez' diye düşünüyor ama kararı üç yıldır erteleniyor.", 'Her ertelemenin arkasında somut bir dış olay var: bayram, ameliyat, sınav.', "Karar 'verilmedi' diye söyleniyor — sanki özne belirsiz, kim erteliyor net değil."]
+- candidates: ["Dış olaylar gerçekten engelliyor olabilir; zamanlama kötü, 'doğru an' bekleniyor.", 'Dış olaylar bir bahane değil ama bir kalkan işlevi görüyor olabilir — karar vermemek için geçerli bir neden her zaman buluniyor.', "Karar aslında verilmiş ama kabul edilmek istenmiyor olabilir; 'gitmez' demek ile 'gidiyorum' demek arasında köprü kurulamamış."]
+- reveal: İlk bakışta zamanlama sorunu gibi görünüyor — her seferinde gerçekten bir şey çıkıyor. Ama asıl ayrım şurada olabilir: bu olaylar kararı zorlaştıran engeller mi, yoksa kararın ağırlığını taşımak zorunda kalmamak için bilinçsizce tutunan noktalar mı? Üç yılda 'karar verilmedi' demek, kararın hâlâ açık olduğu anlamına gelebilir; ya da kararın çoktan verildiği ama henüz sahiplenilmediği anlamına da gelebilir.
+- distinction: Dış olayların engel mi yoksa kalkan mı olduğu arasında
+- uncertain: Kararı erteleyenin baskı hissi mi, karşı tarafı koruma isteği mi, yoksa kendi kararsızlığı mı olduğu hâlâ belirsiz.
+- contract_ok: True
+
+### b06 (İlişki) — turn1 REVEAL · source llm · 22.53s
+
+> Annem her aramada 'iyi misin' diye soruyor ama ben bir şey anlatınca hemen konuyu kendine çeviriyor. Artık kısa cevap veriyorum. Sonra da telefonu kapatınca suçlu hissediyorum.
+
+- noticed: ["Anne 'iyi misin' diye soruyor ama cevap verilince konuyu kendine çeviriyor.", 'Kişi buna kısa cevap vererek tepki vermiş — bir tür geri çekilme.', 'Telefon kapandıktan sonra suçluluk duygusu geliyor.']
+- candidates: ['Annenin sorusu gerçek bir merak değil, bir alışkanlık ya da giriş cümlesi olabilir — kişi bunu fark edip kendini korumaya almış.', 'Kişi hem bağlantı istiyor hem de hayal kırıklığından korunmak için kapıyı kapatıyor; suçluluk bu ikisinin arasında sıkışmış olabilir.', 'Suçluluk, anneye karşı değil, kendi ihtiyacını geri çektiği için kendine yönelik olabilir.']
+- reveal: İlk bakışta annenin dinlememesi sorun gibi görünüyor, ama asıl ağırlık kapattıktan sonra gelen suçlulukta. Kısa cevap vermek seni koruyor — hayal kırıklığını tekrar yaşamamak için. Ama bu koruma bir bedelle geliyor: sanki sen bir şeyi kesmişsin gibi hissettiriyor, oysa aslında senin istediğin bağlantıyı o kesmiş olabilir. Suçluluk ile öz-koruma arasındaki bu fark görünmez kalırsa ikisi de aynı anda var olmaya devam eder.
+- distinction: Bağlantıyı kesen kim olduğu ile suçluluğu kimin taşıdığı arasında
+- uncertain: Annenin konuyu kendine çevirmesi bilinçli bir kalıp mı yoksa farkında olmadan mı yaptığı — bu, kişinin içindeki hesabı nasıl tuttuğunu değiştirebilir.
+- contract_ok: True
+
+### b07 (Kişi) — turn1 QUESTION · source llm · 15.03s
+
+> Terfi teklif ettiler. Herkes sevindi, ben sevinemedim. Gece uyuyamadım ama nedenini kendime bile söyleyemiyorum. Belki istemiyorum, belki korkuyorum, ayıramıyorum.
+
+- noticed: ['Terfi teklif edildi, çevresi sevindi ama kişi sevinemedi.', 'Gece uyuyamadı — yani beden bir şeye tepki verdi.', "Kendi içinde 'istemiyorum' ile 'korkuyorum'u ayırt edemiyor."]
+- candidates: ['Terfinin içeriği ya da koşulları zaten istenmeyen bir şeye işaret ediyor olabilir — sevinememek bir ret sinyali.', 'Terfi isteniyor ama başarısızlık, görünür olma ya da değişim korkusu sevinci bastırıyor olabilir — sevinememe bir korku sinyali.', "Dışarıdan gelen beklenti ('herkes sevindi') kişinin kendi tepkisini okumayı zorlaştırıyor olabilir — sinyal var ama gürültü altında."]
+- question: O gece aklından geçen şey hangisine daha yakındı?
+- options: ['Bu işi / rolü zaten istemiyordum', 'İstiyorum ama bir şeyden korkuyorum', 'Ne istediğimi bilmiyorum']
+- why_ask: Yanıt 'zaten istemiyorum' ise ret sinyali ön plana geçer; 'korkuyorum' ise korku mercekten bakılması gerekir — ikisi farklı ayrımlara götürür.
+
+**turn2** (answered: “Bu işi / rolü zaten istemiyordum”) — REVEAL · source llm · 13.55s
+- reveal: İlk bakışta bu bir korku hikâyesi gibi görünüyor — terfi geldi, ürkütücü geldi. Ama anlattığında karar değiştirici nokta farklı: aslında o işi / rolü zaten istemiyordun. Yani uyuyamamanın nedeni 'bunu yapabilir miyim' değil, 'bunu yapmak mı istiyorum' sorusuydu — ve cevabı muhtemelen zaten biliyordun. Herkesin sevinci belki o bilgiyi bir süre örtmüş olabilir.
+- distinction: Terfiyi istememe korkusu ile terfiyi zaten istememek arasında
+- uncertain: Bu isteğin ne zamandır farkındaydın ve bunu dile getirmenin önünde ne duruyor, onu bilmiyorum.
+- contract_ok: True
+
+### b08 (Toplum / Sistem) — turn1 REVEAL · source llm · 12.49s
+
+> Ekipte bir hata oldu, kimin yaptığı belli değildi. Toplantıda ben 'benim hatam olabilir' dedim, kimse bir şey demedi. Sonradan öğrendim ki başkasınınmış. Şimdi herkes bana bakıyor gibi geliyor.
+
+- noticed: ["Hatanın kime ait olduğu belirsizken kişi öne çıkıp 'benim olabilir' dedi.", 'Sonradan hatanın başkasına ait olduğu ortaya çıktı.', "Şu an 'herkes bana bakıyor' hissi var."]
+- candidates: ['Sorumluluk almak iyi niyetli bir davranıştı ama şimdi gereksiz yere lekelenmiş gibi hissettiriyor.', "O anlık sessizlik 'kabul' gibi algılanmış olabilir ve düzeltilmeden geçildi.", 'Belki asıl ağırlık, hatanın kimin olduğundan çok o öne çıkma kararının ne anlama geldiğine dair belirsizlikten kaynaklanıyor.']
+- reveal: İlk bakışta 'gereksiz yere sahiplendim, şimdi yanlış anlaşıldım' gibi görünüyor. Ama asıl ağırlık muhtemelen başka bir yerde: o an öne çıkmak gerçekten iyi niyetliydi, kimse bunu düzeltmedi, ve şimdi o sessizliğin ne anlama geldiği havada asılı kaldı. 'Herkes bana bakıyor' hissi de büyük ihtimalle o düzeltilmemiş anın yarattığı boşluktan besleniyor — hatadan değil, hikâyenin kapanmamış olmasından.
+- distinction: Hatalı görünmek ile hikâyenin kapanmamış olması arasında
+- uncertain: O toplantıda başkalarının ne düşündüğü ve o sessizliğin gerçekten 'kabul' olarak mı yoksa başka bir şekilde mi algılandığı bilinmiyor.
+- contract_ok: True
+
+### b09 (İlişki) — turn1 REVEAL · source llm · 16.1s
+
+> Eşimle konuştuğumda o hep çözüm söylüyor, ben sadece anlatmak istiyorum. Sonunda ben susuyorum, o da 'ne oldu şimdi' diyor. Aynı sahne, her hafta.
+
+- noticed: ['Eş dinlemek yerine hemen çözüm öneriyor.', 'Kişi susuyor — itiraz etmiyor, çekiliyor.', 'Aynı döngü her hafta tekrar ediyor, ikisi de farkında ama değişmiyor.']
+- candidates: ["Eş 'yardım ediyorum' sanıyor, kişi 'duyulmak istiyorum' diyor — ikisi farklı dilden konuşuyor.", "Susma bir protesto olabilir; ama eş bunu 'ne oldu' diye okuyunca döngü kapanıyor ve mesaj iletilemiyor.", 'Belki kişi ne istediğini söylemekten kaçınıyor — sormadan anlaşılmayı bekliyor olabilir.']
+- reveal: İlk bakışta eşin empati kuramaması gibi görünüyor. Ama anlattığında karar değiştirici nokta şu: ikisi de her hafta aynı yere geliyor, yani ikisi de bu döngünün içinde. Susma aslında bir mesaj — 'anlamadın' — ama eş onu 'ne oldu şimdi' diye okuyunca mesaj hiç iletilemiyor. Belki asıl ayrım, duyulmak istediğini söylemeden beklenmesi ile bunu bir kez doğrudan dile getirmek arasında.
+- distinction: Anlaşılmayı beklemek ile anlaşılmak istediğini söylemek arasında
+- uncertain: Kişinin bunu daha önce açıkça söyleyip söylemediği, ya da söylediğinde ne olduğu bilinmiyor.
+- contract_ok: True
+
+### b10 (Kişi) — turn1 REVEAL · source llm · 15.91s
+
+> Bugün çok iyi bir haber aldım, sınavı kazandım. Ailemi aradım, herkes çok mutlu oldu. Ben de mutluyum, sadece bunu bir yere yazmak istedim.
+
+- noticed: ['Sınav kazanıldı ve aile mutlu oldu.', 'Kişi de mutlu olduğunu söylüyor.', "Ama haberi bir yere 'yazmak istedi' — paylaşmak için değil, bir yere bırakmak için."]
+- candidates: ['Sevinç tam, paylaşmak yeterliydi ve bu kadar.', 'Sevinç var ama bir yerde tam oturmuş hissi yok; yazmak onu gerçek kılmak için.', 'Etrafta kutlama var ama kişinin kendi içinde bir şeyi duyurmak istediği biri yok.']
+- reveal: Sevinç gerçek, şüphe etmek istemem. Ama 'bir yere yazmak istedim' cümlesi küçük ama ilginç — genelde bir şeyi kaybetmemek için ya da tam olarak tutunamamışken böyle hissedilir. Belki haber paylaşıldı, kutlandı; ama haberi gerçekten alan, onu duyan biri olmadı gibi bir his var gibi görünüyor. Bunun böyle olup olmadığını bilemem.
+- distinction: Sevincin paylaşılmış olması ile sevincin duyulmuş olması arasında
+- uncertain: Bu yazma ihtiyacının arkasında eksik bir alıcı mı var, yoksa sadece anı kaydetme isteği mi — bunu bilmiyorum.
+- contract_ok: True
