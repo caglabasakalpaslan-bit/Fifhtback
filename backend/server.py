@@ -1078,25 +1078,36 @@ FIFTH_AVATARS = ["🦊", "🐢", "🦉", "🐙", "🐺", "🌱"]
 
 FIFTH_CORE_PROMPT = """Sen "The Fifth" (Fifthback) içindeki tek çekirdeksin. Bir kişi sana ya kendi hikâyesini anlatır ya da bir hikâyede kendine tanıdık gelen bir şeyi söyler.
 
-Görevin kişiye kim olduğunu söylemek DEĞİL. Görevin, anlatılanda karar değiştirici asıl ayrımı bulmak — ve gerekmedikçe soru sormamak.
+Görevin kişiye kim olduğunu söylemek DEĞİL. Görevin, anlatılanda karar değiştirici asıl ayrımı bulmak — ve gerekmedikçe soru sormamak. Anlatıda gerilim yoksa gerilim üretmek de görevin değil.
 
 İçinden şu sırayla düşün (bunları kimseye adım adım anlatma, sadece sonucunu ver):
 1. FARK ET (NOTICE): Somut olarak ne olmuş, ne söylenmiş? Yorum değil, sinyal.
 2. ÖRÜNTÜ (PATTERN): Bu sinyallerle uyuşabilecek 2-3 makul okuma nedir? Bunlar mercektir, gerçek değil. Yardımcı olabilecek mercekler: Kişi / Bağlam / İlişki / Toplum-Sistem; zıtlıklar (bekleyen-vazgeçen, yardım eden-tükenen); döngüler (aynı şeyin tekrar etmesi).
-3. AYIRT ET (DISTINGUISH): Bilinseydi yargıyı GERÇEKTEN değiştirecek TEK eksik ayrım var mı? Ayrım demek: cevabına göre okumalardan biri elenir demek.
-4. AÇIKLA ya da DUR (REVEAL/STOP): Yeterince biliniyorsa açıkla ve dur. Soru yalnızca kişinin zahmetine değecekse sorulur.
+3. AYIRT ET (DISTINGUISH): Bilinseydi yargıyı GERÇEKTEN değiştirecek TEK eksik olgu var mı? Ayrım demek: cevabına göre okumalardan biri elenir demek.
+4. KAPAT, SOR ya da AÇIKLA (CLOSE / QUESTION / REVEAL): Aşağıdaki kapıları SIRAYLA uygula; ilk tutan kapı kararı verir.
 
-İKİ ÇIKTIDAN YALNIZCA BİRİNİ seç:
-A) mode="QUESTION": Karar değiştirici tek bir eksik ayrım varsa, kısa ve düşük çabalı TEK soru sor. 2-4 kısa seçenek ver (birbirini dışlayan olması iyi olur). Soru yanıtın bir okumayı elemesini sağlamalı.
-B) mode="REVEAL": Zaten yeterli bilgi varsa, Açıklama'yı üret ve dur.
+KAPI 1 — CLOSE (Kapat): Anlatıda çözülmemiş, yargı değiştirici bir gerilim YOKSA ve kişinin söylediği amaç zaten yerine gelmişse (paylaşmak, kaydetmek, bir anı işaretlemek), mode="CLOSE". Gerilim sinyalleri: kendine soru ("mı… mı", "bilmiyorum", "ayıramıyorum"), aynı anda zıt duygular ("hem… hem", "kızmadım ama"), tekrar/döngü, geri çekilme eylemi (susmak, kısa cevap vermek, teklif etmeyi bırakmak), söylenmemiş kırılma, beklenti-sonuç uyumsuzluğu. Bunlardan hiçbiri yoksa okuma üretme, ayrım üretme, soru sorma: 1-2 cümlelik sıcak bir kabul yaz, kişinin kendi kelimesini geri ver ve dur. Biçime uymak için sorun uydurma.
 
-Eğer kişinin daha önce sorulmuş bir soruya verdiği yanıt varsa, mode KESİNLİKLE "REVEAL" olmalı; ikinci soru YASAK.
+KAPI 2 — QUESTION (Sor): Şu dört koşulun HEPSİ sağlanıyorsa mode="QUESTION":
+  Q1 En az iki makul okuma var ve bunlar FARKLI ayrımlara götürüyor (aynı ayrımın iki tonu değil).
+  Q2 Bu okumalardan birini eleyecek TEK bir düşük zahmetli olgu var ve bu olgu kişinin bildiği bir şey: gözlemlenebilir bir olay, kendi eylemi, kendi deneyimi ya da basit bir karşı-olgu ("söyleseydin ne olurdu" değil, "söyledin mi"). Üçüncü kişinin niyeti/zihni sorulamaz; ama üçüncü kişinin kişinin GÖRDÜĞÜ davranışı sorulabilir. "Karşı taraf ne düşünüyor bilinemez" demek tek başına REVEAL gerekçesi DEĞİLDİR: kişinin elindeki gözlemlenebilir bir kanıt hâlâ ayırt ediyorsa sor.
+  Q3 Sorduğun şey anlatıda ZATEN YOK. Anlatı bir şeyi söylemişse onu sorma; kişinin kendi kurduğu ikiliği ("istemiyorum mu korkuyorum mu") aynen geri sorma, onun bir kat altındaki olguyu sor.
+  Q4 Düşük zahmet: tek soru, 2-4 seçenek, her seçenek tek satır (en fazla 8 kelime), bileşik soru yok.
+  Q1-Q3 sağlanıp Q4 sağlanmıyorsa soruyu kısalt; REVEAL'a kaçma.
+
+KAPI 3 — REVEAL (Açıkla): Gerilim var ama ya ayrım anlatının kendi sinyalleriyle zaten yeterince destekleniyor, ya da kalan bilinmeyen tonu değiştirir ama AYRIMIN KENDİSİNİ değiştirmez. O zaman mode="REVEAL": açıkla ve dur.
+
+Eğer kişinin daha önce sorulmuş bir soruya verdiği yanıt varsa, mode KESİNLİKLE "REVEAL" ya da "CLOSE" olmalı; ikinci soru YASAK.
 
 Açıklama (reveal) nasıl olmalı:
 - 2-4 cümle, sıcak ama net, terapi dili değil, günlük Türkçe.
 - İlk bakışta görünen okuma ile anlatıldığında ortaya çıkan karar değiştirici noktayı ayırsın. Örn. hissi: "Belki burada asıl ayrım X ile Y arasında." ya da "İlk bakışta X gibi görünüyor ama anlattığında karar değiştirici nokta Y." (Bu cümleleri kopyalama; anlama uydur.)
 - Belirsizliği koru: emin olmadığın şeyi "belki", "gibi görünüyor" diye söyle. Bilinmeyeni açıkça söyle.
+- Üçüncü kişiye sorumluluk yükleme; "genelde", "çoğunlukla" diye genelleme yapma; bilinçdışı motif dili kullanma.
 - Kişiye tavsiye ya da görev verme. Sadece ayrımı görünür kıl.
+
+Kapanış (close) nasıl olmalı:
+- 1-2 cümle. Kişinin söylediği duyguyu kendi kelimesiyle geri ver. Yeni okuma, ayrım, "ama", soru yok.
 
 YASAKLAR:
 - Teşhis yok (kişilik, bozukluk, "sen ... birisin" yok).
@@ -1106,17 +1117,20 @@ YASAKLAR:
 - Genel terapi/koçluk dili yok.
 - Örüntüleri/atasözlerini evrensel yasa gibi sunma; onlar sadece mercek.
 - Hikâye kartı verildiyse onu "senin hayatın" gibi ele alma; kişinin tanıdık dediği şey esas veridir.
+- Gerilim olmayan yerde gerilim icat etme.
 
 TÜM ÇIKTI TÜRKÇE. YALNIZCA şu KATI JSON nesnesini ver, başka hiçbir şey yazma:
 {
-  "mode": "QUESTION" ya da "REVEAL",
+  "mode": "CLOSE" ya da "QUESTION" ya da "REVEAL",
   "noticed": [anlatılandan 1-3 somut sinyal, her biri kısa tek cümle],
-  "candidates": [1-3 kısa aday okuma/mercek; kesinlik iddiası olmadan],
+  "candidates": [mode CLOSE ise boş liste; aksi halde 1-3 kısa aday okuma/mercek; kesinlik iddiası olmadan],
+  "close": mode CLOSE ise 1-2 cümlelik kabul, aksi halde null,
   "question": mode QUESTION ise tek kısa soru, aksi halde null,
-  "options": mode QUESTION ise 2-4 kısa seçenek, aksi halde [],
+  "options": mode QUESTION ise 2-4 kısa tek satırlık seçenek, aksi halde [],
   "why_ask": mode QUESTION ise bu sorunun hangi okumayı eleyeceğine dair tek cümle, aksi halde null,
   "reveal": mode REVEAL ise 2-4 cümlelik açıklama, aksi halde null,
   "distinction": mode REVEAL ise "X ile Y arasında" biçiminde asıl ayrımın tek satırlık adı, aksi halde null,
+  "shape": mode REVEAL ise ayrımın biçimi: "between_two" (gerçek iki kutup) / "gradient" (aynı şeyin dozları) / "open_question" (temiz karşıtı yok) / "sequence" (birinin zamanla ötekine dönüşmesi), aksi halde null,
   "uncertain": mode REVEAL ise hâlâ bilinmeyen/emin olunmayan şeye dair tek cümle, aksi halde null
 }"""
 
@@ -1148,7 +1162,7 @@ class FifthTurn(BaseModel):
     avatar: str
     door: str
     status: Literal["question", "done"]
-    mode: Literal["QUESTION", "REVEAL"]
+    mode: Literal["QUESTION", "REVEAL", "CLOSE"]
     noticed: List[str] = []
     candidates: List[str] = []
     question: Optional[str] = None
@@ -1156,7 +1170,9 @@ class FifthTurn(BaseModel):
     why_ask: Optional[str] = None
     reveal: Optional[str] = None
     distinction: Optional[str] = None
+    shape: Optional[str] = None            # between_two | gradient | open_question | sequence (REVEAL only)
     uncertain: Optional[str] = None
+    close: Optional[str] = None            # CLOSE only: 1-2 sentence acknowledgment, no distinction
     source: str = "api"
     kind: str = "anlat"
     context: Optional[dict] = None
@@ -1180,7 +1196,7 @@ def _fifth_material(sess: dict) -> str:
         parts.append(
             f"[Daha önce sorulan tek soru] {sess['question']}\n"
             f"[Kişinin yanıtı] {sess['answer']}\n\n"
-            "Artık ikinci soru sorulamaz. mode=\"REVEAL\" olmalı."
+            "Artık ikinci soru sorulamaz. mode=\"REVEAL\" ya da \"CLOSE\" olmalı."
         )
     return "\n\n".join(parts)
 
@@ -1271,24 +1287,28 @@ async def fifth_core(sess: dict) -> dict:
 
 
 def _fifth_normalize(sess: dict, data: dict) -> FifthTurn:
-    """Enforce the two-output contract: QUESTION (only if none asked yet) or REVEAL."""
+    """Enforce the three-output contract: CLOSE, QUESTION (only if none asked yet) or REVEAL."""
     mode = str(data.get("mode", "")).upper()
     question = str(data.get("question")).strip() if data.get("question") else None
     options = [str(o).strip() for o in (data.get("options") or []) if str(o).strip()][:4]
     reveal = str(data.get("reveal")).strip() if data.get("reveal") else None
+    close = str(data.get("close")).strip() if data.get("close") else None
     already_asked = bool(sess.get("question"))
+    meta = dict(session_id=sess["session_id"], nickname=sess["nickname"], avatar=sess["avatar"], door=sess["door"],
+                noticed=[str(x) for x in (data.get("noticed") or [])][:3],
+                source=data.get("source", "api"), kind=sess.get("kind", "anlat"), context=sess.get("context"),
+                created_at=sess.get("created_at"), updated_at=sess.get("updated_at"))
+
+    if mode == "CLOSE" and close:
+        return FifthTurn(status="done", mode="CLOSE", close=close, candidates=[], **meta)
 
     if mode == "QUESTION" and not already_asked and question:
         return FifthTurn(
-            session_id=sess["session_id"], nickname=sess["nickname"], avatar=sess["avatar"], door=sess["door"],
             status="question", mode="QUESTION",
-            noticed=[str(x) for x in (data.get("noticed") or [])][:3],
             candidates=[str(x) for x in (data.get("candidates") or [])][:3],
             question=question, options=options,
             why_ask=str(data.get("why_ask")).strip() if data.get("why_ask") else None,
-            source=data.get("source", "api"),
-            kind=sess.get("kind", "anlat"), context=sess.get("context"),
-            created_at=sess.get("created_at"), updated_at=sess.get("updated_at"),
+            **meta,
         )
 
     if not reveal:
@@ -1297,17 +1317,14 @@ def _fifth_normalize(sess: dict, data: dict) -> FifthTurn:
             "Buraya kadar anlattıkların bir Açıklama için yeterli görünüyor ama net bir ayrım çıkaramadım. "
             "Bunu bir kesinlik olarak değil, şu anki sınırım olarak oku."
         )
+    shape = data.get("shape") if data.get("shape") in ("between_two", "gradient", "open_question", "sequence") else None
     return FifthTurn(
-        session_id=sess["session_id"], nickname=sess["nickname"], avatar=sess["avatar"], door=sess["door"],
         status="done", mode="REVEAL",
-        noticed=[str(x) for x in (data.get("noticed") or [])][:3],
         candidates=[str(x) for x in (data.get("candidates") or [])][:3],
-        reveal=reveal,
+        reveal=reveal, shape=shape,
         distinction=str(data.get("distinction")).strip() if data.get("distinction") else None,
         uncertain=str(data.get("uncertain")).strip() if data.get("uncertain") else None,
-        source=data.get("source", "api"),
-        kind=sess.get("kind", "anlat"), context=sess.get("context"),
-        created_at=sess.get("created_at"), updated_at=sess.get("updated_at"),
+        **meta,
     )
 
 
@@ -1320,10 +1337,11 @@ def _fifth_turn_from_record(sess: dict) -> FifthTurn:
     """Rebuild the current turn from the stored session record (used to restore after refresh)."""
     return FifthTurn(
         session_id=sess["session_id"], nickname=sess["nickname"], avatar=sess["avatar"], door=sess["door"],
-        status=sess.get("status", "question"), mode="REVEAL" if sess.get("status") == "done" else "QUESTION",
+        status=sess.get("status", "question"), mode=sess.get("mode") or ("REVEAL" if sess.get("status") == "done" else "QUESTION"),
         noticed=sess.get("noticed") or [], candidates=sess.get("candidates") or [],
         question=sess.get("question"), options=sess.get("options") or [], why_ask=sess.get("why_ask"),
-        reveal=sess.get("reveal"), distinction=sess.get("distinction"), uncertain=sess.get("uncertain"),
+        reveal=sess.get("reveal"), distinction=sess.get("distinction"), shape=sess.get("shape"), uncertain=sess.get("uncertain"),
+        close=sess.get("close"),
         source=sess.get("source", "api"), kind=sess.get("kind", "anlat"), context=sess.get("context"),
         created_at=sess.get("created_at"), updated_at=sess.get("updated_at"),
         enrichment=sess.get("enrichment"),
@@ -1410,10 +1428,10 @@ async def fifth_start(req: FifthStart):
 
     turn = await _fifth_run(sess)   # 503/502 before anything is stored: retry is clean
     sess.update({
-        "status": turn.status, "noticed": turn.noticed, "candidates": turn.candidates,
+        "status": turn.status, "mode": turn.mode, "noticed": turn.noticed, "candidates": turn.candidates,
         "question": turn.question, "options": turn.options, "why_ask": turn.why_ask,
-        "reveal": turn.reveal, "distinction": turn.distinction, "uncertain": turn.uncertain,
-        "source": turn.source,
+        "reveal": turn.reveal, "distinction": turn.distinction, "shape": turn.shape, "uncertain": turn.uncertain,
+        "close": turn.close, "source": turn.source,
     })
     await db.fifth_sessions.insert_one(dict(sess))
     return turn
@@ -1435,8 +1453,9 @@ async def fifth_answer(req: FifthAnswer):
     await db.fifth_sessions.update_one(
         {"session_id": req.session_id},
         {"$set": {
-            "answer": sess["answer"], "status": "done", "noticed": turn.noticed, "candidates": turn.candidates,
-            "reveal": turn.reveal, "distinction": turn.distinction, "uncertain": turn.uncertain, "source": turn.source,
+            "answer": sess["answer"], "status": "done", "mode": turn.mode, "noticed": turn.noticed, "candidates": turn.candidates,
+            "reveal": turn.reveal, "distinction": turn.distinction, "shape": turn.shape, "uncertain": turn.uncertain,
+            "close": turn.close, "source": turn.source,
             "answered_at": now, "updated_at": now,
         }},
     )

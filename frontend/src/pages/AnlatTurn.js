@@ -29,7 +29,7 @@ export const AnlatTurn = () => {
 
   // Enrichment runs only after a completed Reveal, never blocks it, and never changes it.
   useEffect(() => {
-    if (!turn || turn.status !== "done") return;
+    if (!turn || turn.status !== "done" || turn.mode === "CLOSE") return;   // CLOSE: no other role runs
     if (turn.enrichment) { setEnrichment(turn.enrichment); return; }
     if (enrichment) return;
     let cancelled = false;
@@ -111,6 +111,21 @@ export const AnlatTurn = () => {
               </button>
             </div>
             {failure && <ModelUnavailable kind={failure} onRetry={() => reply(pendingAnswer)} retrying={loading} draftKept={false} />}
+          </motion.div>
+        ) : turn.mode === "CLOSE" ? (
+          <motion.div key="c" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+            className="rounded-2xl border border-[#E7E0D8] bg-white p-6 sm:p-8 shadow-sm space-y-5" data-testid="fifth-close">
+            <Label color="#8A847C">Duyuldu</Label>
+            <p className="font-serif text-2xl sm:text-3xl leading-snug">{turn.close}</p>
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+              <span className="text-sm text-[#8A847C]">Eklenecek bir şey yok, {turn.nickname}.</span>
+              <div className="flex items-center gap-4">
+                <button data-testid="turn-new-story" onClick={newStory} className="inline-flex items-center gap-1.5 text-sm font-medium text-[#57534E] hover:text-[#1A1816]">
+                  <RotateCcw className="h-4 w-4" /> Yeni bir hikâye
+                </button>
+                <button data-testid="turn-home" onClick={() => navigate("/")} className="text-sm font-medium text-[#57534E] hover:text-[#1A1816]">Kapılara dön</button>
+              </div>
+            </div>
           </motion.div>
         ) : (
           <motion.div key="r" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}

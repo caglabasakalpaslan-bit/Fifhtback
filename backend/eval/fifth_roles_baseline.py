@@ -16,6 +16,9 @@ except ImportError:
 import server  # noqa: E402
 from fifth_roles import run_after_reveal  # noqa: E402
 
+FOUNDER_ROUTES = {"b01": "QUESTION", "b02": "QUESTION", "b03": "QUESTION", "b04": "REVEAL", "b05": "QUESTION",
+                  "b06": "REVEAL", "b07": "QUESTION", "b08": "QUESTION", "b09": "QUESTION", "b10": "CLOSE"}
+
 
 def call_counting():
     st = {"calls": 0, "in": 0, "out": 0}
@@ -32,14 +35,15 @@ async def run_story(item):
     rec = {"id": item["id"], "story": sess["story"], "core_calls": 0, "core_tokens": {"in": 0, "out": 0}, "core_latency_ms": 0}
     t0 = time.perf_counter(); data = await server.fifth_core(sess); turn = server._fifth_normalize(sess, data)
     rec["core_calls"] += 1; rec["core_tokens"]["in"] += data["usage"]["input_tokens"]; rec["core_tokens"]["out"] += data["usage"]["output_tokens"]
-    rec["turn1"] = {"mode": turn.mode, "question": turn.question, "options": turn.options}
+    rec["turn1"] = {"mode": turn.mode, "question": turn.question, "options": turn.options, "why_ask": turn.why_ask, "close": turn.close}
+    rec["founder_route"] = FOUNDER_ROUTES.get(item["id"]); rec["core_route_turn1"] = turn.mode; rec["route_match"] = (turn.mode == rec["founder_route"])
     if turn.status == "question":
         sess.update({"question": turn.question, "options": turn.options, "answer": turn.options[0] if turn.options else "Emin değilim"})
         data = await server.fifth_core(sess); turn = server._fifth_normalize(sess, data)
         rec["core_calls"] += 1; rec["core_tokens"]["in"] += data["usage"]["input_tokens"]; rec["core_tokens"]["out"] += data["usage"]["output_tokens"]
         rec["answered_with"] = sess["answer"]
     rec["core_latency_ms"] = int((time.perf_counter() - t0) * 1000)
-    rec["core"] = {"distinction": turn.distinction, "reveal": turn.reveal, "uncertain": turn.uncertain, "noticed": turn.noticed, "source": turn.source}
+    rec["core"] = {"mode": turn.mode, "distinction": turn.distinction, "shape": turn.shape, "reveal": turn.reveal, "close": turn.close, "uncertain": turn.uncertain, "noticed": turn.noticed, "source": turn.source}
     call, st = call_counting()
     res = await asyncio.to_thread(run_after_reveal, turn, sess, call, None, server.FifthUnavailable, server.FifthBadOutput)
     rec["route"] = res.core_reveal.route
@@ -59,14 +63,16 @@ async def main():
     for it in stories:
         r = await run_story(it); out["records"].append(r)
         e = r["enrichment"]
-        print(f"{r['id']}: route={r['route']} core_calls={r['core_calls']} roles_calls={r['roles_calls']} lib={len((r['librarian'] or {}).get('candidates', []))} "
+        fid = (e.get("fidelity") or {}).get("passed")
+        print(f"{r['id']}: founder={r['founder_route']} core_turn1={r['core_route_turn1']} match={r['route_match']} final={r['route']} core_calls={r['core_calls']} roles_calls={r['roles_calls']} lib={len((r['librarian'] or {}).get('candidates', []))} fidelity={fid} "
               f"skeptic={(r['skeptic'] or {}).get('passed')} used={e['used']} reason={e.get('reason')} identical={r['core_identical']} "
               f"latency={r['core_latency_ms']}+{r['roles_latency_ms']}ms", flush=True)
     os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
     path = os.path.join(HERE, "results", f"fifth_roles_baseline_{out['run_at']}.json")
     json.dump(out, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     used = sum(1 for r in out["records"] if r["enrichment"]["used"])
-    print(f"\nSUMMARY enrichments_used={used}/10 core_identical={all(r['core_identical'] for r in out['records'])} wrote {path}")
+    matches = sum(1 for r in out["records"] if r["route_match"])
+    print(f"\nSUMMARY route_matches={matches}/10 enrichments_used={used}/10 core_identical={all(r['core_identical'] for r in out['records'])} wrote {path}")
 
 
 if __name__ == "__main__":

@@ -12,8 +12,10 @@ from .storyteller import storyteller
 
 def _trace(meta: dict, t0: float, ran=True, **detail) -> RoleTrace:
     u = (meta or {}).get("usage") or {}
-    return RoleTrace(ran=ran, calls=(meta or {}).get("calls", 0), latency_ms=int((time.perf_counter() - t0) * 1000),
-                     input_tokens=u.get("input_tokens", 0), output_tokens=u.get("output_tokens", 0), model=(meta or {}).get("model"), detail=detail)
+    fu = (meta or {}).get("fidelity_usage") or {}
+    return RoleTrace(ran=ran, calls=(meta or {}).get("calls", 0) + (meta or {}).get("fidelity_calls", 0), latency_ms=int((time.perf_counter() - t0) * 1000),
+                     input_tokens=u.get("input_tokens", 0) + fu.get("input_tokens", 0), output_tokens=u.get("output_tokens", 0) + fu.get("output_tokens", 0),
+                     model=(meta or {}).get("model"), detail=detail)
 
 
 def run_after_reveal(turn, sess, call_model: Callable[[str, str], dict], records=None, unavailable_exc=Exception, bad_output_exc=Exception) -> PipelineResult:
@@ -49,7 +51,7 @@ def run_after_reveal(turn, sess, call_model: Callable[[str, str], dict], records
     except (bad_output_exc, ValueError, KeyError, TypeError) as e:
         traces["librarian"] = _trace({}, t0, error=f"bad_output:{e.__class__.__name__}")
         return finish(Enrichment(used=False, reason="librarian_bad_output"))
-    traces["librarian"] = _trace(meta, t0, candidates=len(lib.candidates), recall_considered=lib.recall_considered)
+    traces["librarian"] = _trace(meta, t0, candidates=len(lib.candidates), shown_to_mapper=lib.recall_considered, prefilter=lib.prefilter, dropped=len(lib.dropped_by_verification))
     if not lib.candidates:
         return finish(Enrichment(used=False, reason="librarian_zero_candidates"), lib)
 
@@ -78,5 +80,5 @@ def run_after_reveal(turn, sess, call_model: Callable[[str, str], dict], records
     except (bad_output_exc, ValueError, KeyError, TypeError) as e:
         traces["storyteller"] = _trace({}, t0, error=f"bad_output:{e.__class__.__name__}")
         return finish(Enrichment(used=False, reason="storyteller_bad_output"), lib, sk)
-    traces["storyteller"] = _trace(meta, t0, used=enr.used)
+    traces["storyteller"] = _trace(meta, t0, used=enr.used, fidelity=(enr.fidelity or {}).get("passed"), fidelity_calls=meta.get("fidelity_calls", 0))
     return finish(enr, lib, sk)

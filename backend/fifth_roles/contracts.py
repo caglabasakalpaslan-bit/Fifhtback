@@ -12,6 +12,7 @@ class CoreReveal(BaseModel):
     distinction: Optional[str] = None
     reveal: Optional[str] = None
     uncertain: Optional[str] = None
+    shape: Optional[str] = None           # between_two | gradient | open_question | sequence, from the core
     noticed: List[str] = []
     candidates: List[str] = []            # readings the core considered (used only to avoid re-importing eliminated ones)
     answered: bool = False
@@ -64,7 +65,9 @@ class LibrarianCandidate(BaseModel):
 
 class LibrarianOutput(BaseModel):
     candidates: List[LibrarianCandidate] = Field(default_factory=list, max_length=5)
-    recall_considered: int = 0
+    recall_considered: int = 0            # records that passed the structural pre-filter and were shown to the mapper
+    prefilter: Dict[str, Any] = {}        # why records were excluded before any model call
+    dropped_by_verification: List[Dict[str, Any]] = []   # mapper output the code refused (no pole grounding / unknown id)
     query_sent: Dict[str, Any] = {}
 
 
@@ -95,6 +98,7 @@ class Enrichment(BaseModel):
     label_tr: str = "Başka bir dilde"
     disclaimer_tr: Optional[str] = None
     reason: Optional[str] = None          # why not used, when used == False
+    fidelity: Optional[Dict[str, Any]] = None   # source-fidelity post-check: {"passed": bool, "claims": [...], "deterministic": [...]}
 
 
 # ---------- PIPELINE ----------

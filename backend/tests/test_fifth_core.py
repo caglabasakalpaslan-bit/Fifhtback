@@ -31,12 +31,15 @@ def api():
 def _assert_turn_contract(t):
     assert t["session_id"]
     assert t["status"] in ("question", "done")
-    assert t["mode"] in ("QUESTION", "REVEAL")
+    assert t["mode"] in ("QUESTION", "REVEAL", "CLOSE")
     if t["status"] == "question":
         assert t["mode"] == "QUESTION"
         assert isinstance(t["question"], str) and t["question"].strip()
         assert 2 <= len(t["options"]) <= 4
         assert t["reveal"] is None
+    elif t["mode"] == "CLOSE":
+        assert isinstance(t["close"], str) and len(t["close"].strip()) > 5
+        assert t["reveal"] is None and t["distinction"] is None and t["question"] is None and t["options"] == []
     else:
         assert t["mode"] == "REVEAL"
         assert isinstance(t["reveal"], str) and len(t["reveal"].strip()) > 20
@@ -90,6 +93,19 @@ def test_enrich_endpoint_stops_on_question_and_never_alters_core(api):
     # session restore now carries the stored pipeline result
     s2 = api.get(f"{BASE_URL}/api/fifth/session/{t['session_id']}", timeout=30).json()
     assert s2["enrichment"]["core_identical"] is True
+
+
+def test_close_is_a_real_core_output_for_a_tension_free_story(api):
+    r = api.post(f"{BASE_URL}/api/fifth/start", json={
+        "nickname": "tilki", "avatar": "🦊", "door": "tell",
+        "story": "Bugün çok iyi bir haber aldım, sınavı kazandım. Ailemi aradım, herkes çok mutlu oldu. Ben de mutluyum, sadece bunu bir yere yazmak istedim.",
+    }, timeout=120)
+    if r.status_code == 503:
+        pytest.skip("model unavailable in this runtime — honest 503, nothing fabricated")
+    t = r.json(); _assert_turn_contract(t)
+    assert t["mode"] == "CLOSE", f"expected CLOSE for a tension-free story, got {t['mode']}: {t.get('reveal') or t.get('question')}"
+    e = api.post(f"{BASE_URL}/api/fifth/enrich/{t['session_id']}", timeout=60).json()
+    assert e["core_reveal"]["route"] == "CLOSE" and e["enrichment"]["used"] is False and e["total_calls"] == 0
 
 
 def test_stories_seed(api):
