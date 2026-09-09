@@ -86,3 +86,6 @@ android-sdk/
 credentials.json
 *.key
 .credentials
+
+# Generated locally without @emergentbase/visual-edits (host blocked in the sandbox); does not match package.json
+frontend/yarn.lock
