@@ -1,0 +1,1530 @@
+{
+  "run_at": "2026-09-09T20-08-22Z",
+  "model": "claude-sonnet-4-6",
+  "records": [
+    {
+      "id": "b01",
+      "story": "Arkadaşım üçüncü kez son dakika planı iptal etti. Kızmadım ama bir daha teklif etmeyeceğim. Aslında kendime mi kızıyorum ona mı emin değilim.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 5253,
+        "out": 923
+      },
+      "core_latency_ms": 23110,
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Üçüncü teklife 'evet' derken aklından ne geçti?",
+        "options": [
+          "Bu sefer farklı olur diye umdum.",
+          "Hayır demek garip gelirdi.",
+          "İstemiyordum ama otomatik teklif ettim.",
+          "İsteyerek teklif ettim, pişmanlık yok."
+        ],
+        "why_ask": "Bu yanıt, öfkenin 'arkadaşın davranışına' mı yoksa 'kendi kararına' mı yönelik olduğunu ayırt eder.",
+        "close": null
+      },
+      "founder_route": "QUESTION",
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Bu sefer farklı olur diye umdum.",
+      "core": {
+        "mode": "REVEAL",
+        "distinction": "arkadaşın davranışına verilen tepki ile kendi umuduna verilen tepki arasında",
+        "shape": "between_two",
+        "reveal": "İlk bakışta arkadaşın davranışı öne çıkıyor, ama 'bu sefer farklı olur' deyince asıl gerilim orada beliriveriyor. Umut tamamen kendinden geliyor — arkadaş bir şey vaat etmemiş. Yani kızmak için iki ayrı adres var: biri tekrar iptal eden arkadaş, diğeri o umudu tekrar kuran sen. 'Bir daha teklif etmeyeceğim' kararı hangisine verilen bir yanıt, bunu netleştirmek belki daha önemli.",
+        "close": null,
+        "uncertain": "Bu karar arkadaşı mı uzak tutmak için, yoksa kendini o umudu kurmaktan mı korumak için — bu hâlâ açık.",
+        "noticed": [
+          "Üçüncü iptale kızmadım dedi ama kime kızdığını bilmiyor.",
+          "'Bu sefer farklı olur' umuduyla teklif etmiş.",
+          "Bir daha teklif etmeyeceğini söylüyor — eylem zaten verilmiş."
+        ],
+        "source": "api"
+      },
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hera:hera_target_vs_reach",
+            "figure_id": "hera",
+            "myth_ids": [
+              "hera_persecutions"
+            ],
+            "source_refs": [
+              "Apollod. 2.4.8; 2.4.12; 3.4.3",
+              "Eur. Heracles 822-873",
+              "Il. 19.95-133 (Heracles' birth)",
+              "Ovid Met. 1.588-750; 3.253-315"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "arkadaşın davranışına verilen tepki → haksızlığı yapan",
+              "y": "kendi umuduna verilen tepki → kızgınlığın ulaştığı kişi"
+            },
+            "why_it_may_fit": "Çekirdekte tepki arkadaşa değil kendi umudu kurmaya yöneliyorsa, bu kayıttaki 'asıl faili değil ulaşılabilir olanı cezalandırma' mekanizmasıyla yapısal örtüşme var.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "figure_id": "hermes",
+            "myth_ids": [
+              "hermes_cattle_theft"
+            ],
+            "source_refs": [
+              "Homeric Hymn 4 to Hermes"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "arkadaşın davranışına verilen tepki → kapıları açık tutmak",
+              "y": "kendi umuduna verilen tepki → içeri girmek"
+            },
+            "why_it_may_fit": "Bir daha teklif etmeme kararı, kapıyı kapatmak gibi görünse de asıl gerilim 'teklif etmeye devam etmek (kapıyı açık tutmak) ile gerçekten içeri girmek (umuda gerçekten dahil olmak)' arasında — karar henüz çözüme değil, dışarıda kalmaya işaret ediyor.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": "greek_olympus:hera:hera_target_vs_reach",
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "reasons": [
+              "keyword_similarity",
+              "clever_not_useful",
+              "changes_core_distinction",
+              "'Kapı açık tutmak / içeri girmek' metaforu zekice ama çekirdeğin ayrımını (arkadaşa verilen tepki vs. kendi umuduna verilen tepki) kaydırıyor ve kişinin somut durumuna geri dönmüyor."
+            ]
+          }
+        ],
+        "score": 7,
+        "speculation_risk": "low",
+        "note": "PASS"
+      },
+      "enrichment": {
+        "used": true,
+        "type": "mythic_parallel",
+        "title": "Hera'nın Öfkesi Nereye Gider",
+        "text": "Mitlerde Zeus yanlış yapıyor, ama Hera'nın öfkesi Io'ya, Leto'ya, Semele'ye ulaşıyor — aralarındaki ortak şu ayrım: haksızlığı yapan ile öfkenin gittiği adres aynı değil. Senin durumunda da iki ayrı adres var: iptal eden arkadaş ve o umudu tekrar kuran sen. 'Bir daha teklif etmeyeceğim' kararının hangi adrese yazıldığı hâlâ açık.",
+        "figure_id": "hera",
+        "myth_id": "hera_persecutions",
+        "record_id": "greek_olympus:hera:hera_target_vs_reach",
+        "source_refs": [
+          "Il. 19.95-133 (Heracles' birth)",
+          "Ovid Met. 1.588-750; 3.253-315",
+          "Apollod. 2.4.8; 2.4.12; 3.4.3",
+          "Eur. Heracles 822-873"
+        ],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": "Hikâye senin değil; ortak olan sadece ayrım. Kanıt değil, başka bir dil.",
+        "reason": null,
+        "fidelity": {
+          "passed": true,
+          "deterministic": [],
+          "claims": [
+            {
+              "claim": "Zeus yanlış yapıyor",
+              "category": "event",
+              "supported": true,
+              "evidence": "The wrong-doer (Zeus) is rarely the target"
+            },
+            {
+              "claim": "Hera'nın öfkesi Io'ya ulaşıyor",
+              "category": "event",
+              "supported": true,
+              "evidence": "Io driven by a gadfly; Persecution of Zeus's lovers and children"
+            },
+            {
+              "claim": "Hera'nın öfkesi Leto'ya ulaşıyor",
+              "category": "event",
+              "supported": true,
+              "evidence": "Leto's birth delayed; Persecution of Zeus's lovers and children"
+            },
+            {
+              "claim": "Hera'nın öfkesi Semele'ye ulaşıyor",
+              "category": "event",
+              "supported": true,
+              "evidence": "Semele destroyed through a trick; Persecution of Zeus's lovers and children"
+            },
+            {
+              "claim": "Haksızlığı yapan ile öfkenin gittiği adres aynı değil",
+              "category": "meaning",
+              "supported": true,
+              "evidence": "The wrong-doer (Zeus) is rarely the target"
+            },
+            {
+              "claim": "Semele bir hile aracılığıyla yok edildi",
+              "category": "event",
+              "supported": true,
+              "evidence": "Semele destroyed through a trick"
+            }
+          ],
+          "unsupported": []
+        }
+      },
+      "core_identical": true,
+      "roles_calls": 4,
+      "roles_tokens": {
+        "in": 6500,
+        "out": 1349
+      },
+      "roles_latency_ms": 33824,
+      "total_calls": 6,
+      "trace": {
+        "librarian": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 10791,
+          "input_tokens": 2901,
+          "output_tokens": 385,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "candidates": 2,
+            "shown_to_mapper": 30,
+            "prefilter": {
+              "total": 45,
+              "core_poles_parsed": true,
+              "excluded_shape": 10,
+              "excluded_no_structure": 5,
+              "kept": 30
+            },
+            "dropped": 0
+          }
+        },
+        "skeptic": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 12105,
+          "input_tokens": 1915,
+          "output_tokens": 429,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "passed": "greek_olympus:hera:hera_target_vs_reach",
+            "score": 7
+          }
+        },
+        "storyteller": {
+          "ran": true,
+          "calls": 2,
+          "latency_ms": 10919,
+          "input_tokens": 1684,
+          "output_tokens": 535,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "used": true,
+            "fidelity": true,
+            "fidelity_calls": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "b02",
+      "story": "Toplantıda fikrimi anlattım, herkes 'çok iyi' dedi. İki hafta geçti, kimse bir şey yapmadı. Ben mi kötü anlattım, yoksa aslında kimse istemedi mi bilmiyorum.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 5290,
+        "out": 977
+      },
+      "core_latency_ms": 24609,
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "O toplantıdan sonra, fikri ilerleteceğini düşündüğün biri seninle bir şey paylaştı mı — mesaj, karar, bir adım?",
+        "options": [
+          "Evet, biriyle bir şey konuştuk ama kalmadı orada.",
+          "Hayır, toplantıdan sonra hiç dönüş olmadı.",
+          "Ben bir şey yapmayı bekledim ama adım atmadım."
+        ],
+        "why_ask": "Bu sorunun cevabı, sessizliğin 'sahipsiz fikir' mi yoksa 'kibarca geçiştirme' mi olduğunu ayırt eder.",
+        "close": null
+      },
+      "founder_route": "QUESTION",
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Evet, biriyle bir şey konuştuk ama kalmadı orada.",
+      "core": {
+        "mode": "REVEAL",
+        "distinction": "'Kimse fikri beğenmedi' ile 'kimse adımı atmayı üstlenmedi' arasında",
+        "shape": "between_two",
+        "reveal": "İlk bakışta 'iyi anlattım mı' sorusu gibi görünüyor, ama asıl ayrım belki anlatım kalitesinde değil. Sonraki konuşma da oldu, yani fikir tamamen görünmez kalmadı — ama orada da bir şey kırıldı. Bu, 'kimse istemedi' ile 'kimse sahiplenmeye hazır değildi' arasındaki farka işaret ediyor olabilir: ikincisinde fikrin kendisiyle değil, o anda kim adım atacak sorusuyla ilgili bir boşluk var.",
+        "close": null,
+        "uncertain": "O takip eden konuşmada tam olarak ne kırıldı — orada da aynı onay-sonra-duraksama döngüsü mü yaşandı, yoksa farklı bir şey mi oldu, bu hâlâ belirsiz.",
+        "noticed": [
+          "Herkes 'çok iyi' dedi ama iki hafta boyunca hiçbir eylem çıkmadı.",
+          "Takip eden tek konuşma da bir yerde takılı kaldı.",
+          "Kişi 'ben mi kötü anlattım, yoksa kimse istemiyor mu' diye açıkça iki seçenek koymuş."
+        ],
+        "source": "api"
+      },
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hephaestus:hephaestus_work_vs_belonging",
+            "figure_id": "hephaestus",
+            "myth_ids": [
+              "hephaestus_thrown",
+              "hephaestus_return",
+              "hephaestus_thetis_armour"
+            ],
+            "source_refs": [
+              "Alcaeus fr. 349",
+              "François Vase (c. 570 BCE) and many Attic vases",
+              "Homeric Hymn 3.316-321",
+              "Il. 1.590-594",
+              "Il. 18.368-617",
+              "Il. 18.394-405",
+              "Paus. 1.20.3",
+              "Pind. fr. 283"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "çekirdek X ('kimse fikri beğenmedi') → kayıt x' 'işinin kabul edilmesi'",
+              "y": "çekirdek Y ('kimse adımı atmayı üstlenmedi') → kayıt y' 'kendinin kabul edilmesi'"
+            },
+            "why_it_may_fit": "Fikrin onaylanması ile o fikre sahip çıkacak birinin ortaya çıkması aynı mekanizmada ayrışır: iş beğenilir ama iş yapan kabul görmez — onay, sahiplenmeye dönüşmez.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hephaestus:hephaestus_work_vs_belonging",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "Çekirdeğin ayrımı 'fikrin beğenilmesi / adım atılması' iken kayıt bunu 'işin kabulü / kişinin kabulü' eksenine kaydırıyor — bu iç içe geçmiş ama özdeş değil; üstelik 'sahiplenmeye dönüşmez' çıkarımı kişiye dair çekirdekte olmayan bir neden yapısı kuruyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 4685,
+        "out": 454
+      },
+      "roles_latency_ms": 13282,
+      "total_calls": 4,
+      "trace": {
+        "librarian": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 6634,
+          "input_tokens": 2937,
+          "output_tokens": 210,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "candidates": 1,
+            "shown_to_mapper": 30,
+            "prefilter": {
+              "total": 45,
+              "core_poles_parsed": true,
+              "excluded_shape": 10,
+              "excluded_no_structure": 5,
+              "kept": 30
+            },
+            "dropped": 0
+          }
+        },
+        "skeptic": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 6647,
+          "input_tokens": 1748,
+          "output_tokens": 244,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "passed": null,
+            "score": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "b03",
+      "story": "Herkese yetişiyorum, kim ne istese yapıyorum. Geçen hafta ilk kez ben bir şey istedim, cevap iki gün gecikti. Kırıldım ama söylemedim, tam tersine daha çok yardım ettim.",
+      "core_calls": 1,
+      "core_tokens": {
+        "in": 2590,
+        "out": 517
+      },
+      "core_latency_ms": 12529,
+      "turn1": {
+        "mode": "REVEAL",
+        "question": null,
+        "options": [],
+        "why_ask": null,
+        "close": null
+      },
+      "founder_route": "QUESTION",
+      "core_route_turn1": "REVEAL",
+      "route_match": false,
+      "core": {
+        "mode": "REVEAL",
+        "distinction": "Vermenin bağ kurma biçimi olması ile bağın kopmaması için ödenen bedel olması arasında",
+        "shape": "between_two",
+        "reveal": "İlk bakışta bu bir kırılma hikâyesi gibi görünüyor, ama karar değiştirici nokta şu: kırılmanın ardından geri çekilmek yerine daha çok vermek. Bu, 'vermeyi bırakırsam ne olur' sorusunu bir türlü test etmeden kapatıyor. Belki burada asıl ayrım, vermenin bir bağ kurma biçimi mi yoksa bağın kopmaması için ödenen bir bedel mi olduğu arasında.",
+        "close": null,
+        "uncertain": "Daha çok yardım etmenin bilinçli bir seçim mi yoksa neredeyse otomatik bir tepki mi olduğu belli değil.",
+        "noticed": [
+          "Kırıldığını söylemiş ama bunu karşı tarafa söylememiş.",
+          "Kırılmanın ardından daha çok yardım etmiş — azalmak yerine artmış.",
+          "İlk kez kendisi bir şey istemiş ve bu 'ilk kez' olarak özellikle işaretlenmiş."
+        ],
+        "source": "api"
+      },
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hephaestus:hephaestus_work_vs_belonging",
+            "figure_id": "hephaestus",
+            "myth_ids": [
+              "hephaestus_thrown",
+              "hephaestus_return",
+              "hephaestus_thetis_armour"
+            ],
+            "source_refs": [
+              "Alcaeus fr. 349",
+              "François Vase (c. 570 BCE) and many Attic vases",
+              "Homeric Hymn 3.316-321",
+              "Il. 1.590-594",
+              "Il. 18.368-617",
+              "Il. 18.394-405",
+              "Paus. 1.20.3",
+              "Pind. fr. 283"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Vermenin bağ kurma biçimi olması → işinin kabul edilmesinin sevilimenin tek izin verilen yolu olması",
+              "y": "bağın kopmaması için ödenen bedel olması → kendinin değil, işinin kabul görmesi"
+            },
+            "why_it_may_fit": "Her iki yapıda da verme (iş/yardım) bağa giden tek kanal olarak işler, ancak bu kanalın kendisi bağı değil, bağa izin verilen tek koşulu oluşturur — vermek ile kabul edilmek arasındaki gerilim aynı mekanizmayı paylaşır.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "figure_id": "hermes",
+            "myth_ids": [
+              "hermes_cattle_theft"
+            ],
+            "source_refs": [
+              "Homeric Hymn 4 to Hermes"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Vermenin bağ kurma biçimi olması → kapıları açık tutmak",
+              "y": "bağın kopmaması için ödenen bedel olması → hiçbir zaman içeri girmemek"
+            },
+            "why_it_may_fit": "Kapıları açık tutmak bağ kurma jesti olarak işler, ancak bu jestin sürekliliği içeri girmeyi — yani bağın karşılıklı hale gelmesini — yapısal olarak engeller.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hephaestus:hephaestus_work_vs_belonging",
+            "reasons": [
+              "changes_core_distinction",
+              "Yapısal eşleme çekirdeğin ayrımını ('verme bağ mı yoksa bedel mi?') 'işinin kabul edilmesi vs. kendinin kabul edilmesi' şekline kaydırıyor — bu farklı bir ayrım, çekirdeğin üzerine yeni bir katman ekliyor."
+            ]
+          },
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "reasons": [
+              "keyword_similarity",
+              "clever_not_useful",
+              "'Kapıları açık tutmak / içeri girmemek' metaforu zekice ama çekirdeğin kutuplarıyla (verme → bağ kurma biçimi vs. bedel) yüzeysel temas kuruyor; Hermes mitinin tek vakası bu ayrımı taşıyacak yapısal derinliği sağlamıyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 5118,
+        "out": 782
+      },
+      "roles_latency_ms": 22726,
+      "total_calls": 3,
+      "trace": {
+        "librarian": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 12511,
+          "input_tokens": 2965,
+          "output_tokens": 386,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "candidates": 2,
+            "shown_to_mapper": 30,
+            "prefilter": {
+              "total": 45,
+              "core_poles_parsed": true,
+              "excluded_shape": 10,
+              "excluded_no_structure": 5,
+              "kept": 30
+            },
+            "dropped": 0
+          }
+        },
+        "skeptic": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 10214,
+          "input_tokens": 2153,
+          "output_tokens": 396,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "passed": null,
+            "score": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "b04",
+      "story": "Eski işimde sormadan halletmem takdir görüyordu. Yeni yerde aynı şeyi yaptım, 'niye danışmadın' dediler. Hem doğru yaptığımı düşünüyorum hem de kendimi suçlu hissediyorum.",
+      "core_calls": 1,
+      "core_tokens": {
+        "in": 2594,
+        "out": 509
+      },
+      "core_latency_ms": 12000,
+      "turn1": {
+        "mode": "REVEAL",
+        "question": null,
+        "options": [],
+        "why_ask": null,
+        "close": null
+      },
+      "founder_route": "REVEAL",
+      "core_route_turn1": "REVEAL",
+      "route_match": true,
+      "core": {
+        "mode": "REVEAL",
+        "distinction": "Eylemin doğruluğu ile bağlamın beklentisine uymak arasında",
+        "shape": "between_two",
+        "reveal": "İlk bakışta 'ne yapıyorum' sorusu gibi görünüyor, ama anlattığında karar değiştirici nokta şu: aynı eylemi hem doğru buluyorsun hem suçlu hissediyorsun — bu iki şey çelişmiyor olabilir. Doğru yapmış olman ile yeni yerin beklentisini ıskalamış olmak aynı anda doğru olabilir. Suçluluk hissi 'hata yaptım' anlamına gelmeyebilir; sadece iki farklı kültürün aynı anda içinde olduğunun işareti olabilir.",
+        "close": null,
+        "uncertain": "Yeni yerdeki 'niye danışmadın' tepkisinin kalıcı bir kural mı yoksa o an için bir geri bildirim mi olduğu belli değil.",
+        "noticed": [
+          "Aynı davranış farklı bağlamlarda zıt tepki aldı.",
+          "Kişi hem doğru yaptığını düşünüyor hem suçlu hissediyor — aynı anda iki zıt duygu."
+        ],
+        "source": "api"
+      },
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:zeus:zeus_guarantor_vs_exempt",
+            "figure_id": "zeus",
+            "myth_ids": [
+              "zeus_liaisons",
+              "zeus_lycaon_flood"
+            ],
+            "source_refs": [
+              "Apollod. 1.4.1; 2.4.8; 3.1.1",
+              "Apollod. 3.8.1",
+              "Il. 14.315-328 (Zeus lists them himself)",
+              "Ovid Met. 1.163-415",
+              "Ovid Met. 1.588-750; 2.401-530; 3.253-315"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Eylemin doğruluğu → Kuralın bekçisi olmak (eylemi doğru yapanın kural tarafından tanınması beklentisi)",
+              "y": "bağlamın beklentisine uymak → kuraldan muaf olmak (bekçi olmanın kendisine ayrıcalık tanıdığı yer)"
+            },
+            "why_it_may_fit": "Her iki kartta da 'doğru yapmak' ile 'sistemin o doğruyu kimin elinde saydığına göre değerlendirmesi' arasındaki asimetri yapısal olarak örtüşüyor.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:artemis:artemis_code_vs_person",
+            "figure_id": "artemis",
+            "myth_ids": [
+              "artemis_callisto"
+            ],
+            "source_refs": [
+              "Apollod. 3.8.2",
+              "Hes. fr. 163 (Astronomia)",
+              "Ovid Met. 2.401-530"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Eylemin doğruluğu → kurala sadakat (eylemin kendi içindeki tutarlılığı)",
+              "y": "bağlamın beklentisine uymak → kişiye sadakat (bağlamın kuralsız, ilişkisel beklentisi)"
+            },
+            "why_it_may_fit": "Aynı davranışın bir bağlamda 'kural icabı doğru', başka bağlamda 'ama bana sormalıydın' diye okunması, kurala sadakat ile kişiye sadakat arasındaki çatlakla yapısal olarak aynı gerilimi taşıyor.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:zeus:zeus_guarantor_vs_exempt",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "clever_not_useful",
+              "Çekirdeğin kutupları 'eylemin doğruluğu' ile 'bağlamın beklentisine uymak' iken Zeus kartı bunu 'bekçi olmak' ile 'muaf olmak' asimetrisine dönüştürüyor — bu kayma çekirdeğin ayrımını yeniden yazıyor ve kişinin durumuna (suçluluk hissinin iki kültürün aynı anda içinde olmaktan kaynaklanabileceği) geri dönmüyor."
+            ]
+          },
+          {
+            "record_id": "greek_olympus:artemis:artemis_code_vs_person",
+            "reasons": [
+              "longer_than_insight",
+              "invents_motive",
+              "'Kurala sadakat / kişiye sadakat' ayrımı çekirdeğin kutuplarıyla makul biçimde örtüşüyor, ancak Callisto'nun konumlandırılması kişiyi 'dışlayan' tarafa yerleştiriyor — bu çekirdekte hiç olmayan bir güdü/konum atfı olup toplam skoru eşiğin altında bırakıyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 5015,
+        "out": 872
+      },
+      "roles_latency_ms": 25515,
+      "total_calls": 3,
+      "trace": {
+        "librarian": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 14298,
+          "input_tokens": 2928,
+          "output_tokens": 404,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "candidates": 2,
+            "shown_to_mapper": 30,
+            "prefilter": {
+              "total": 45,
+              "core_poles_parsed": true,
+              "excluded_shape": 10,
+              "excluded_no_structure": 5,
+              "kept": 30
+            },
+            "dropped": 0
+          }
+        },
+        "skeptic": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 11216,
+          "input_tokens": 2087,
+          "output_tokens": 468,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "passed": null,
+            "score": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "b05",
+      "story": "Her ay 'bu ilişki böyle gitmez' diyorum. Sonra bir şey çıkıyor: bayram, annemin ameliyatı, onun sınavı. Üç yıl oldu, karar hâlâ verilmedi.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 5261,
+        "out": 920
+      },
+      "core_latency_ms": 22960,
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "O 'böyle gitmez' anlarında karşı tarafa bir şey söyledin mi?",
+        "options": [
+          "Evet, söyledim — konuştuk.",
+          "Hayır, içimde kaldı.",
+          "Bazen söyledim, bazen söylemedim."
+        ],
+        "why_ask": "Söylenip söylenmediğine göre 'dış engel' okuması ile 'içte tutulan karar' okumasından biri elenir.",
+        "close": null
+      },
+      "founder_route": "QUESTION",
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Evet, söyledim — konuştuk.",
+      "core": {
+        "mode": "REVEAL",
+        "distinction": "Kararı ertelemek ile her seferinde yeniden 'devam' seçmek arasında",
+        "shape": "between_two",
+        "reveal": "Konuşmalar olmuş — yani sessizlik ya da kaçınma değil bu. Ama asıl ayrım şu gibi görünüyor: o anlar 'karar vermek için konuşma' mıydı, yoksa 'devam etmek için konuşma' mı? Çünkü her seferinde bir dış olay çıkıyor ve ilişki sürüyor — bu, kararın hep ertelendiğini mi gösteriyor, yoksa her seferinde zımni bir 'biraz daha' kararı mı veriliyor? Bilinmeyen şu: o 'böyle gitmez' hissi konuşmadan sonra da aynı güçte mi kalıyor, yoksa bir süre hafifleyip sonra mı geri geliyor?",
+        "close": null,
+        "uncertain": "Konuşmaların ardından o 'böyle gitmez' hissinin ne kadar süre hafiflediği bilinmiyor.",
+        "noticed": [
+          "Her ay 'böyle gitmez' diyor ama karar üç yıldır verilmedi.",
+          "Her seferinde bir dış olay (bayram, ameliyat, sınav) kararı erteleyen şey oluyor.",
+          "Konuşmalar olmuş ama sonuç değişmemiş."
+        ],
+        "source": "api"
+      },
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "figure_id": "hermes",
+            "myth_ids": [
+              "hermes_cattle_theft"
+            ],
+            "source_refs": [
+              "Homeric Hymn 4 to Hermes"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Kararı ertelemek → kapıları açık tutmak",
+              "y": "her seferinde yeniden 'devam' seçmek → içeri girmek"
+            },
+            "why_it_may_fit": "Her iki yapıda da bir eşik sürekli erişilebilir tutulur ama o eşikten geçme eylemi gerçekleştirilmez; 'devam' seçimi kapıyı açık tutmakla, karar vermeme ise içeri girmemekle örtüşür.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:dionysus:dionysus_wish_vs_price",
+            "figure_id": "dionysus",
+            "myth_ids": [
+              "dionysus_midas"
+            ],
+            "source_refs": [
+              "Aristotle Politics 1257b (proverbial)",
+              "Ovid Met. 11.85-145"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Kararı ertelemek → istediğini almak (kararı vermeden bulunduğu yerde kalmayı 'almak')",
+              "y": "her seferinde yeniden 'devam' seçmek → aldığınla yaşamak"
+            },
+            "why_it_may_fit": "Her erteleme aslında mevcut durumu seçmektir; yapı, bilinçsiz bir 'isteme' ile o seçimin bedelini taşıma arasındaki gerilimi paylaşır.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "Çekirdeğin ayrımı 'erteleme vs. zımni devam kararı' iken aday bunu 'kapı açık tutma vs. içeri girme' metaforuna kaydırıyor; Hermes'in sığır hırsızlığı miti bu eşik gerilimini taşımıyor, mit yalnızca hile ve uzlaşma yapısında."
+            ]
+          },
+          {
+            "record_id": "greek_olympus:dionysus:dionysus_wish_vs_price",
+            "reasons": [
+              "invents_motive",
+              "changes_core_distinction",
+              "'Her erteleme aslında mevcut durumu seçmektir' ifadesi çekirdeğin 'bilinmeyen' alanına (konuşmalar sonrası his ne kadar hafifliyor?) bir yanıt atfediyor ve kişiye bilinçsiz bir isteme güdüsü yüklüyor; Midas miti de bedeli taşıma yapısıyla örtüşüyor ama kutuplar 'erteleme vs. devam' ile değil 'isteme vs. bedel' ile eşleniyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 4784,
+        "out": 820
+      },
+      "roles_latency_ms": 21897,
+      "total_calls": 4,
+      "trace": {
+        "librarian": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 8960,
+          "input_tokens": 2914,
+          "output_tokens": 358,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "candidates": 2,
+            "shown_to_mapper": 30,
+            "prefilter": {
+              "total": 45,
+              "core_poles_parsed": true,
+              "excluded_shape": 10,
+              "excluded_no_structure": 5,
+              "kept": 30
+            },
+            "dropped": 0
+          }
+        },
+        "skeptic": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 12937,
+          "input_tokens": 1870,
+          "output_tokens": 462,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "passed": null,
+            "score": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "b06",
+      "story": "Annem her aramada 'iyi misin' diye soruyor ama ben bir şey anlatınca hemen konuyu kendine çeviriyor. Artık kısa cevap veriyorum. Sonra da telefonu kapatınca suçlu hissediyorum.",
+      "core_calls": 1,
+      "core_tokens": {
+        "in": 2588,
+        "out": 482
+      },
+      "core_latency_ms": 12090,
+      "turn1": {
+        "mode": "REVEAL",
+        "question": null,
+        "options": [],
+        "why_ask": null,
+        "close": null
+      },
+      "founder_route": "REVEAL",
+      "core_route_turn1": "REVEAL",
+      "route_match": true,
+      "core": {
+        "mode": "REVEAL",
+        "distinction": "Anneyi kesmek ile anlatmak için yer kalmaması arasında",
+        "shape": "between_two",
+        "reveal": "İlk bakışta anneyle iletişim sorunu gibi görünüyor; ama anlattığında asıl gerilim şu: geri çekilmek seni koruyor, ama korunmak seni suçlu hissettiriyor. Suçluluk muhtemelen anneye değil, bağlantının bu hale gelmesine — ve bunu sen mi kuruyorsun diye kendinle hesaplaşmana yönelik. Kısa cevap bir karar değil, öğrenilmiş bir şey: anlatınca yer olmadığını gördün, uyum sağladın.",
+        "close": null,
+        "uncertain": "Konuyu çevirmenin farkında olup olmadığı bilinmiyor — bu, suçluluğun ağırlığını değiştirebilir.",
+        "noticed": [
+          "Anlatınca konunun hemen kendisine çevrildiğini söylüyor.",
+          "Kısa cevap vermeye başlamış — bir geri çekilme eylemi.",
+          "Kapatınca suçlu hissediyor — hem geri çekiliyor hem de bundan rahatsız."
+        ],
+        "source": "api"
+      },
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "figure_id": "hermes",
+            "myth_ids": [
+              "hermes_cattle_theft"
+            ],
+            "source_refs": [
+              "Homeric Hymn 4 to Hermes"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Anneyi kesmek → kapıları açık tutmak (kesmiyor, kısa cevap veriyor — bağlantıyı tamamen koparmıyor)",
+              "y": "anlatmak için yer kalmaması → içeri girememek (anlatacak alan açılamıyor, konuşma gerçekten başlamıyor)"
+            },
+            "why_it_may_fit": "Her iki yapıda da aradaki geçiş korunuyor ama tam giriş bir türlü gerçekleşmiyor — bağlantı devam ediyor, derinlik değil.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "clever_not_useful",
+              "Çekirdeğin ayrımı 'kesmek vs. yer kalmaması' — yani eylemin bedeli ile yapısal yokluk arasında; Hermes eşlemesi bunu 'kapı açık / içeri girememe' olarak yeniden yazıyor, bu kişinin deneyimindeki suçluluk-koruma gerilimini taşımıyor ve adaya geri dönmüyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 4277,
+        "out": 440
+      },
+      "roles_latency_ms": 13991,
+      "total_calls": 3,
+      "trace": {
+        "librarian": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 7358,
+          "input_tokens": 2905,
+          "output_tokens": 202,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "candidates": 1,
+            "shown_to_mapper": 30,
+            "prefilter": {
+              "total": 45,
+              "core_poles_parsed": true,
+              "excluded_shape": 10,
+              "excluded_no_structure": 5,
+              "kept": 30
+            },
+            "dropped": 0
+          }
+        },
+        "skeptic": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 6633,
+          "input_tokens": 1372,
+          "output_tokens": 238,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "passed": null,
+            "score": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "b07",
+      "story": "Terfi teklif ettiler. Herkes sevindi, ben sevinemedim. Gece uyuyamadım ama nedenini kendime bile söyleyemiyorum. Belki istemiyorum, belki korkuyorum, ayıramıyorum.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 5253,
+        "out": 946
+      },
+      "core_latency_ms": 23518,
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Terfiyi düşünürken aklına ilk ne geliyor?",
+        "options": [
+          "Yeni rolün getireceği sorumluluklar",
+          "Şu anki işi/rolü bırakmak",
+          "Beklentileri karşılayamamak",
+          "Başka bir şey"
+        ],
+        "why_ask": "İlk akla gelen şey, 'istememe' ile 'korkma' okumalarından birini eleyebilir — çünkü ikisi farklı yerlere işaret ediyor.",
+        "close": null
+      },
+      "founder_route": "QUESTION",
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Yeni rolün getireceği sorumluluklar",
+      "core": {
+        "mode": "REVEAL",
+        "distinction": "İstemediği bir yön ile istediği ama kaldıramayacağından korktuğu bir yük arasında",
+        "shape": "between_two",
+        "reveal": "İlk bakışta 'istemiyor muyum, korkuyor muyum' ikilisi gibi görünüyor — ama terfiyi düşününce akla sorumlulukların gelmesi bu ikiliği biraz farklı bir yere çekiyor. Asıl ayrım şurada olabilir: terfi iyi bir şey mi, yoksa yük mü? Sevinememek 'ben buna hazır değilim' korkusundan çok 'bunu zaten istemiyordum' sinyali de verebilir. Hangisi olduğu hâlâ net değil — ikisi de geceyi zehirleyebilir, ama farklı şeyler.",
+        "close": null,
+        "uncertain": "Sorumlulukların caydırıcı gelmesi, rolün içeriğine mi yoksa rolün büyüklüğüne mi dair — bunu netleştirmek ikisini ayırt edebilir.",
+        "noticed": [
+          "Herkes sevindi, kişi sevinemedi — beklenen tepkiyle yaşanan tepki uyuşmuyor.",
+          "Gece uyuyamadı ama nedeni kendine bile söylenemiyor.",
+          "Terfiyi düşününce akla ilk gelen şey sorumluluklar — fırsat ya da kazanım değil."
+        ],
+        "source": "api"
+      },
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:dionysus:dionysus_wish_vs_price",
+            "figure_id": "dionysus",
+            "myth_ids": [
+              "dionysus_midas"
+            ],
+            "source_refs": [
+              "Aristotle Politics 1257b (proverbial)",
+              "Ovid Met. 11.85-145"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "çekirdek X (istemediği yön) → kaydın x'i: istediğini almak — terfinin kendisi istenmiyor, bu kutup ters düşüyor; ancak kaydın y'si daha güçlü eşleşiyor",
+              "y": "çekirdek Y (istediği ama kaldıramayacağı yük) → kaydın y'si: aldığınla yaşamak — terfiye 'evet' dersen onunla yaşamak zorundasın"
+            },
+            "why_it_may_fit": "Kaydın mekanizması 'istediğini almak ile aldığınla yaşamak arasında' ayrımını kuruyor; çekirdeğin Y kutbu tam olarak bu — şeyi istemek ama onu taşımanın ağırlığından korkmak — üzerine oturuyor, ancak X kutbu (istemediği yön) kaydın x'iyle zayıf eşleşiyor, bu adayı sınırda tutuyor.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:dionysus:dionysus_wish_vs_price",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "Kaydın X kutbu (istediğini almak) çekirdeğin X kutbuyla (istemediği yön) ters düşüyor — Midas terfiyi istiyor ve alıyor, oysa çekirdekteki kişi terfiyi zaten istememiş olabilir; bu temel kutup uyumsuzluğu mitin mekanizmasını kişinin durumuna doğrudan taşınamaz kılıyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 4506,
+        "out": 557
+      },
+      "roles_latency_ms": 15792,
+      "total_calls": 4,
+      "trace": {
+        "librarian": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 9915,
+          "input_tokens": 2950,
+          "output_tokens": 320,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "candidates": 1,
+            "shown_to_mapper": 30,
+            "prefilter": {
+              "total": 45,
+              "core_poles_parsed": true,
+              "excluded_shape": 10,
+              "excluded_no_structure": 5,
+              "kept": 30
+            },
+            "dropped": 0
+          }
+        },
+        "skeptic": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 5876,
+          "input_tokens": 1556,
+          "output_tokens": 237,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "passed": null,
+            "score": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "b08",
+      "story": "Ekipte bir hata oldu, kimin yaptığı belli değildi. Toplantıda ben 'benim hatam olabilir' dedim, kimse bir şey demedi. Sonradan öğrendim ki başkasınınmış. Şimdi herkes bana bakıyor gibi geliyor.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 5298,
+        "out": 1004
+      },
+      "core_latency_ms": 25914,
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "O toplantıdan sonra 'aslında benim değilmiş' diye bir düzeltme söyledin mi?",
+        "options": [
+          "Evet, ekibe ya da ilgili kişiye söyledim.",
+          "Hayır, henüz söylemedim.",
+          "Söylemek istedim ama fırsatı bulamadım."
+        ],
+        "why_ask": "Düzeltme yapıldıysa 'herkes bakıyor' hissi muhtemelen kalan belirsizlikten değil, başka bir şeyden geliyor; yapılmadıysa sorumluluk hâlâ kişide asılı duruyor demektir — iki okuma bu noktada ayrılıyor.",
+        "close": null
+      },
+      "founder_route": "QUESTION",
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Evet, ekibe ya da ilgili kişiye söyledim.",
+      "core": {
+        "mode": "REVEAL",
+        "distinction": "Olgunun düzeltilmesi ile izlenimin değişip değişmediği arasında",
+        "shape": "open_question",
+        "reveal": "Düzeltmeyi söyledin, yani bilgiyi paylaştın. Ama asıl ayrım şu olabilir: düzeltme bir olguyu değiştirdi ('bu benim hatam değil'), ama toplantıdaki o anın yarattığı izlenimi silip silmediği sana görünür değil. 'Herkes bana bakıyor' hissi, bilginin ulaşıp ulaşmadığına dair bir belirsizlikten besleniyorsa bu makul; ama söyledikten sonra gelen tepkilerin sana ne gösterdiği benim bilemeyeceğim bir şey.",
+        "close": null,
+        "uncertain": "Düzeltmen ekibe ne kadar net ulaştı, karşındakilerin tepkisi bunu sana gösterdi mi — bu kısmı bilmiyorum.",
+        "noticed": [
+          "Hatayı üstlendi ama sonradan kendisinin olmadığı ortaya çıktı.",
+          "Düzeltmeyi söyledi, yani bilgiyi paylaştı.",
+          "Yine de 'herkes bana bakıyor gibi geliyor' hissi devam ediyor."
+        ],
+        "source": "api"
+      },
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:apollo:apollo_clarity_vs_control",
+            "figure_id": "apollo",
+            "myth_ids": [
+              "apollo_cassandra",
+              "apollo_oracles_ambiguous"
+            ],
+            "source_refs": [
+              "Aesch. Agamemnon 1202-1212",
+              "Apollod. 3.12.5",
+              "Hdt. 1.53, 1.91"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Olgunun düzeltilmesi → Doğruyu görmek (ve söylemek)",
+              "y": "izlenimin değişip değişmediği → doğrunun karşındakine nasıl ulaştığını umursamak"
+            },
+            "why_it_may_fit": "Bilgiyi paylaşmak (X) ile o bilginin karşı tarafta gerçekten bir şeyi değiştirip değiştirmediği (Y) arasındaki açık uç, Apollo'nun 'söyledi ama ulaştı mı' gerilimini yapısal olarak yansıtır.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 40,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 0,
+          "excluded_no_structure": 5,
+          "kept": 40
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:apollo:apollo_clarity_vs_control",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "Çekirdeğin ayrımı 'olgunun düzeltilmesi ↔ izlenimin değişip değişmediği' iken aday bunu 'doğruyu görmek ↔ doğrunun nasıl ulaştığını umursamak' olarak yeniden yazıyor; ikinci kutup örtüşüyor gibi görünse de birinci kutup kaymış — düzeltme bir izlenim sorunudur, epistemik doğruluk iddiası değil. Cassandra benzetmesi 'söyledi ama inanılmadı' çerçevesi kuruyor, oysa çekirdekteki belirsizlik inanılıp inanılmadı değil izlenimin silinip silinmediği."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 5238,
+        "out": 521
+      },
+      "roles_latency_ms": 38017,
+      "total_calls": 4,
+      "trace": {
+        "librarian": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 30108,
+          "input_tokens": 3706,
+          "output_tokens": 205,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "candidates": 1,
+            "shown_to_mapper": 40,
+            "prefilter": {
+              "total": 45,
+              "core_poles_parsed": true,
+              "excluded_shape": 0,
+              "excluded_no_structure": 5,
+              "kept": 40
+            },
+            "dropped": 0
+          }
+        },
+        "skeptic": {
+          "ran": true,
+          "calls": 1,
+          "latency_ms": 7909,
+          "input_tokens": 1532,
+          "output_tokens": 316,
+          "model": "claude-sonnet-4-6",
+          "detail": {
+            "passed": null,
+            "score": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "b09",
+      "story": "Eşimle konuştuğumda o hep çözüm söylüyor, ben sadece anlatmak istiyorum. Sonunda ben susuyorum, o da 'ne oldu şimdi' diyor. Aynı sahne, her hafta.",
+      "core_calls": 1,
+      "core_tokens": {
+        "in": 2584,
+        "out": 219
+      },
+      "core_latency_ms": 5661,
+      "turn1": {
+        "mode": "CLOSE",
+        "question": null,
+        "options": [],
+        "why_ask": null,
+        "close": "Söylemek istediğin duyulmuyor, onun yerine çözüm geliyor — ve sen susunca döngü kapanıyor, ama kapanmıyor aslında."
+      },
+      "founder_route": "QUESTION",
+      "core_route_turn1": "CLOSE",
+      "route_match": false,
+      "core": {
+        "mode": "CLOSE",
+        "distinction": null,
+        "shape": null,
+        "reveal": null,
+        "close": "Söylemek istediğin duyulmuyor, onun yerine çözüm geliyor — ve sen susunca döngü kapanıyor, ama kapanmıyor aslında.",
+        "uncertain": null,
+        "noticed": [
+          "Her hafta aynı sahnenin tekrar ettiğini söylüyor.",
+          "Susma eylemi var — konuşmayı o bitiriyor, eşi değil.",
+          "Beklenti açık: sadece anlatmak istiyor, çözüm değil."
+        ],
+        "source": "api"
+      },
+      "route": "CLOSE",
+      "librarian": null,
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "route_close_stops_pipeline",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 0,
+      "roles_tokens": {
+        "in": 0,
+        "out": 0
+      },
+      "roles_latency_ms": 0,
+      "total_calls": 1,
+      "trace": {}
+    },
+    {
+      "id": "b10",
+      "story": "Bugün çok iyi bir haber aldım, sınavı kazandım. Ailemi aradım, herkes çok mutlu oldu. Ben de mutluyum, sadece bunu bir yere yazmak istedim.",
+      "core_calls": 1,
+      "core_tokens": {
+        "in": 2574,
+        "out": 180
+      },
+      "core_latency_ms": 4041,
+      "turn1": {
+        "mode": "CLOSE",
+        "question": null,
+        "options": [],
+        "why_ask": null,
+        "close": "Sınavı kazanmak ve o mutluluğu aileyle paylaşmak — bunu bir yere yazmaya değerdi. Tebrikler."
+      },
+      "founder_route": "CLOSE",
+      "core_route_turn1": "CLOSE",
+      "route_match": true,
+      "core": {
+        "mode": "CLOSE",
+        "distinction": null,
+        "shape": null,
+        "reveal": null,
+        "close": "Sınavı kazanmak ve o mutluluğu aileyle paylaşmak — bunu bir yere yazmaya değerdi. Tebrikler.",
+        "uncertain": null,
+        "noticed": [
+          "Sınavı kazandı ve bunu bir yere yazmak istedi.",
+          "Aileyi aradı, herkes mutlu oldu, kendisi de mutlu."
+        ],
+        "source": "api"
+      },
+      "route": "CLOSE",
+      "librarian": null,
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "route_close_stops_pipeline",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 0,
+      "roles_tokens": {
+        "in": 0,
+        "out": 0
+      },
+      "roles_latency_ms": 0,
+      "total_calls": 1,
+      "trace": {}
+    }
+  ]
+}
