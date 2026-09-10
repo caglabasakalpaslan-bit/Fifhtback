@@ -65,12 +65,12 @@ export const getFifthStories = async () => {
 };
 
 export const startFifth = async (payload) => {
-  const { data } = await axios.post(`${API}/fifth/start`, payload, { timeout: 90000 });
+  const { data } = await axios.post(`${API}/fifth/start`, payload, { timeout: 150000 });
   return data;
 };
 
 export const answerFifth = async (session_id, answer) => {
-  const { data } = await axios.post(`${API}/fifth/answer`, { session_id, answer }, { timeout: 90000 });
+  const { data } = await axios.post(`${API}/fifth/answer`, { session_id, answer }, { timeout: 150000 });
   return data;
 };
 

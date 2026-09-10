@@ -1723,6 +1723,11 @@ async def fifth_stories():
     return {"source": "prototype_seed", "avatars": FIFTH_AVATARS, "stories": FIFTH_STORY_CARDS}
 
 
+# Internal tournament fields (candidate scores, the question contract) are stored and used for evaluation
+# but never leave the API: the public product shows only the question, the Reveal and the Fifth Card.
+FIFTH_PUBLIC_EXCLUDE = {"tournament", "question_contract"}
+
+
 def _fifth_turn_from_record(sess: dict) -> FifthTurn:
     """Rebuild the current turn from the stored session record (used to restore after refresh)."""
     return FifthTurn(
@@ -1758,7 +1763,7 @@ async def fifth_status():
     return fifth_model_status()
 
 
-@api_router.get("/fifth/session/{session_id}", response_model=FifthTurn)
+@api_router.get("/fifth/session/{session_id}", response_model=FifthTurn, response_model_exclude=FIFTH_PUBLIC_EXCLUDE)
 async def fifth_session(session_id: str):
     sess = await db.fifth_sessions.find_one({"session_id": session_id}, {"_id": 0})
     if not sess:
@@ -1807,7 +1812,7 @@ async def fifth_card_return(session_id: str, req: CardReturn):
     return FifthCard(**card)
 
 
-@api_router.post("/fifth/start", response_model=FifthTurn)
+@api_router.post("/fifth/start", response_model=FifthTurn, response_model_exclude=FIFTH_PUBLIC_EXCLUDE)
 async def fifth_start(req: FifthStart):
     nickname = (req.nickname or "").strip()
     if not nickname:
@@ -1851,7 +1856,7 @@ async def fifth_start(req: FifthStart):
     return turn
 
 
-@api_router.post("/fifth/answer", response_model=FifthTurn)
+@api_router.post("/fifth/answer", response_model=FifthTurn, response_model_exclude=FIFTH_PUBLIC_EXCLUDE)
 async def fifth_answer(req: FifthAnswer):
     sess = await db.fifth_sessions.find_one({"session_id": req.session_id}, {"_id": 0})
     if not sess:

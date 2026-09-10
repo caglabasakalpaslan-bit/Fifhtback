@@ -6,15 +6,12 @@ import { Navbar } from "@/components/Navbar";
 import { Landing } from "@/pages/Landing";
 import { Anlat } from "@/pages/Anlat";
 import { AnlatTurn } from "@/pages/AnlatTurn";
-import { Kesfet, KesfetWorld } from "@/pages/Kesfet";
-import { InternalLayout, InternalIndex } from "@/pages/Internal";
-import { FifthCore } from "@/components/FifthCore";
-import { EmployeeVoice } from "@/components/EmployeeVoice";
-import { ManagerDashboard } from "@/components/ManagerDashboard";
-import { PatternRoom } from "@/components/PatternRoom";
+import { Kartlarim } from "@/pages/Kartlarim";
 
-// Public: /  /anlat  /anlat/:sessionId  /kesfet  /kesfet/:worldId
-// Internal (unlinked): /internal/*
+// Public product (launch): /  /anlat  /anlat/:sessionId  /kartlarim
+// KENDİNİ BUL (src/pages/Kesfet.js) and the legacy internal views (src/pages/Internal.js, EmployeeVoice,
+// ManagerDashboard, PatternRoom, FifthCore) are kept in the codebase but are NOT routed: nothing that is
+// unfinished or that carries a deterministic fallback is reachable from a public URL.
 function App() {
   return (
     <BrowserRouter>
@@ -25,20 +22,12 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/anlat" element={<Anlat />} />
             <Route path="/anlat/:sessionId" element={<AnlatTurn />} />
-            <Route path="/kesfet" element={<Kesfet />} />
-            <Route path="/kesfet/:worldId" element={<KesfetWorld />} />
-            <Route path="/internal" element={<InternalLayout />}>
-              <Route index element={<InternalIndex />} />
-              <Route path="fifth" element={<FifthCore />} />
-              <Route path="calisan-sesi" element={<EmployeeVoice onConfirmed={() => {}} />} />
-              <Route path="yonetici" element={<ManagerDashboard refreshKey={0} />} />
-              <Route path="pattern-room" element={<PatternRoom />} />
-            </Route>
+            <Route path="/kartlarim" element={<Kartlarim />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
         <footer className="border-t border-[#E7E0D8] py-6 mt-8">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-[#8A847C]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-2 text-xs text-[#8A847C]">
             <span className="font-serif italic text-sm">Fifthback — sesin duyuldu.</span>
             <span className="font-mono uppercase tracking-[0.16em]">Form yok · Kimlik yok</span>
           </div>

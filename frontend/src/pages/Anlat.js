@@ -148,6 +148,12 @@ export const Anlat = () => {
         </div>
       </div>
 
+      {loading && (
+        <p data-testid="anlat-waiting" className="text-sm text-[#8A847C]">
+          Dinliyor. Bu bir dakikaya kadar sürebilir; sayfayı kapatma.
+        </p>
+      )}
+
       {failure && <ModelUnavailable kind={failure} onRetry={send} retrying={loading} />}
     </motion.div>
   );

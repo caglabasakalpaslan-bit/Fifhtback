@@ -1,14 +1,12 @@
 import React from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Disc3, ShieldCheck } from "lucide-react";
 
-// Public navigation: exactly two entrances. Internal views live under /internal and are not listed.
+// Public navigation: Anlat and the user's saved cards. Nothing else is listed.
 export const Navbar = () => {
-  const { pathname } = useLocation();
-  const internal = pathname.startsWith("/internal");
   const tabs = [
     { to: "/anlat", label: "Anlat", testId: "nav-anlat" },
-    { to: "/kesfet", label: "Kendini Bul", testId: "nav-kesfet" },
+    { to: "/kartlarim", label: "Kartlarım", testId: "nav-kartlarim" },
   ];
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-[#FAF8F5]/85 border-b border-[#E7E0D8]">
@@ -30,7 +28,7 @@ export const Navbar = () => {
               to={t.to}
               data-testid={t.testId}
               className={({ isActive }) =>
-                `px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${isActive ? "bg-[#1A1816] text-[#FAF8F5]" : "text-[#57534E] hover:text-[#1A1816]"}`
+                `px-3.5 sm:px-4 py-1.5 text-sm font-medium rounded-full transition-colors whitespace-nowrap ${isActive ? "bg-[#1A1816] text-[#FAF8F5]" : "text-[#57534E] hover:text-[#1A1816]"}`
               }
             >
               {t.label}
@@ -40,7 +38,7 @@ export const Navbar = () => {
 
         <div className="hidden md:flex items-center gap-1.5 text-[#3F6B56]" data-testid="privacy-chip">
           <ShieldCheck className="h-4 w-4" strokeWidth={2} />
-          <span className="text-xs font-medium">{internal ? "İç görünüm" : "Kimlik bilgisi saklanmaz"}</span>
+          <span className="text-xs font-medium">Kimlik bilgisi saklanmaz</span>
         </div>
       </div>
     </header>
