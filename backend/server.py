@@ -1083,6 +1083,8 @@ Görevin kişiye kim olduğunu söylemek DEĞİL. Görevin, anlatılanda karar d
 ÇALIŞMA BİÇİMİ — AYRIM TURNUVASI:
 1. FARK ET: Somut olarak ne olmuş, ne söylenmiş? Yorum değil, sinyal (noticed).
 2. ADAY AYRIMLAR: 3-5 aday ayrım üret. Her aday "X ile Y arasında" biçiminde iki kutuplu olsun ve anlatıdan somut bir dayanağı olsun. Her aday için şunu sor: bilinseydi okumalardan birini ELEYECEK tek bir eksik olgu var mı? Bu olgu kişinin bildiği bir şey olmalı: gözlemlenebilir bir olay, kendi eylemi, kendi deneyimi ya da basit bir karşı-olgu ("söyledin mi", "daha önce de oldu mu", "o kişi başkalarına da böyle mi"). Üçüncü kişinin niyeti sorulamaz; kişinin GÖRDÜĞÜ davranışı sorulabilir. Olgu anlatıda ZATEN varsa fact_already_in_story=true yaz ve soru üretme. Kişinin kendi kurduğu ikiliği aynen geri sorma; bir kat altındaki olguyu sor.
+   ZATEN BİLİNİYOR MU (already_known) — soru üretmeden önce her eksik olgu için: anlatıda AÇIKÇA söylenmişse "stated"; anlatıdaki gözlemlenebilir bir olgudan GÜÇLÜ biçimde çıkarılabiliyorsa "implied"; ikisi de değilse "unknown". already_known_basis'e dayandığın anlatı parçasını yaz. Yalnızca "unknown" olgular sorulabilir.
+   CEVAP ETKİLERİ (answer_effects) — her seçenek için cevabın neyi değiştireceğini yaz: target "pole_a" (X güçlenir) | "pole_b" (Y güçlenir) | "discard" (bu ayrım düşer) | "reshape" (ayrım yeniden biçimlenir) | "same" (hiçbir şey değişmez). Seçeneklerin hepsi özünde aynı Açıklamaya götürüyorsa answers_converge=true yaz; o zaman soru sorulmaz, REVEAL gelir. expected_information_gain: cevabın ne kazandıracağını tek cümleyle yaz.
 3. PUANLA (her biri 0-3, içsel; kullanıcıya gösterilmez):
    evidence_support: dayanak anlatıda ne kadar somut
    judgment_change_value: bu ayrım netleşse kişinin yargısı ne kadar değişir (0 = değişmez, gerilim yok)
@@ -1095,7 +1097,7 @@ Görevin kişiye kim olduğunu söylemek DEĞİL. Görevin, anlatılanda karar d
    Sıralama: evidence_support + judgment_change_value + discriminability − speculation_risk − steering_risk. Yüksek spekülasyon ve yönlendirme sırayı DÜŞÜRÜR. En yüksek sıralı aday KAZANAN olur (winner_id) ve puanlarınla tutarlı olmalı.
 4. ROTA (proposed_mode; nihai rota puanlardan türetilir):
    CLOSE: hiçbir adayda anlamlı, çözülmemiş, yargı değiştirici gerilim yoksa (tüm adaylarda judgment_change_value ≤ 1) ve kişinin söylediği amaç zaten yerine gelmişse (paylaşmak, kaydetmek). Biçime uymak için sorun uydurma.
-   QUESTION: kazanan ya da ona yakın bir adayın eksik olgusu düşük zahmetli, kişinin bildiği ve gerçekten eleyici ise (user_answerability ≥ 2, low_effort ≥ 2, discriminability ≥ 2, judgment_change_value ≥ 2) ve anlatıda zaten yoksa.
+   QUESTION: KAZANAN adayın eksik olgusu düşük zahmetli, kişinin bildiği ve gerçekten eleyici ise (user_answerability ≥ 2, low_effort ≥ 2, discriminability ≥ 2, judgment_change_value ≥ 2), anlatıda zaten yoksa (already_known="unknown") ve cevaplar aynı yere çıkmıyorsa (answers_converge=false). Soru yalnızca kazanan ayrımın olgusunu sorar; başka bir adayın sorusu sorulmaz.
    REVEAL: kazanan ayrım anlatının kendi sinyalleriyle yeterince destekleniyorsa ya da kalan bilinmeyen tonu değiştirir ama ayrımın kendisini değiştirmezse.
    Kişinin daha önce sorulmuş bir soruya yanıtı varsa ikinci soru YASAK: proposed_mode REVEAL ya da CLOSE.
 
@@ -1117,6 +1119,11 @@ TÜM ÇIKTI TÜRKÇE. YALNIZCA şu KATI JSON nesnesini ver, başka hiçbir şey 
      "fact_already_in_story": true|false,
      "possible_question": "o olguyu soran tek kısa soru; yoksa null",
      "possible_options": ["2-4 tek satırlık seçenek"] | [],
+     "already_known": "unknown" | "stated" | "implied",
+     "already_known_basis": "dayandığın anlatı parçası ya da null",
+     "answer_effects": [{"option": "seçenek metni", "target": "pole_a" | "pole_b" | "discard" | "reshape" | "same", "change": "tek cümle"}] | [],
+     "answers_converge": true | false,
+     "expected_information_gain": "tek cümle ya da null",
      "why_it_may_change_judgment": "tek cümle",
      "scores": {"evidence_support": 0-3, "judgment_change_value": 0-3, "discriminability": 0-3, "user_answerability": 0-3, "low_effort": 0-3, "speculation_risk": 0-3, "steering_risk": 0-3, "closure_value": 0-3}}
   ],
@@ -1129,6 +1136,47 @@ TÜM ÇIKTI TÜRKÇE. YALNIZCA şu KATI JSON nesnesini ver, başka hiçbir şey 
   "uncertain": "hâlâ bilinmeyen tek cümle ya da null",
   "card": {"title": "...", "why_it_matters": "...", "still_open": "... | null", "take_with_you": "..."}
 }"""
+
+
+FIFTH_ANSWER_PROMPT = """Sen "The Fifth" (Fifthback) içindeki tek çekirdeksin. İlk turda bir AYRIM TURNUVASI yapıldı, bir kazanan ayrım seçildi ve o ayrımı netleştirmek için kişiye TEK bir soru soruldu. Sana o turun SORU SÖZLEŞMESİ ve kişinin yanıtı veriliyor.
+
+GÖREV — SORU SÜREKLİLİĞİ:
+Sıfırdan yeni bir turnuva BAŞLATMA. Önce elindeki kazanan ayrımı kişinin yanıtıyla GÜNCELLE. Yanıt görünür biçimde şunlardan birini yapmalı (answer_effect):
+- confirms_pole_a / confirms_pole_b: bir kutba güven artar; ayrım aynı kalır, kelimeleri keskinleşebilir.
+- reshapes: aynı gerilim, ama yanıt onu daha doğru bir biçime sokar (kutuplar yeniden adlandırılır; gerilim değişmez).
+- invalidates: yanıt bu ayrımı geçersiz kılar (kutuplardan biri artık mümkün değil ve kalan tek kutup bir ayrım oluşturmuyor).
+- new_information: yanıt anlatıda olmayan ve DAHA İYİ bir ayrım kuran maddi yeni bilgi getirir.
+- no_effect: yanıt hiçbir şeyi değiştirmedi. Bu, sorunun gereksiz olduğunu kabul etmektir; öyleyse dürüstçe yaz, etki uydurma.
+Sözleşmedeki "her yanıtın değiştireceği şey" listesinde bu yanıt için öngörülen etkiyi başlangıç noktası al; öngörüden sapıyorsan what_changed içinde neden saptığını söyle.
+
+YENİ TURNUVA yalnızca answer_effect invalidates ya da new_information ise çalışır: 3-5 yeni aday üret, aynı sekiz ölçütle puanla, yeni kazananı seç ve switch.reason içinde yanıtın bu değişimi neden haklı çıkardığını AÇIKÇA yaz. Diğer tüm durumlarda switch.needed=false, switch.candidates=[] olur ve kazanan eski ayrımın güncellenmiş hâlidir. Kazanan asla sessizce değişmez.
+
+what_changed: kişiye görünür tek cümle; yanıtı tırnak içinde anar ve ayrımda neyi değiştirdiğini söyler. Kart bu cümleyi taşır.
+still_open: yanıtla kapanan soruyu tekrar SORMA; yalnızca gerçekten açık kalanı yaz, yoksa null.
+
+ROTA: proposed_mode REVEAL. CLOSE yalnızca yanıt gerilimi tamamen kapatıyorsa (ayrım geçersiz kaldı ve kişi meseleyi kendisi çözmüş). İkinci soru YASAK.
+
+Üretilecekler (turnuva ile aynı kurallar): reveal 2-4 cümle, sıcak ama net, günlük Türkçe; belirsizliği koru; üçüncü kişiye sorumluluk yükleme; teşhis, tavsiye, terapi/koçluk dili, bilinçdışı motif dili yok. card: title (≤ 6 kelime, ayrımı adlandıran) · why_it_matters (1-2 cümle) · still_open · take_with_you (tek kısa soru ya da cümle; tavsiye değil).
+
+TÜM ÇIKTI TÜRKÇE. YALNIZCA şu KATI JSON nesnesini ver, başka hiçbir şey yazma:
+{
+  "answer_effect": "confirms_pole_a" | "confirms_pole_b" | "reshapes" | "invalidates" | "new_information" | "no_effect",
+  "what_changed": "tek cümle, yanıtı anarak",
+  "updated": {"distinction": "X ile Y arasında", "pole_a": "X", "pole_b": "Y", "confidence": "pole_a" | "pole_b" | "balanced", "confidence_note": "tek cümle"},
+  "switch": {"needed": true | false, "reason": "yanıt değişimi neden haklı çıkardı | null",
+             "candidates": [{"id": "n1", "distinction": "X ile Y arasında", "pole_a": "X", "pole_b": "Y", "evidence_from_story": "...", "why_it_may_change_judgment": "...",
+                             "scores": {"evidence_support": 0-3, "judgment_change_value": 0-3, "discriminability": 0-3, "user_answerability": 0-3, "low_effort": 0-3, "speculation_risk": 0-3, "steering_risk": 0-3, "closure_value": 0-3}}] | [],
+             "winner_id": "n? | null"},
+  "proposed_mode": "REVEAL" | "CLOSE",
+  "close": "1-2 cümle",
+  "reveal": "2-4 cümle",
+  "shape": "between_two" | "gradient" | "open_question" | "sequence",
+  "uncertain": "hâlâ bilinmeyen tek cümle ya da null",
+  "card": {"title": "...", "why_it_matters": "...", "still_open": "... | null", "take_with_you": "..."}
+}"""
+
+ANSWER_EFFECTS = ("confirms_pole_a", "confirms_pole_b", "reshapes", "invalidates", "new_information", "no_effect")
+SWITCH_EFFECTS = ("invalidates", "new_information")
 
 
 class FifthStart(BaseModel):
@@ -1163,6 +1211,13 @@ class DistinctionScores(BaseModel):
     closure_value: int = 0
 
 
+class AnswerEffect(BaseModel):
+    """What one possible answer would do to the winning distinction (declared BEFORE asking)."""
+    option: str
+    target: Literal["pole_a", "pole_b", "discard", "reshape", "same"] = "same"
+    change: Optional[str] = None
+
+
 class DistinctionCandidate(BaseModel):
     id: str
     distinction: str
@@ -1173,9 +1228,48 @@ class DistinctionCandidate(BaseModel):
     fact_already_in_story: bool = False
     possible_question: Optional[str] = None
     possible_options: List[str] = []
+    already_known: Optional[Literal["unknown", "stated", "implied"]] = None   # the already_known check
+    already_known_basis: Optional[str] = None
+    answer_effects: List[AnswerEffect] = []
+    answers_converge: bool = False
+    expected_information_gain: Optional[str] = None
     why_it_may_change_judgment: Optional[str] = None
     scores: DistinctionScores = DistinctionScores()
     rank: int = 0                                     # computed: es + jcv + disc − spec − steer
+
+
+class QuestionContract(BaseModel):
+    """Persisted when turn 1 routes to QUESTION. The answer turn UPDATES this distinction instead of
+    starting a fresh tournament; a winner may only change with an explicit, recorded reason."""
+    candidate_id: str
+    winning_distinction: str
+    pole_a: Optional[str] = None
+    pole_b: Optional[str] = None
+    evidence_so_far: Optional[str] = None
+    missing_discriminating_fact: str
+    question: str
+    options: List[str] = []
+    expected_information_gain: Optional[str] = None
+    what_each_answer_would_change: List[AnswerEffect] = []
+    already_known: Optional[str] = None
+    already_known_basis: Optional[str] = None
+
+
+class ContinuityUpdate(BaseModel):
+    """How the answer affected the contract's distinction. old_winner/new_winner are always filled, so a
+    switch can never be silent; switch_reason is mandatory when they differ."""
+    mode: Literal["updated", "switched"]
+    answer_effect: str
+    what_changed: str
+    old_winner: str
+    new_winner: str
+    switch_reason: Optional[str] = None
+    switch_refused: Optional[str] = None              # model asked to switch without a permitted effect
+    fresh_tournament_ran: bool = False
+    confidence: Optional[str] = None                  # pole_a | pole_b | balanced
+    confidence_note: Optional[str] = None
+    predicted_effect: Optional[str] = None            # the contract's declared target for the chosen answer
+    answer_discarded: bool = False                    # answer_effect == no_effect: the question bought nothing
 
 
 class Tournament(BaseModel):
@@ -1187,6 +1281,7 @@ class Tournament(BaseModel):
     routed_mode: Optional[str] = None
     route_reason: Optional[str] = None
     question_from: Optional[str] = None               # candidate id whose question was asked
+    continuity: Optional[ContinuityUpdate] = None     # answer turn only
 
 
 class FifthCard(BaseModel):
@@ -1202,6 +1297,7 @@ class FifthCard(BaseModel):
     take_with_you: str
     route_path: str                                   # REVEAL | QUESTION_REVEAL
     original_uncertainty: Optional[str] = None
+    answer_effect: Optional[str] = None               # QUESTION_REVEAL: the visible sentence saying what the answer changed
     enrichment: Optional[dict] = None                 # {record_id, figure_id, myth_id, source_refs, title} when used
     return_prompt: str = "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?"
     returns: List[dict] = []                          # [{outcome, note, at}]
@@ -1226,6 +1322,7 @@ class FifthTurn(BaseModel):
     close: Optional[str] = None            # CLOSE only: 1-2 sentence acknowledgment, no distinction
     card: Optional[FifthCard] = None       # REVEAL only
     tournament: Optional[Tournament] = None  # internal; scores are never shown in the UI
+    question_contract: Optional[QuestionContract] = None  # QUESTION turn: what the answer is expected to resolve
     source: str = "api"
     kind: str = "anlat"
     context: Optional[dict] = None
@@ -1252,6 +1349,27 @@ def _fifth_material(sess: dict) -> str:
             "Artık ikinci soru sorulamaz. mode=\"REVEAL\" ya da \"CLOSE\" olmalı."
         )
     return "\n\n".join(parts)
+
+
+def _fifth_answer_material(sess: dict) -> str:
+    """Answer turn: the story, the persisted QuestionContract and the answer. No fresh tournament framing."""
+    base = _fifth_material({k: v for k, v in sess.items() if k not in ("question", "answer")})
+    qc = QuestionContract(**sess["question_contract"])
+    effects = "\n".join(f"  - \"{e.option}\" → {e.target}: {e.change or ''}" for e in qc.what_each_answer_would_change) or "  (belirtilmemiş)"
+    return (
+        f"{base}\n\n"
+        "SORU SÖZLEŞMESİ (ilk turdan):\n"
+        f"kazanan ayrım: {qc.winning_distinction}\n"
+        f"kutup A: {qc.pole_a or '-'}\nkutup B: {qc.pole_b or '-'}\n"
+        f"buraya kadarki dayanak: {qc.evidence_so_far or '-'}\n"
+        f"eksik ayırt edici olgu: {qc.missing_discriminating_fact}\n"
+        f"sorulan soru: {qc.question}\n"
+        f"seçenekler: {qc.options}\n"
+        f"beklenen bilgi kazancı: {qc.expected_information_gain or '-'}\n"
+        f"her yanıtın değiştireceği şey:\n{effects}\n\n"
+        f"[Kişinin yanıtı] {sess['answer']}\n\n"
+        "Bu ayrımı yanıtla GÜNCELLE. Yeni turnuva yalnızca invalidates / new_information durumunda. İkinci soru yasak."
+    )
 
 
 # ---------------- Fifth Core model access ----------------
@@ -1320,6 +1438,9 @@ def _fifth_http_call(material: str, system: str = None, max_tokens: int = 1024) 
         raise FifthUnavailable(f"auth refused ({resp.status_code}) via {c['mode']}")
     if resp.status_code == 429 or resp.status_code >= 500:
         raise FifthUnavailable(f"api {resp.status_code}")
+    if resp.status_code == 400 and "credit balance" in resp.text:
+        # Billing exhaustion is an availability state, not a model output: surface it as the honest 503.
+        raise FifthUnavailable("api 400: credit balance exhausted on the configured credential")
     if resp.status_code != 200:
         raise FifthBadOutput(f"api {resp.status_code}: {resp.text[:200]}")
     text_parts, model, stop_reason, usage = [], None, None, {"input_tokens": 0, "output_tokens": 0}
@@ -1343,7 +1464,7 @@ def _fifth_http_call(material: str, system: str = None, max_tokens: int = 1024) 
                 stop_reason = (ev.get("delta") or {}).get("stop_reason") or stop_reason
                 usage["output_tokens"] = (ev.get("usage") or {}).get("output_tokens", usage["output_tokens"])
             elif et == "error":
-                raise FifthUnavailable(f"stream error: {(ev.get('error') or {}).get('type')}")
+                raise FifthUnavailable(f"stream error: {(ev.get('error') or {}).get('type')}: {str((ev.get('error') or {}).get('message'))[:200]}")
     except requests.RequestException as e:
         raise FifthUnavailable(f"stream interrupted: {e.__class__.__name__}") from e
     except json.JSONDecodeError as e:
@@ -1357,7 +1478,10 @@ async def fifth_core(sess: dict) -> dict:
     """ONE model interaction. Returns the parsed core JSON with source="api".
     Raises FifthUnavailable / FifthBadOutput instead of inventing output."""
     # The tournament contract (3-5 candidates + reveal + card) needs more room than the old single-mode output.
-    body = await asyncio.to_thread(_fifth_http_call, _fifth_material(sess), None, 3000)
+    if sess.get("answer") and sess.get("question_contract"):
+        body = await asyncio.to_thread(_fifth_http_call, _fifth_answer_material(sess), FIFTH_ANSWER_PROMPT, 3000)
+    else:
+        body = await asyncio.to_thread(_fifth_http_call, _fifth_material(sess), None, 3500)
     if body.get("stop_reason") == "max_tokens":
         logger.error("Fifth core: output truncated at max_tokens")
         raise FifthBadOutput("model output truncated")
@@ -1373,6 +1497,16 @@ async def fifth_core(sess: dict) -> dict:
     data["usage"] = body.get("usage")
     logger.info("Fifth core: model=%s stop=%s usage=%s", body.get("model"), body.get("stop_reason"), body.get("usage"))
     return data
+
+
+def _parse_answer_effects(raw) -> List[AnswerEffect]:
+    out = []
+    for e in (raw or [])[:4]:
+        if not isinstance(e, dict):
+            continue
+        tgt = e.get("target") if e.get("target") in ("pole_a", "pole_b", "discard", "reshape", "same") else "same"
+        out.append(AnswerEffect(option=str(e.get("option") or "").strip(), target=tgt, change=(str(e.get("change")).strip() if e.get("change") else None)))
+    return out
 
 
 def _parse_tournament(data: dict) -> Tournament:
@@ -1393,6 +1527,11 @@ def _parse_tournament(data: dict) -> Tournament:
             fact_already_in_story=bool(c.get("fact_already_in_story")),
             possible_question=(str(c.get("possible_question")).strip() if c.get("possible_question") else None),
             possible_options=[str(o).strip() for o in (c.get("possible_options") or []) if str(o).strip()][:4],
+            already_known=(c.get("already_known") if c.get("already_known") in ("unknown", "stated", "implied") else None),
+            already_known_basis=(str(c.get("already_known_basis")).strip() if c.get("already_known_basis") else None),
+            answer_effects=_parse_answer_effects(c.get("answer_effects")),
+            answers_converge=bool(c.get("answers_converge")),
+            expected_information_gain=(str(c.get("expected_information_gain")).strip() if c.get("expected_information_gain") else None),
             why_it_may_change_judgment=c.get("why_it_may_change_judgment"), scores=sc,
         )
         cand.rank = sc.evidence_support + sc.judgment_change_value + sc.discriminability - sc.speculation_risk - sc.steering_risk
@@ -1401,10 +1540,31 @@ def _parse_tournament(data: dict) -> Tournament:
     return Tournament(candidates=cands, winner_id=data.get("winner_id"), ranking_reasons=data.get("ranking_reasons"), proposed_mode=str(data.get("proposed_mode") or "").upper() or None)
 
 
-def _question_eligible(c: DistinctionCandidate) -> bool:
+def _question_block_reason(c: DistinctionCandidate) -> Optional[str]:
+    """None when the candidate's question may be asked; otherwise the tightened rule that blocks it."""
     sc = c.scores
-    return bool(c.missing_discriminating_fact and c.possible_question and 2 <= len(c.possible_options) <= 4 and not c.fact_already_in_story
-                and sc.user_answerability >= 2 and sc.low_effort >= 2 and sc.discriminability >= 2 and sc.judgment_change_value >= 2)
+    if not c.missing_discriminating_fact:
+        return "no_missing_fact"
+    if not c.possible_question or not (2 <= len(c.possible_options) <= 4):
+        return "no_question_or_options"
+    if c.fact_already_in_story or c.already_known == "stated":
+        return "already_known:stated"
+    if c.already_known == "implied":
+        return "already_known:implied"
+    if c.already_known != "unknown":
+        return "already_known:unchecked"
+    if c.answers_converge:
+        return "answers_converge"
+    targets = {e.target for e in c.answer_effects if e.target != "same"}
+    if len(c.answer_effects) < 2 or len(targets) < 2:
+        return "answers_converge:effects"      # the declared effects do not split the answers
+    if not (sc.user_answerability >= 2 and sc.low_effort >= 2 and sc.discriminability >= 2 and sc.judgment_change_value >= 2):
+        return "scores_below_threshold"
+    return None
+
+
+def _question_eligible(c: DistinctionCandidate) -> bool:
+    return _question_block_reason(c) is None
 
 
 def _route_from_tournament(t: Tournament, already_asked: bool):
@@ -1417,17 +1577,104 @@ def _route_from_tournament(t: Tournament, already_asked: bool):
     if max_jcv <= 1:
         return "CLOSE", f"no candidate carries judgment-changing tension (max judgment_change_value={max_jcv})", winner, None
     if not already_asked:
-        contenders = sorted([c for c in t.candidates if c.rank >= winner.rank - 1], key=lambda c: (c.id != winner.id, -c.rank))
-        qc = next((c for c in contenders if _question_eligible(c)), None)
-        if qc:
-            return "QUESTION", f"contender {qc.id} has a low-effort, answerable, discriminating missing fact", winner, qc
-        blocked = [f"{c.id}:already_in_story" for c in contenders if c.fact_already_in_story] + [f"{c.id}:no_missing_fact" for c in contenders if not c.missing_discriminating_fact]
-        return "REVEAL", "winner sufficiently supported; no eligible discriminating question (" + ", ".join(blocked[:3]) + ")", winner, None
+        # The question may only come from the WINNER: it must discriminate the distinction the card will carry.
+        block = _question_block_reason(winner)
+        if block is None:
+            return "QUESTION", f"winner {winner.id} has an unknown, answerable, discriminating missing fact whose answers diverge", winner, winner
+        return "REVEAL", f"winner {winner.id} sufficiently supported; question blocked ({block})", winner, None
     return "REVEAL", "answer received; second question forbidden", winner, None
 
 
+def _build_contract(c: DistinctionCandidate) -> QuestionContract:
+    return QuestionContract(
+        candidate_id=c.id, winning_distinction=c.distinction, pole_a=c.pole_a, pole_b=c.pole_b,
+        evidence_so_far=c.evidence_from_story, missing_discriminating_fact=c.missing_discriminating_fact or "",
+        question=c.possible_question or "", options=list(c.possible_options),
+        expected_information_gain=c.expected_information_gain, what_each_answer_would_change=list(c.answer_effects),
+        already_known=c.already_known, already_known_basis=c.already_known_basis,
+    )
+
+
+def _predicted_effect(qc: QuestionContract, answer: str) -> Optional[str]:
+    a = (answer or "").strip().casefold()
+    for e in qc.what_each_answer_would_change:
+        if e.option.strip().casefold() == a:
+            return e.target
+    return None
+
+
+def _normalize_answer_turn(sess: dict, data: dict) -> FifthTurn:
+    """QUESTION CONTINUITY: update the contract's distinction with the answer. A fresh tournament is accepted
+    only for invalidates / new_information, and only with candidates AND a reason; otherwise the winner is
+    the contract's distinction as updated. old_winner/new_winner are always recorded."""
+    qc = QuestionContract(**sess["question_contract"])
+    effect = str(data.get("answer_effect") or "").strip()
+    if effect not in ANSWER_EFFECTS:
+        raise FifthBadOutput(f"unknown answer_effect {effect!r}")
+    what_changed = str(data.get("what_changed") or "").strip()
+    upd = data.get("updated") or {}
+    sw = data.get("switch") or {}
+    switched, switch_reason, refused, cands, winner = False, None, None, [], None
+    if sw.get("needed"):
+        if effect not in SWITCH_EFFECTS:
+            refused = f"switch requested with answer_effect={effect}; only {'/'.join(SWITCH_EFFECTS)} may replace the winner"
+        else:
+            t2 = _parse_tournament({"candidates": sw.get("candidates") or [], "winner_id": sw.get("winner_id")})
+            reason = str(sw.get("reason") or "").strip()
+            if not t2.candidates or not reason:
+                raise FifthBadOutput("winner switch without candidates or an explicit reason")   # a switch is never silent
+            top = max(c.rank for c in t2.candidates)
+            winner = next((c for c in t2.candidates if c.id == t2.winner_id and c.rank >= top - 1), None) or max(t2.candidates, key=lambda c: c.rank)
+            switched, switch_reason, cands = True, reason, t2.candidates
+    if not switched:
+        dist = str(upd.get("distinction") or "").strip() or qc.winning_distinction
+        winner = DistinctionCandidate(id=qc.candidate_id, distinction=dist, pole_a=(upd.get("pole_a") or qc.pole_a), pole_b=(upd.get("pole_b") or qc.pole_b),
+                                      evidence_from_story=qc.evidence_so_far, missing_discriminating_fact=qc.missing_discriminating_fact)
+        cands = [winner]
+    cont = ContinuityUpdate(
+        mode="switched" if switched else "updated", answer_effect=effect, what_changed=what_changed,
+        old_winner=qc.winning_distinction, new_winner=winner.distinction, switch_reason=switch_reason, switch_refused=refused,
+        fresh_tournament_ran=switched, confidence=(upd.get("confidence") if upd.get("confidence") in ("pole_a", "pole_b", "balanced") else None),
+        confidence_note=(str(upd.get("confidence_note")).strip() if upd.get("confidence_note") else None),
+        predicted_effect=_predicted_effect(qc, sess.get("answer", "")), answer_discarded=(effect == "no_effect"),
+    )
+    t = Tournament(candidates=cands, winner_id=winner.id, ranking_reasons=switch_reason or what_changed or None,
+                   proposed_mode=str(data.get("proposed_mode") or "").upper() or None, question_from=qc.candidate_id, continuity=cont)
+    now = datetime.now(timezone.utc).isoformat()
+    meta = dict(session_id=sess["session_id"], nickname=sess["nickname"], avatar=sess["avatar"], door=sess["door"],
+                noticed=[str(x) for x in (data.get("noticed") or [])][:3] or list(sess.get("noticed") or [])[:3],
+                source=data.get("source", "api"), kind=sess.get("kind", "anlat"), context=sess.get("context"),
+                created_at=sess.get("created_at"), updated_at=sess.get("updated_at"), tournament=t, question_contract=qc)
+    close = str(data.get("close")).strip() if data.get("close") else None
+    if t.proposed_mode == "CLOSE" and close and effect in ("invalidates", "no_effect"):
+        t.routed_mode, t.route_reason = "CLOSE", f"answer dissolved the tension (answer_effect={effect})"
+        return FifthTurn(status="done", mode="CLOSE", close=close, candidates=[c.distinction for c in cands][:3], **meta)
+    t.routed_mode = "REVEAL"
+    t.route_reason = (f"continuity: winner switched ({effect}) — {switch_reason}" if switched
+                      else f"continuity: winner updated ({effect})" + (f"; {refused}" if refused else ""))
+    reveal = str(data.get("reveal")).strip() if data.get("reveal") else None
+    if not reveal:
+        reveal = "Yanıtın ayrımı netleştirdi ama bunu iyi bir cümleye dökemedim. Bunu bir kesinlik olarak değil, şu anki sınırım olarak oku."
+    shape = data.get("shape") if data.get("shape") in ("between_two", "gradient", "open_question", "sequence") else None
+    uncertain = str(data.get("uncertain")).strip() if data.get("uncertain") else None
+    card_in = data.get("card") or {}
+    card = FifthCard(
+        card_id=str(uuid.uuid4()), session_id=sess["session_id"], created_at=now,
+        title=str(card_in.get("title") or winner.distinction).strip()[:80],
+        distinction=winner.distinction, why_it_matters=str(card_in.get("why_it_matters") or "").strip() or reveal,
+        still_open=(str(card_in.get("still_open")).strip() if card_in.get("still_open") else None),
+        take_with_you=str(card_in.get("take_with_you") or "").strip() or winner.distinction,
+        route_path="QUESTION_REVEAL", original_uncertainty=uncertain, answer_effect=what_changed or None,
+    )
+    return FifthTurn(status="done", mode="REVEAL", candidates=[c.distinction for c in cands][:3],
+                     reveal=reveal, shape=shape, distinction=winner.distinction, uncertain=uncertain, card=card, **meta)
+
+
 def _fifth_normalize(sess: dict, data: dict) -> FifthTurn:
-    """Distinction tournament → deterministic route → CLOSE / QUESTION / REVEAL(+Fifth Card)."""
+    """Distinction tournament → deterministic route → CLOSE / QUESTION / REVEAL(+Fifth Card).
+    Answer turns with a persisted QuestionContract go through continuity instead of a fresh tournament."""
+    if sess.get("answer") and sess.get("question_contract"):
+        return _normalize_answer_turn(sess, data)
     t = _parse_tournament(data)
     already_asked = bool(sess.get("question"))
     mode, reason, winner, qc = _route_from_tournament(t, already_asked)
@@ -1443,7 +1690,8 @@ def _fifth_normalize(sess: dict, data: dict) -> FifthTurn:
     if mode == "QUESTION" and qc:
         t.question_from = qc.id
         return FifthTurn(status="question", mode="QUESTION", candidates=[c.distinction for c in t.candidates][:3],
-                         question=qc.possible_question, options=qc.possible_options, why_ask=qc.why_it_may_change_judgment, **meta)
+                         question=qc.possible_question, options=qc.possible_options, why_ask=qc.why_it_may_change_judgment,
+                         question_contract=_build_contract(qc), **meta)
     reveal = str(data.get("reveal")).strip() if data.get("reveal") else None
     if not reveal:
         reveal = ("Buraya kadar anlattıkların bir Açıklama için yeterli görünüyor ama net bir ayrım çıkaramadım. "
@@ -1478,6 +1726,7 @@ def _fifth_turn_from_record(sess: dict) -> FifthTurn:
         question=sess.get("question"), options=sess.get("options") or [], why_ask=sess.get("why_ask"),
         reveal=sess.get("reveal"), distinction=sess.get("distinction"), shape=sess.get("shape"), uncertain=sess.get("uncertain"),
         close=sess.get("close"), card=sess.get("card"), tournament=sess.get("tournament"),
+        question_contract=sess.get("question_contract"),
         source=sess.get("source", "api"), kind=sess.get("kind", "anlat"), context=sess.get("context"),
         created_at=sess.get("created_at"), updated_at=sess.get("updated_at"),
         enrichment=sess.get("enrichment"),
@@ -1590,6 +1839,7 @@ async def fifth_start(req: FifthStart):
         "reveal": turn.reveal, "distinction": turn.distinction, "shape": turn.shape, "uncertain": turn.uncertain,
         "close": turn.close, "source": turn.source,
         "card": turn.card.model_dump() if turn.card else None, "tournament": turn.tournament.model_dump() if turn.tournament else None,
+        "question_contract": turn.question_contract.model_dump() if turn.question_contract else None,
     })
     await db.fifth_sessions.insert_one(dict(sess))
     return turn

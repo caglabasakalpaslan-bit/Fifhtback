@@ -64,8 +64,12 @@ def tournament_view(t):
     if not t: return None
     return {"winner_id": t.winner_id, "ranking_reasons": t.ranking_reasons, "proposed_mode": t.proposed_mode, "routed_mode": t.routed_mode,
             "route_reason": t.route_reason, "question_from": t.question_from,
-            "candidates": [{"id": c.id, "distinction": c.distinction, "evidence": c.evidence_from_story, "missing_fact": c.missing_discriminating_fact,
-                            "fact_already_in_story": c.fact_already_in_story, "possible_question": c.possible_question, "options": c.possible_options,
+            "continuity": t.continuity.model_dump() if t.continuity else None,
+            "candidates": [{"id": c.id, "distinction": c.distinction, "pole_a": c.pole_a, "pole_b": c.pole_b, "evidence": c.evidence_from_story,
+                            "missing_fact": c.missing_discriminating_fact, "fact_already_in_story": c.fact_already_in_story,
+                            "already_known": c.already_known, "already_known_basis": c.already_known_basis, "answers_converge": c.answers_converge,
+                            "answer_effects": [e.model_dump() for e in c.answer_effects], "expected_information_gain": c.expected_information_gain,
+                            "possible_question": c.possible_question, "options": c.possible_options,
                             "why": c.why_it_may_change_judgment, "scores": c.scores.model_dump(), "rank": c.rank} for c in t.candidates]}
 
 
@@ -81,10 +85,13 @@ async def run_story(item):
     rec["turn1"] = {"mode": turn.mode, "question": turn.question, "options": turn.options, "why_ask": turn.why_ask, "close": turn.close, "tournament": tournament_view(turn.tournament)}
     rec["core_route_turn1"] = turn.mode; rec["route_match"] = (turn.mode == rec["founder_route"]) if rec["founder_route"] else None
     if turn.status == "question":
-        sess.update({"question": turn.question, "options": turn.options, "answer": turn.options[0] if turn.options else "Emin değilim"})
+        rec["question_contract"] = turn.question_contract.model_dump() if turn.question_contract else None
+        sess.update({"question": turn.question, "options": turn.options, "answer": turn.options[0] if turn.options else "Emin değilim",
+                     "question_contract": rec["question_contract"], "noticed": turn.noticed})
         data = await core_with_retry(sess, rec); turn = server._fifth_normalize(sess, data)
         rec["core_calls"] += 1; rec["core_tokens"]["in"] += data["usage"]["input_tokens"]; rec["core_tokens"]["out"] += data["usage"]["output_tokens"]
         rec["answered_with"] = sess["answer"]; rec["turn2_tournament"] = tournament_view(turn.tournament)
+        rec["continuity"] = turn.tournament.continuity.model_dump() if turn.tournament and turn.tournament.continuity else None
     rec["core_latency_ms"] = int((time.perf_counter() - t0) * 1000)
     rec["final_mode"] = turn.mode
     rec["core"] = {"distinction": turn.distinction, "shape": turn.shape, "reveal": turn.reveal, "close": turn.close, "uncertain": turn.uncertain, "noticed": turn.noticed}
@@ -107,7 +114,9 @@ async def main():
     stories = json.load(open(os.path.join(HERE, "fifth_baseline_stories.json"), encoding="utf-8"))["stories"]
     if a.edge:
         stories += json.load(open(os.path.join(HERE, "fifth_edge_cases.json"), encoding="utf-8"))["stories"]
-    out = {"run_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%SZ"), "model": server.FIFTH_MODEL, "records": []}
+    stories_meta = json.load(open(os.path.join(HERE, "fifth_baseline_stories.json"), encoding="utf-8"))
+    out = {"run_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H-%M-%SZ"), "model": server.FIFTH_MODEL,
+           "stories_version": stories_meta.get("version", "v1"), "records": []}
     for it in stories:
         try:
             r = await run_story(it)
@@ -117,6 +126,7 @@ async def main():
         out["records"].append(r); e = r["enrichment"]
         print(f"{r['id']}: founder={r['founder_route']} core_turn1={r['core_route_turn1']} match={r['route_match']} final={r['final_mode']} "
               f"cands={len((r['turn1']['tournament'] or {}).get('candidates', []))} proposed={(r['turn1']['tournament'] or {}).get('proposed_mode')} "
+              f"effect={(r.get('continuity') or {}).get('answer_effect')} cont={(r.get('continuity') or {}).get('mode')} "
               f"lib={len((r['librarian'] or {}).get('candidates', []))} skeptic={(r['skeptic'] or {}).get('passed')} used={e['used']} identical={r['core_identical']} "
               f"calls={r['total_calls']} latency={r['core_latency_ms']}+{r['roles_latency_ms']}ms", flush=True)
     os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
