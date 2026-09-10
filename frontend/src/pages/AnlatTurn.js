@@ -90,7 +90,9 @@ export const AnlatTurn = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const cached = getCurrentSession();
-  const [turn, setTurn] = useState(location.state?.turn || (cached?.session_id === sessionId ? cached : null));
+  const cachedTurn = cached?.session_id === sessionId ? cached : null;
+  // History state can be the pre-answer QUESTION turn (browser back after the Reveal); the cached turn is always the latest.
+  const [turn, setTurn] = useState(cachedTurn || location.state?.turn || null);
   const isReturnVisit = !location.state?.turn;   // opened later (link, refresh, history) rather than right after the Reveal
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
