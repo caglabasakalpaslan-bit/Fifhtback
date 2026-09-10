@@ -103,6 +103,23 @@ export const enrichFifth = async (session_id) => {
   return data;
 };
 
+// Kaydet: persist the finished Fifth Card under the browser's pseudonymous user_ref (idempotent per card).
+export const saveCard = async (session_id, user_ref) => {
+  const { data } = await axios.post(`${API}/fifth/card/${session_id}/save`, { user_ref });
+  return data;
+};
+
+// MY FIFTHBACK v0: saved cards, newest first.
+export const listSavedCards = async (user_ref) => {
+  const { data } = await axios.get(`${API}/fifth/saved`, { params: { user_ref } });
+  return data;
+};
+
+export const deleteSavedCard = async (card_id, user_ref) => {
+  const { data } = await axios.delete(`${API}/fifth/saved/${card_id}`, { params: { user_ref } });
+  return data;
+};
+
 // Return loop: later, the user says what happened to a saved Fifth Card. No scoring, no profile.
 export const returnCard = async (session_id, outcome, note) => {
   const { data } = await axios.post(`${API}/fifth/card/${session_id}/return`, { outcome, note: note || null });

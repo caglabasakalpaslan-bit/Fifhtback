@@ -1817,6 +1817,80 @@ async def fifth_card_return(session_id: str, req: CardReturn):
     return FifthCard(**card)
 
 
+# ---------------- Saved cards ("Kaydet" → MY FIFTHBACK) ----------------
+# v0 persistence only: one record per card, keyed by the pseudonymous user_ref the browser generated.
+# No profile, no scores, no dashboard. The list is chronological.
+class SaveCardRequest(BaseModel):
+    user_ref: str = Field(min_length=1, max_length=64)
+
+
+class SavedCard(BaseModel):
+    card_id: str
+    session_id: str
+    user_ref: str
+    created_at: str                                   # when the card was produced
+    saved_at: str                                     # when the user pressed Kaydet
+    story: Optional[str] = None                       # the original story (or story card + what felt familiar)
+    story_ref: str                                    # session reference to the full record
+    route_path: str                                   # REVEAL | QUESTION_REVEAL
+    title: str
+    distinction: str
+    why_it_matters: str
+    still_open: Optional[str] = None
+    take_with_you: str
+    enrichment: Optional[dict] = None                 # provenance only, when an approved enrichment existed
+    nickname: Optional[str] = None
+    avatar: Optional[str] = None
+
+
+def _saved_card_from_session(sess: dict, user_ref: str, now: str) -> SavedCard:
+    card = sess["card"]
+    if sess.get("story"):
+        story = sess["story"]
+    else:
+        sc = sess.get("story_card") or {}
+        story = f"{sc.get('title', '')}: {sc.get('text', '')}\n\nTanıdık gelen: {sess.get('familiar', '')}".strip()
+    return SavedCard(
+        card_id=card["card_id"], session_id=sess["session_id"], user_ref=user_ref,
+        created_at=card.get("created_at") or sess.get("created_at") or now, saved_at=now,
+        story=story[:4000], story_ref=sess["session_id"], route_path=card.get("route_path") or "REVEAL",
+        title=card.get("title") or card.get("distinction") or "", distinction=card.get("distinction") or "",
+        why_it_matters=card.get("why_it_matters") or "", still_open=card.get("still_open"),
+        take_with_you=card.get("take_with_you") or "", enrichment=card.get("enrichment"),
+        nickname=sess.get("nickname"), avatar=sess.get("avatar"),
+    )
+
+
+@api_router.post("/fifth/card/{session_id}/save", response_model=SavedCard)
+async def fifth_card_save(session_id: str, req: SaveCardRequest):
+    """Kaydet: persist the finished Fifth Card for this user_ref. Idempotent per card."""
+    sess = await db.fifth_sessions.find_one({"session_id": session_id}, {"_id": 0})
+    if not sess or not sess.get("card"):
+        raise HTTPException(status_code=404, detail="Kart bulunamadı.")
+    now = datetime.now(timezone.utc).isoformat()
+    rec = _saved_card_from_session(sess, req.user_ref.strip(), now)
+    existing = await db.fifth_saved_cards.find_one({"card_id": rec.card_id, "user_ref": rec.user_ref}, {"_id": 0})
+    if existing:
+        return SavedCard(**existing)
+    await db.fifth_saved_cards.insert_one(rec.model_dump())
+    return rec
+
+
+@api_router.get("/fifth/saved", response_model=List[SavedCard])
+async def fifth_saved_list(user_ref: str):
+    """MY FIFTHBACK v0: the user's saved cards, newest first."""
+    if not user_ref.strip():
+        return []
+    cur = db.fifth_saved_cards.find({"user_ref": user_ref.strip()}, {"_id": 0}).sort("saved_at", -1).limit(200)
+    return [SavedCard(**d) async for d in cur]
+
+
+@api_router.delete("/fifth/saved/{card_id}")
+async def fifth_saved_delete(card_id: str, user_ref: str):
+    res = await db.fifth_saved_cards.delete_one({"card_id": card_id, "user_ref": user_ref.strip()})
+    return {"deleted": res.deleted_count}
+
+
 @api_router.post("/fifth/start", response_model=FifthTurn, response_model_exclude=FIFTH_PUBLIC_EXCLUDE)
 async def fifth_start(req: FifthStart):
     nickname = (req.nickname or "").strip()

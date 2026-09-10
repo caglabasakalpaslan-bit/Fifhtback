@@ -31,14 +31,13 @@ export const Anlat = () => {
   }, []);
   const speech = useSpeechInput({ lang: "tr-TR", onFinal: appendSpeech });
 
-  const identityReady = nickname.trim().length > 0;
-  const canSend = identityReady && text.trim().length > 0 && !loading;
+  // A nickname is optional: the story is the only thing required. Without one the card says "Misafir".
+  const canSend = text.trim().length > 0 && !loading;
 
   const send = async () => {
-    if (!identityReady) return toast("Önce sana ne diyeceğimizi söyle.");
     if (!text.trim()) return toast("Önce anlat.", { description: "Yaz ya da mikrofona bas. Birkaç cümle yeter." });
     speech.stop();
-    const id = saveIdentity({ nickname: nickname.trim(), avatar });
+    const id = saveIdentity({ nickname: nickname.trim() || "Misafir", avatar });
     setLoading(true); setFailure(null);
     try {
       const turn = await startFifth({
@@ -77,7 +76,7 @@ export const Anlat = () => {
 
       {!identity?.nickname && (
         <div data-testid="anlat-identity" className="rounded-2xl border border-[#E7E0D8] bg-white p-5 space-y-3">
-          <p className="text-sm text-[#57534E]">Sana ne diyelim? Bir takma ad, bir avatar. Kimlik değil, oyun.</p>
+          <p className="text-sm text-[#57534E]">Sana ne diyelim? Bir takma ad, bir avatar. İstersen boş bırak.</p>
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             <input
               data-testid="anlat-nickname"

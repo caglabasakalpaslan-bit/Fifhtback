@@ -1,19 +1,18 @@
 import React from "react";
 import { RefreshCw } from "lucide-react";
 
-// Honest state when the core cannot reach the model. No fake question, no fake reveal.
+// Honest state when the core cannot produce an answer. No fake question, no fake reveal. The draft is kept.
 export const ModelUnavailable = ({ kind = "unavailable", onRetry, retrying, draftKept = true }) => {
-  const copy = {
-    unavailable: { title: "Model şu an erişilemiyor.", body: "Bağlantı ya da yetki tarafında bir sorun var. Bu senin hikâyenle ilgili değil." },
-    bad_output: { title: "Çekirdek bu kez düzgün cevap veremedi.", body: "Model yanıt verdi ama beklenen biçimde değil. Tekrar denemek genelde yeter." },
-    network: { title: "Sunucuya ulaşılamadı.", body: "Ağ bağlantısını kontrol edip tekrar dene." },
-    unknown: { title: "Bir şey ters gitti.", body: "Tekrar denemek genelde yeter." },
-  }[kind] || { title: "Bir şey ters gitti.", body: "" };
+  const body = {
+    unavailable: "Bağlantı ya da yetki tarafında bir sorun var. Bu senin hikâyenle ilgili değil.",
+    bad_output: "Yanıt geldi ama beklenen biçimde değildi. Tekrar denemek genelde yeter.",
+    network: "Sunucuya ulaşılamadı. Bağlantını kontrol edip tekrar dene.",
+    unknown: "Tekrar denemek genelde yeter.",
+  }[kind] || "Tekrar denemek genelde yeter.";
   return (
-    <div data-testid="model-unavailable" className="rounded-2xl border border-[#E7D6C8] bg-[#FBF3EC] p-6 space-y-3">
-      <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#B04D27] font-semibold">Erişilemedi</p>
-      <p className="font-serif text-2xl leading-snug">{copy.title}</p>
-      <p className="text-sm text-[#57534E]">{copy.body}{draftKept ? " Yazdıkların duruyor." : ""}</p>
+    <div data-testid="model-unavailable" className="rounded-2xl border border-[#E7D6C8] bg-[#FBF3EC] p-5 sm:p-6 space-y-3">
+      <p className="font-serif text-2xl leading-snug" data-testid="model-unavailable-title">Şu an yanıt oluşturamıyorum.</p>
+      <p className="text-sm text-[#57534E]">{body}{draftKept ? " Yazdıkların duruyor." : ""}</p>
       <button
         type="button"
         data-testid="model-retry"

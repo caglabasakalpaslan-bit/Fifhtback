@@ -7,21 +7,24 @@ import { Landing } from "@/pages/Landing";
 import { Anlat } from "@/pages/Anlat";
 import { AnlatTurn } from "@/pages/AnlatTurn";
 import { Kartlarim } from "@/pages/Kartlarim";
+import { Kesfet, KesfetWorld } from "@/pages/Kesfet";
 
-// Public product (launch): /  /anlat  /anlat/:sessionId  /kartlarim
-// KENDİNİ BUL (src/pages/Kesfet.js) and the legacy internal views (src/pages/Internal.js, EmployeeVoice,
-// ManagerDashboard, PatternRoom, FifthCore) are kept in the codebase but are NOT routed: nothing that is
-// unfinished or that carries a deterministic fallback is reachable from a public URL.
+// Public product (launch): /  /anlat  /anlat/:sessionId  /kesfet  /kesfet/:worldId  /kartlarim
+// KENDİNİ BUL is the stable world-selection shell only (no world interiors yet).
+// The legacy internal views (src/pages/Internal.js, EmployeeVoice, ManagerDashboard, PatternRoom, FifthCore)
+// are kept in the codebase but are NOT routed: nothing that carries a deterministic fallback is reachable.
 function App() {
   return (
     <BrowserRouter>
-      <div className="App min-h-screen paper-grain flex flex-col">
+      <div className="App min-h-screen paper-grain flex flex-col overflow-x-hidden">
         <Navbar />
         <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8">
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/anlat" element={<Anlat />} />
             <Route path="/anlat/:sessionId" element={<AnlatTurn />} />
+            <Route path="/kesfet" element={<Kesfet />} />
+            <Route path="/kesfet/:worldId" element={<KesfetWorld />} />
             <Route path="/kartlarim" element={<Kartlarim />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

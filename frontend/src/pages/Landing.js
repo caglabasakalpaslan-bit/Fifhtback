@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Mic, Compass } from "lucide-react";
 import { getSavedCards } from "../lib/storage";
 
-// One open door at launch. KENDİNİ BUL is announced, not entered: its inside is not built yet.
+// Two doors: ANLAT (the product) and KENDİNİ BUL (stable world-selection shell; interiors come later).
 export const Landing = () => {
   const saved = getSavedCards();
   return (
@@ -30,16 +30,17 @@ export const Landing = () => {
           <p className="mt-4 text-base text-[#57534E] leading-relaxed">Burası sesinin duyulduğu yer.</p>
           <div className="mt-6 text-sm font-medium text-[#1A1816] opacity-70 group-hover:opacity-100 transition-opacity">Gir →</div>
         </Link>
-        <div
-          data-testid="door-kesfet-soon"
-          aria-disabled="true"
-          className="rounded-3xl border border-dashed border-[#E7E0D8] p-7 sm:p-9 text-[#B8B0A6]"
+        <Link
+          to="/kesfet"
+          data-testid="door-kesfet"
+          className="group block rounded-3xl border border-[#E7E0D8] bg-white p-7 sm:p-9 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-[#1A1816]/20"
         >
-          <Compass className="h-6 w-6" strokeWidth={1.75} />
-          <div className="mt-6 text-[11px] font-mono uppercase tracking-[0.22em]">Kendini bul · yakında</div>
-          <div className="mt-2 font-serif text-3xl sm:text-4xl font-medium tracking-tight leading-[1.02]">Kendini Bul</div>
-          <p className="mt-4 text-base leading-relaxed">Burası yaşanmışlıkların sesi. Kapı henüz açık değil.</p>
-        </div>
+          <Compass className="h-6 w-6 text-[#3F6B56]" strokeWidth={1.75} />
+          <div className="mt-6 text-[11px] font-mono uppercase tracking-[0.22em] text-[#3F6B56]">Kendini bul</div>
+          <div className="mt-2 font-serif text-4xl sm:text-5xl font-medium tracking-tight leading-[1.02]">Kendini Bul</div>
+          <p className="mt-4 text-base text-[#57534E] leading-relaxed">Burası yaşanmışlıkların sesi. Bir dünya seç.</p>
+          <div className="mt-6 text-sm font-medium text-[#1A1816] opacity-70 group-hover:opacity-100 transition-opacity">Gir →</div>
+        </Link>
       </div>
       {saved.length > 0 && (
         <Link to="/kartlarim" data-testid="landing-cards-link" className="mt-8 inline-flex text-sm font-medium text-[#57534E] hover:text-[#1A1816]">

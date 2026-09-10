@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, ArrowRight, RotateCcw, Copy, Check, BookmarkCheck } from "lucide-react";
+import { Loader2, ArrowRight, RotateCcw, Copy, Check, Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "sonner";
-import { answerFifth, getFifthSession, describeFifthError } from "../lib/api";
+import { answerFifth, getFifthSession, describeFifthError, saveCard } from "../lib/api";
 import { FifthCardView } from "../components/FifthCardView";
-import { setCurrentSession, clearCurrentSession, clearDraft, getCurrentSession, saveCardRecord, cardToText } from "../lib/storage";
+import { setCurrentSession, clearCurrentSession, clearDraft, getCurrentSession, saveCardRecord, cardToText, ensureUserRef, isCardSaved } from "../lib/storage";
 import { BackLink } from "../components/BackLink";
 import { ModelUnavailable } from "../components/ModelUnavailable";
 
@@ -31,11 +31,44 @@ const CopyButton = ({ turn }) => {
   );
 };
 
-const DoneActions = ({ turn, onNew, onHome }) => (
-  <div className="pt-2 space-y-3">
-    <div className="flex items-center gap-1.5 text-xs text-[#3F6B56]" data-testid="turn-saved">
-      <BookmarkCheck className="h-4 w-4" /> Kartlarım'a kaydedildi. Bu tarayıcıda durur.
-    </div>
+// Kaydet: one explicit action. Persists the card on the server under the browser's user_ref and mirrors it locally.
+const SaveButton = ({ turn }) => {
+  const [saved, setSaved] = useState(() => isCardSaved(turn.session_id));
+  const [busy, setBusy] = useState(false);
+  const navigate = useNavigate();
+  const save = async () => {
+    if (saved || busy) return;
+    setBusy(true);
+    try {
+      const rec = await saveCard(turn.session_id, ensureUserRef());
+      saveCardRecord(turn, rec);
+      setSaved(true);
+      toast("Kaydedildi.", { description: "Kartlarım'da duruyor." });
+    } catch {
+      toast("Kaydedilemedi.", { description: "Sunucuya ulaşılamadı. Biraz sonra tekrar dene." });
+    } finally {
+      setBusy(false);
+    }
+  };
+  if (saved) {
+    return (
+      <button data-testid="card-saved" onClick={() => navigate("/kartlarim")}
+        className="inline-flex items-center gap-2 rounded-full border border-[#3F6B56] bg-[#EDF5F0] px-4 py-2 text-sm font-medium text-[#3F6B56]">
+        <BookmarkCheck className="h-4 w-4" /> Kaydedildi · Kartlarım
+      </button>
+    );
+  }
+  return (
+    <button data-testid="card-save" disabled={busy} onClick={save}
+      className="inline-flex items-center gap-2 rounded-full bg-[#1A1816] px-5 py-2.5 text-sm font-medium text-[#FAF8F5] disabled:opacity-50">
+      {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Bookmark className="h-4 w-4" />} Kaydet
+    </button>
+  );
+};
+
+const DoneActions = ({ turn, onNew, onHome, canSave }) => (
+  <div className="pt-2 space-y-4">
+    {canSave && <SaveButton turn={turn} />}
     <div className="flex flex-wrap items-center justify-between gap-3">
       <span className="text-sm text-[#8A847C]">{turn.mode === "CLOSE" ? `Eklenecek bir şey yok, ${turn.nickname}.` : `Burada duruyoruz, ${turn.nickname}.`}</span>
       <div className="flex flex-wrap items-center gap-4">
@@ -50,7 +83,8 @@ const DoneActions = ({ turn, onNew, onHome }) => (
 );
 
 // The one question, or the Reveal. State comes from navigation, then sessionStorage, then the server.
-// The four-role enrichment endpoint still exists on the backend but is NOT called from the public product.
+// The enrichment pipeline is never called from here: BAŞKA BİR DİLDE appears only when an approved
+// enrichment already exists on the record. The card never waits for it.
 export const AnlatTurn = () => {
   const { sessionId } = useParams();
   const navigate = useNavigate();
@@ -68,9 +102,6 @@ export const AnlatTurn = () => {
     if (turn) return;
     getFifthSession(sessionId).then((t) => { setTurn(t); setCurrentSession(t); }).catch(() => setMissing(true));
   }, [sessionId, turn]);
-
-  // Every finished turn is saved to the user's list (idempotent by session_id).
-  useEffect(() => { if (turn?.status === "done") saveCardRecord(turn); }, [turn]);
 
   const reply = async (text) => {
     const a = (text ?? answer).trim();
@@ -104,6 +135,8 @@ export const AnlatTurn = () => {
     return <div className="max-w-2xl mx-auto py-14 text-sm text-[#8A847C] inline-flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" /> Hikâye yükleniyor…</div>;
   }
 
+  const approvedEnrichment = turn.enrichment?.enrichment?.used ? turn.enrichment.enrichment : null;
+
   return (
     <div className="max-w-2xl mx-auto py-10 sm:py-14 space-y-6">
       <BackLink to="/anlat" label="Anlat'a dön" testId="turn-back" />
@@ -120,7 +153,7 @@ export const AnlatTurn = () => {
       <AnimatePresence mode="wait">
         {turn.status === "question" ? (
           <motion.div key="q" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-            className="rounded-2xl border border-[#E7E0D8] bg-white p-6 shadow-sm space-y-5" data-testid="fifth-question">
+            className="rounded-2xl border border-[#E7E0D8] bg-white p-5 sm:p-6 shadow-sm space-y-5" data-testid="fifth-question">
             <Label>Tek soru</Label>
             <p className="font-serif text-2xl sm:text-3xl leading-snug">{turn.question}</p>
             {turn.why_ask && <p className="text-sm text-[#8A847C]">{turn.why_ask}</p>}
@@ -135,7 +168,7 @@ export const AnlatTurn = () => {
             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
               <input data-testid="fifth-answer" value={answer} onChange={(e) => setAnswer(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && reply()} placeholder="ya da kısaca yaz…"
-                className="flex-1 rounded-full border border-[#E7E0D8] bg-white px-4 py-2.5 text-base sm:text-sm outline-none focus:border-[#C85A32]" />
+                className="flex-1 min-w-0 rounded-full border border-[#E7E0D8] bg-white px-4 py-2.5 text-base sm:text-sm outline-none focus:border-[#C85A32]" />
               <button data-testid="fifth-submit-answer" disabled={loading} onClick={() => reply()}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-[#1A1816] px-5 py-2.5 text-sm font-medium text-[#FAF8F5] disabled:opacity-50">
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />} Gönder
@@ -146,17 +179,17 @@ export const AnlatTurn = () => {
           </motion.div>
         ) : turn.mode === "CLOSE" ? (
           <motion.div key="c" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border border-[#E7E0D8] bg-white p-6 sm:p-8 shadow-sm space-y-5" data-testid="fifth-close">
+            className="rounded-2xl border border-[#E7E0D8] bg-white p-5 sm:p-8 shadow-sm space-y-5" data-testid="fifth-close">
             <Label color="#8A847C">Duyuldu</Label>
             <p className="font-serif text-2xl sm:text-3xl leading-snug">{turn.close}</p>
-            <DoneActions turn={turn} onNew={newStory} onHome={toCards} />
+            <DoneActions turn={turn} onNew={newStory} onHome={toCards} canSave={false} />
           </motion.div>
         ) : (
           <motion.div key="r" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl border border-[#E7E0D8] bg-[#FBF7F2] p-6 sm:p-8 shadow-sm space-y-5" data-testid="fifth-reveal">
-            <Label color="#3F6B56">Açıklama</Label>
+            className="rounded-2xl border border-[#E7E0D8] bg-[#FBF7F2] p-5 sm:p-8 shadow-sm space-y-5" data-testid="fifth-reveal">
+            <Label color="#3F6B56">Fifth Kartı</Label>
             {turn.card ? (
-              <FifthCardView card={turn.card} enrichment={null} isReturnVisit={isReturnVisit} />
+              <FifthCardView card={turn.card} enrichment={approvedEnrichment} isReturnVisit={isReturnVisit} />
             ) : (
               <>
                 {turn.distinction && <p className="text-sm font-mono uppercase tracking-[0.12em] text-[#3F6B56]">{turn.distinction}</p>}
@@ -164,7 +197,7 @@ export const AnlatTurn = () => {
                 {turn.uncertain && <p className="text-sm text-[#8A847C] border-t border-[#E7E0D8] pt-4">Emin olunmayan: {turn.uncertain}</p>}
               </>
             )}
-            <DoneActions turn={turn} onNew={newStory} onHome={toCards} />
+            <DoneActions turn={turn} onNew={newStory} onHome={toCards} canSave={Boolean(turn.card)} />
           </motion.div>
         )}
       </AnimatePresence>
