@@ -1,0 +1,3666 @@
+{
+  "run_at": "2026-09-10T07-08-11Z",
+  "model": "claude-sonnet-4-6",
+  "records": [
+    {
+      "id": "b01",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "QUESTION",
+      "story": "Arkadaşım üçüncü kez son dakika planı iptal etti. Kızmadım ama bir daha teklif etmeyeceğim. Aslında kendime mi kızıyorum ona mı emin değilim.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4662,
+        "out": 3947
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Bu kararı arkadaşa söyleyecek misin?",
+        "options": [
+          "Hayır, sadece bir daha teklif etmeyeceğim.",
+          "Evet, söylemem gerektiğini düşünüyorum.",
+          "Bilmiyorum henüz.",
+          "Söylemek istemiyorum ama fark etmesini istiyorum."
+        ],
+        "why_ask": "Karar sessizce uygulanacaksa yorgunluk; fark ettirmek isteniyorsa kızgınlık daha ağır basıyor olabilir.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c2",
+          "ranking_reasons": "c2, kararın ne anlama geldiğini doğrudan etkileyen ve kişinin bildiği somut bir olguyu soruyor; hem judgment_change_value hem discriminability en yüksek. c1 de güçlü ama ikili (kendine mi ona mı kızıyor) zaten anlatıda adlandırılmış, orada kişi kendi sorusunu kurmuş; c2 ise bir katman altını açıyor.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c2 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c2",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Arkadaşa kızmak ile kendine kızmak arasında",
+              "evidence": "'Kendime mi kızıyorum ona mı emin değilim' — bu ikili tam burada açıkça adlandırılmış.",
+              "missing_fact": "İlk iki iptalden sonra da teklif etmeye devam etme kararı nasıl hissettirmişti?",
+              "fact_already_in_story": false,
+              "possible_question": "İkinci iptalden sonra tekrar teklif ederken içinden ne geçmişti — 'yine de denerim' mi, yoksa 'etmesem mi' mi?",
+              "options": [
+                "'Yine de denerim, belki bu sefer olur' diye düşünmüştüm.",
+                "Aslında 'etmesem mi' geçmişti içimden ama yine de yaptım.",
+                "Fark etmemiştim bile, otomatik teklif ettim.",
+                "Biraz zorla teklif ettim, karşılık bekleyerek."
+              ],
+              "why": "Eğer 'etmesem mi' geçmişti de yine de teklif ettiyse kızgınlık kendine dönük; arkadaşın davranışı ikinci planda kalır.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 1,
+                "closure_value": 2
+              },
+              "rank": 5
+            },
+            {
+              "id": "c2",
+              "distinction": "Kararın kaynağı: yorgunluk ile ceza arasında",
+              "evidence": "'Bir daha teklif etmeyeceğim' — bu karar söyleniyor ama arkadaşa söylenip söylenmeyeceği belli değil.",
+              "missing_fact": "Bu kararı arkadaşa söyleyecek misin, yoksa sessizce mi uygulayacaksın?",
+              "fact_already_in_story": false,
+              "possible_question": "Bu kararı arkadaşa söyleyecek misin?",
+              "options": [
+                "Hayır, sadece bir daha teklif etmeyeceğim.",
+                "Evet, söylemem gerektiğini düşünüyorum.",
+                "Bilmiyorum henüz.",
+                "Söylemek istemiyorum ama fark etmesini istiyorum."
+              ],
+              "why": "Karar sessizce uygulanacaksa yorgunluk; fark ettirmek isteniyorsa kızgınlık daha ağır basıyor olabilir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 2,
+                "closure_value": 3
+              },
+              "rank": 5
+            },
+            {
+              "id": "c3",
+              "distinction": "İptalin doğası: genel bir örüntü ile bu döneme özgü bir durum arasında",
+              "evidence": "Üç iptal sayılmış ama zaman dilimi ve nedenler belirtilmemiş.",
+              "missing_fact": "Bu üç iptal ne kadar süreye yayıldı?",
+              "fact_already_in_story": false,
+              "possible_question": "Bu üç iptal ne kadar sürede oldu?",
+              "options": [
+                "Birkaç haftada.",
+                "Birkaç ayda.",
+                "Uzun süredir bu böyle.",
+                "Aslında ilk kez bu kadar sık oluyor."
+              ],
+              "why": "Örüntü eskiyse ilişkinin yapısı konuşuluyor; yeniyse bir şeyin değişip değişmediği sorusu daha önde.",
+              "scores": {
+                "evidence_support": 1,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 2,
+                "steering_risk": 2,
+                "closure_value": 1
+              },
+              "rank": 1
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Hayır, sadece bir daha teklif etmeyeceğim.",
+      "turn2_tournament": {
+        "winner_id": "c2",
+        "ranking_reasons": "c2, kişinin kendi sesiyle ortaya koyduğu gerçek gerilimi taşıyor ve anlatının tam merkezinde duruyor; c1 bu gerilimin sonucuna bakıyor ama kaynağına değil, bu yüzden c2'nin bir adım gerisinde.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Sessiz çekilme ile bilinçli sınır koyma arasında",
+            "evidence": "'Bir daha teklif etmeyeceğim' kararı var ama arkadaşa söylenmeyecek — bu iki okumayı aynı anda mümkün kılıyor.",
+            "missing_fact": "Arkadaşın bu karardan haberi olmayacak — bu bilgi zaten mevcut.",
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Karar sessiz mi açılıyor yoksa netleşmiş bir seçim mi — bu, kişinin kendine kızıp kızmamasının kaynağını değiştirir.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 5
+          },
+          {
+            "id": "c2",
+            "distinction": "Arkadaşa kızma ile kendine kızma arasında",
+            "evidence": "Kişi bunu doğrudan sordu: 'Kendime mi kızıyorum ona mı emin değilim.'",
+            "missing_fact": "Anlatıda zaten dile getirilmiş, ikinci soru sorulamaz.",
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Bu ikilik çözülse, 'bir daha teklif etmeme' kararının kime hizmet ettiği netleşir.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 2,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 6
+          },
+          {
+            "id": "c3",
+            "distinction": "İlişkiyi koruma ile ilişkiyi bitirme arasında",
+            "evidence": "'Bir daha teklif etmeyeceğim' — bu hem geçici bir duraklamayı hem kalıcı bir çekilmeyi kapsıyor.",
+            "missing_fact": "İkinci soru yasak, anlatıda yeterli sinyal yok.",
+            "fact_already_in_story": false,
+            "possible_question": null,
+            "options": [],
+            "why": "Geçici mi kalıcı mı olduğu, 'kendine kızma' duygusunun büyüklüğünü etkiler.",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 1,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 2,
+              "steering_risk": 2,
+              "closure_value": 2
+            },
+            "rank": 1
+          }
+        ]
+      },
+      "core_latency_ms": 74395,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Arkadaşa kızma ile kendine kızma arasında",
+        "shape": "between_two",
+        "reveal": "İki kızgınlık birbirine karışmış gibi görünüyor: biri arkadaşa, biri de her seferinde tekrar teklif eden kendine. 'Bir daha teklif etmeyeceğim' kararı ikisine de cevap veriyor — ama hangisini daha çok susturmak için alındığı henüz açık. Karar kendine olan kızgınlığı gidermek için alındıysa, o zaman aslında sessiz seçimle kendinle hesaplaşıyorsunuzdur; arkadaşın fark edip etmemesi ikinci plana düşüyor.",
+        "close": null,
+        "uncertain": "Bu karar ağırlıklı olarak arkadaşa mı yoksa kendine mi verilen bir yanıt — bu henüz netleşmemiş.",
+        "noticed": [
+          "Üçüncü kez iptal — sayıyı takip ediyor, bu bir örüntü olarak işaretlenmiş.",
+          "'Kızmadım ama' — duyguyu hem reddediyor hem de arka kapıdan geri bırakıyor.",
+          "Kendine mi kızıyor arkadaşa mı bilmiyor — kararın sahibini bile sorguluyor."
+        ]
+      },
+      "card": {
+        "card_id": "80220687-b31b-4e06-afbb-3f8255b4cf05",
+        "session_id": "28d184a5-da44-4654-9c8b-0166480943c2",
+        "created_at": "2026-09-10T07:09:26.226716+00:00",
+        "title": "İki Kızgınlık, Tek Karar",
+        "distinction": "Arkadaşa kızma ile kendine kızma arasında",
+        "why_it_matters": "Kime kızıldığı belli olunca, kararın kimi rahatlattığı da belli olur. Bu, kararın doğru ya da yanlış olduğunu değil, kimin için alındığını gösterir.",
+        "still_open": "Bu karar sizi mi koruyor, yoksa arkadaşa mı bir şey söylüyor?",
+        "take_with_you": "Bu sessizlik kimin için?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "Bu karar ağırlıklı olarak arkadaşa mı yoksa kendine mi verilen bir yanıt — bu henüz netleşmemiş.",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hera:hera_target_vs_reach",
+            "figure_id": "hera",
+            "myth_ids": [
+              "hera_persecutions"
+            ],
+            "source_refs": [
+              "Apollod. 2.4.8; 2.4.12; 3.4.3",
+              "Eur. Heracles 822-873",
+              "Il. 19.95-133 (Heracles' birth)",
+              "Ovid Met. 1.588-750; 3.253-315"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Arkadaşa kızma → Haksızlığı yapan (kızgınlığın asıl hedefi)",
+              "y": "Kendine kızma → kızgınlığın ulaştığı kişi (kızgınlık bağı koruma çabasından savrulur, hedefi kaçırır)"
+            },
+            "why_it_may_fit": "Her iki ayrımda da kızgınlık bir kaynaktan (asıl fail / arkadaş) başka bir hedefe (kurban / kendin) kayarak sahibini şaşırtır.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hera:hera_target_vs_reach",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "Çekirdeğin ayrımı 'arkadaşa kızma vs. kendine kızma' iken adayın kutupları 'asıl fail (arkadaş) → başka hedefe (kendin) kayma' olarak kurguluyor; bu kayma hikâyesi çekirdeğin 'ikisi iç içe, hangisinin ağır bastığı belirsiz' noktasını 'kızgınlık yanlış hedefe savrulmuş' yönünde yeniden yazıyor ve kullanıcının durumunu bir hata yapısına sokuyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 4380,
+        "out": 473
+      },
+      "roles_latency_ms": 12528,
+      "total_calls": 4
+    },
+    {
+      "id": "b02",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "QUESTION",
+      "story": "Toplantıda fikrimi anlattım, herkes 'çok iyi' dedi. İki hafta geçti, kimse bir şey yapmadı. Ben mi kötü anlattım, yoksa aslında kimse istemedi mi bilmiyorum.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4673,
+        "out": 3927
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Toplantıdan sonra fikirle ilgili sana gelen bir soru ya da mesaj oldu mu?",
+        "options": [
+          "Evet, biri bir şeyler sordu veya konuştu",
+          "Hayır, kimse hiçbir şey sormadı",
+          "Biri ilgi gösterdi ama aksiyon almadı"
+        ],
+        "why_ask": "Birileri detay sorduysa anlatım sorunu değil sahiplenme sorunu var; kimse sormadıysa anlatım yetersiz kalmış olabilir.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "c1, anlatımdaki tam ikilemle doğrudan örtüşüyor ve tek bir gözlemlenebilir olguyla (toplantı sonrası soru/mesaj geldi mi) iki okumadan birini eliyor; c3 de güçlü ama sorumluluk atanıp atanmadığını sormak hafifçe yönlendirme riskine kayabileceği için ikinci sırada kaldı.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c1 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c1",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Fikrin anlaşılmaması ile fikrin istenmemesi arasında",
+              "evidence": "'Çok iyi' denilmesi sözel onayı, iki haftalık hareketsizlik ise gerçek isteğin yokluğunu işaret edebilir",
+              "missing_fact": "Toplantıdan sonra herhangi biri sana fikirle ilgili bir soru sordu mu ya da detay istedi mi?",
+              "fact_already_in_story": false,
+              "possible_question": "Toplantıdan sonra fikirle ilgili sana gelen bir soru ya da mesaj oldu mu?",
+              "options": [
+                "Evet, biri bir şeyler sordu veya konuştu",
+                "Hayır, kimse hiçbir şey sormadı",
+                "Biri ilgi gösterdi ama aksiyon almadı"
+              ],
+              "why": "Birileri detay sorduysa anlatım sorunu değil sahiplenme sorunu var; kimse sormadıysa anlatım yetersiz kalmış olabilir.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 3
+              },
+              "rank": 9
+            },
+            {
+              "id": "c2",
+              "distinction": "Nezaket olsun diye 'iyi' demek ile gerçekten beğenmek arasında",
+              "evidence": "'Çok iyi' kelimesi toplantı ortamında söylendi; arkasında eylem gelmedi",
+              "missing_fact": "Toplantıda 'iyi' diyenlerden biri fikirle ilgili sonradan ayrıca bir şey söyledi mi?",
+              "fact_already_in_story": false,
+              "possible_question": "İçlerinden biri toplantı dışında bu fikri tekrar andı mı?",
+              "options": [
+                "Evet, biri ayrıca bahsetti",
+                "Hayır, hiç bahsedilmedi",
+                "Sadece toplantıda 'iyi' denildi, sonrası yok"
+              ],
+              "why": "Toplantı dışında sıfır temas varsa onay büyük olasılıkla nezaket; ayrıca temas olduysa fikre gerçek ilgi var ama sahiplenme sorunu var.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 0,
+                "closure_value": 2
+              },
+              "rank": 5
+            },
+            {
+              "id": "c3",
+              "distinction": "Fikrin sahipsiz kalması ile fikrin reddedilmesi arasında",
+              "evidence": "İki haftalık hareketsizlik; 'kimse bir şey yapmadı' ifadesi",
+              "missing_fact": "Toplantıda bir sonraki adım ya da sorumluluk kimin üstüne düştü, bu konuşuldu mu?",
+              "fact_already_in_story": false,
+              "possible_question": "Toplantıda 'bunu kim yapacak' ya da 'ne zaman başlayalım' diye konuşuldu mu?",
+              "options": [
+                "Evet, bir kişi üstlendi ya da tarih konuşuldu",
+                "Hayır, hiç konuşulmadı",
+                "Belirsiz bırakıldı, 'bakarız' gibi bir şey söylendi"
+              ],
+              "why": "Sorumluluk hiç atanmadıysa hareketsizlik reddi değil yapısal bir boşluğu gösterir; kişinin anlatımıyla ilgisi yok.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 1,
+                "closure_value": 2
+              },
+              "rank": 7
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Evet, biri bir şeyler sordu veya konuştu",
+      "turn2_tournament": {
+        "winner_id": "c1",
+        "ranking_reasons": "c1, toplantı sonrası iletişim olgusunu doğrudan kullanarak 'kimse istemedi' okumasını zayıflatan en somut ve yargı değiştirici ayrımı kuruyor. c2 de güçlü ama anlatıdaki olgular zaten o ayrımı büyük ölçüde kapatıyor; c3 ise c1'in bir alt katmanı.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Fikir beğenildi ama sahipsiz kaldı ile Fikir baştan istenmiyordu",
+            "evidence": "Toplantıdan sonra biri konuyu açıp soru sordu — bu, 'kimse istemedi' oklamasını zayıflatan somut bir sinyal",
+            "missing_fact": "O soruyu soran kişi bir adım atmayı teklif etti mi, yoksa yalnızca merak edip geçti mi?",
+            "fact_already_in_story": false,
+            "possible_question": null,
+            "options": [],
+            "why": "Eğer soru bir adım içeriyorsa sorun 'istememe' değil 'kim başlatacak' belirsizliğidir; bu ikisi çok farklı durumlar.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 3,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 0,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 8
+          },
+          {
+            "id": "c2",
+            "distinction": "Anlatım sorunu ile Karar mekanizması sorunu",
+            "evidence": "Herkesten onay aldı; biri iletişime geçti — bu, 'kötü anlattım' oklamasını zayıflatan iki ayrı sinyal",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Eğer sorun anlatımda değilse, kişinin kendini sorumlu tutması yanlış zemine oturuyor olabilir.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 1,
+              "steering_risk": 2,
+              "closure_value": 2
+            },
+            "rank": 4
+          },
+          {
+            "id": "c3",
+            "distinction": "Hareket beklentisi açık bırakıldı ile Hareket beklentisi hiç konuşulmadı",
+            "evidence": "İki hafta geçmesi ve kimsenin adım atmaması; ama birinin soru sorması bu ikisi arasında kalan belirsizliği gösteriyor",
+            "missing_fact": "Toplantıda 'bir sonraki adım' ya da 'kim yapacak' konuşuldu mu?",
+            "fact_already_in_story": false,
+            "possible_question": null,
+            "options": [],
+            "why": "Eğer adım hiç konuşulmadıysa hareketsizlik reddi değil, muğlaklığın sonucu olabilir.",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 3,
+              "low_effort": 2,
+              "speculation_risk": 0,
+              "steering_risk": 1,
+              "closure_value": 2
+            },
+            "rank": 5
+          }
+        ]
+      },
+      "core_latency_ms": 73898,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Fikir beğenildi ama sahipsiz kaldı ile Fikir baştan istenmiyordu",
+        "shape": "between_two",
+        "reveal": "Toplantıdan sonra biri seninle konuştuysa 'kimse istemedi' oklaması tam oturmuyor gibi görünüyor. Ama ilgi göstermek ile harekete geçmek farklı şeyler — ve ikisi arasındaki boşlukta genellikle 'kim başlatacak' sorusu asılı kalıyor. Yani sorun senin anlatımında ya da onların ilgisizliğinde olmayabilir; hareketin kimin işi olduğu hiç netleşmemiş olabilir.",
+        "close": null,
+        "uncertain": "Toplantıdan sonra iletişime geçen kişi yalnızca merak mı etti, yoksa bir adım atmayı mı ima etti — bu bilinmiyor.",
+        "noticed": [
+          "Toplantıda herkesten 'çok iyi' tepkisi aldı ama iki hafta içinde hiçbir eylem gelmedi",
+          "Toplantıdan sonra en az bir kişi fikirle ilgili iletişime geçti",
+          "Kişi iki ayrı açıklama arasında asılı: 'kötü anlattım mı' ile 'kimse istemedi mi'"
+        ]
+      },
+      "card": {
+        "card_id": "7423f998-0a1b-41a3-b3e8-5e11f45baec8",
+        "session_id": "786099c1-7eac-43df-9311-a6bf10ede84e",
+        "created_at": "2026-09-10T07:10:52.654891+00:00",
+        "title": "İlgi ile Hareket Arasındaki Boşluk",
+        "distinction": "Fikir beğenildi ama sahipsiz kaldı ile Fikir baştan istenmiyordu",
+        "why_it_matters": "Biri soru sorduysa red olmadığı anlaşılıyor; ama onay da hareket değil. Bu ikisi karışınca hem fikir hem anlatım sorgulanıyor, asıl mesele görünmüyor.",
+        "still_open": "O iletişim bir adım içeriyor muydu, yoksa yalnızca merak mıydı?",
+        "take_with_you": "Beğeni mi yoksa sahiplenme mi bekliyordum?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "Toplantıdan sonra iletişime geçen kişi yalnızca merak mı etti, yoksa bir adım atmayı mı ima etti — bu bilinmiyor.",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [],
+        "recall_considered": 0,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": false,
+          "excluded_shape": 0,
+          "excluded_no_structure": 0,
+          "kept": 0
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "librarian_zero_candidates",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 0,
+      "roles_tokens": {
+        "in": 0,
+        "out": 0
+      },
+      "roles_latency_ms": 0,
+      "total_calls": 2
+    },
+    {
+      "id": "b03",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "QUESTION",
+      "story": "Herkese yetişiyorum, kim ne istese yapıyorum. Geçen hafta ilk kez ben bir şey istedim, cevap iki gün gecikti. Kırıldım ama söylemedim, tam tersine daha çok yardım ettim.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4677,
+        "out": 3802
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "O an daha çok yardım ederken içinden ne geçiyordu?",
+        "options": [
+          "Farkında değildim, otomatik yaptım.",
+          "İçimden 'belki bu sefer fark ederler' diye düşündüm.",
+          "Kendimi iyi hissettirmeye çalıştım.",
+          "Başka bir şey."
+        ],
+        "why_ask": "Bu ayrım, vermenin ne anlama geldiğini — karşılıksız mı yoksa farkında olmadan bir beklenti mi taşıdığını — netleştirir.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c2",
+          "ranking_reasons": "c2, hem yargı değiştirme değeri hem de kapanış değeri en yüksek aday; 'tersine dönme' anlatının en somut sinyali ve kişinin kendi iç deneyimine dair bir olguyu soruyor — üçüncü kişinin niyetine gitmiyor. c1 de güçlü ama 'söylemek/söylememek' ikilisini kişi zaten kurmuş, bir kat altına gitmiyor.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c2 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c2",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Sessizliği korumak ile hissettiklerini söylemek arasında",
+              "evidence": "Kırıldım ama söylemedim — bu doğrudan anlatıda var.",
+              "missing_fact": "Daha önce de kırıldığında söylememeyi tercih ettin mi, yoksa bu ilk kez miydi?",
+              "fact_already_in_story": false,
+              "possible_question": "Bu sessizlik sana yeni bir şey mi, yoksa hep böyle mi olur?",
+              "options": [
+                "Genellikle böyle yaparım, söylemem.",
+                "Bu sefer farklıydı, ilk kez bu kadar kırıldım ama yine de sustum.",
+                "Bazen söylüyorum ama bu sefer söylemedim."
+              ],
+              "why": "Kalıp mı yoksa istisna mı olduğunu bilmek, bu olayın ağırlığını değiştirir.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 1,
+                "closure_value": 2
+              },
+              "rank": 5
+            },
+            {
+              "id": "c2",
+              "distinction": "Daha çok yardım etmek teselli olarak ile kendini kanıtlama çabası olarak arasında",
+              "evidence": "Kırıldıktan sonra tam tersine daha çok yardım etti — bu tersine dönme dikkat çekici.",
+              "missing_fact": "O anda 'daha çok yardım edersem belki hak ederim' gibi bir his geçti mi içinden?",
+              "fact_already_in_story": false,
+              "possible_question": "O an daha çok yardım ederken içinden ne geçiyordu?",
+              "options": [
+                "Farkında değildim, otomatik yaptım.",
+                "İçimden 'belki bu sefer fark ederler' diye düşündüm.",
+                "Kendimi iyi hissettirmeye çalıştım.",
+                "Başka bir şey."
+              ],
+              "why": "Bu ayrım, vermenin ne anlama geldiğini — karşılıksız mı yoksa farkında olmadan bir beklenti mi taşıdığını — netleştirir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 2,
+                "steering_risk": 1,
+                "closure_value": 3
+              },
+              "rank": 5
+            },
+            {
+              "id": "c3",
+              "distinction": "İki günlük gecikmenin fark edilmemesi ile fark edilip önemsenmemesi arasında",
+              "evidence": "Cevap iki gün gecikmesi — gecikmenin nedeni anlatıda yok.",
+              "missing_fact": "O kişi sonunda ne dedi ya da nasıl davrandı — özür mü diledi, hiç değindi mi?",
+              "fact_already_in_story": false,
+              "possible_question": "İki gün sonra yanıt geldiğinde ne oldu — bir şey söyledi mi?",
+              "options": [
+                "Hiç değinmedi, sanki geç kalmadı gibi.",
+                "Özür diledi ya da bir açıklama yaptı.",
+                "Yanıt hiç gelmedi aslında."
+              ],
+              "why": "Fark edilip edilmediği, kırılmanın 'görmezden gelinme' mi yoksa 'önceliğim yok' mu olduğunu değiştirir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 0,
+                "closure_value": 2
+              },
+              "rank": 5
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Farkında değildim, otomatik yaptım.",
+      "turn2_tournament": {
+        "winner_id": "c1",
+        "ranking_reasons": "c1 kazandı çünkü kişinin kendi yanıtı ('farkında değildim, otomatik yaptım') ayrımın bir kutbunu doğrudan işaret ediyor ve bu ayrım anlatının tüm ağırlık merkezini açıklıyor. c2 anlamlı ama ikinci soruya kayabileceğinden ve kişinin yanıtı zaten daha derindeki mekanizmayı gösterdiğinden sıralamada geride kaldı.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Bilinçli bir strateji ile otomatikleşmiş bir refleks arasında",
+            "evidence": "Kişi 'farkında değildim, otomatik yaptım' dedi; bu c1'in pole_b'sini doğrudan destekliyor",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Strateji mi refleks mi olduğu, kişinin bu kalıbı değiştirip değiştiremeyeceğine dair kendi yargısını değiştirir",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 3,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 0,
+              "steering_risk": 0,
+              "closure_value": 3
+            },
+            "rank": 9
+          },
+          {
+            "id": "c2",
+            "distinction": "Kırılganlığı göstermek ile saklamak arasında",
+            "evidence": "Kırıldım ama söylemedim; tam tersine daha çok yardım ettim",
+            "missing_fact": "Söyleseydi ne olurdu, bunu kişi tahmin edebilir mi?",
+            "fact_already_in_story": false,
+            "possible_question": null,
+            "options": [],
+            "why": "Bu ayrım anlamlı ama kişinin 'otomatik yaptım' yanıtı c1'i daha merkeze çekiyor; ikinci soru yasak",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 2
+            },
+            "rank": 5
+          },
+          {
+            "id": "c3",
+            "distinction": "Bilinçli fedakarlık ile görünmez bir maliyet arasında",
+            "evidence": "Herkese yetişiyor; ilk kez bir şey istediğinde gecikmeyle karşılaştı; yine de otomatik olarak yardıma döndü",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Seçim mi yoksa bedel mi olduğunu fark etmek, kalıbın sürdürülüp sürdürülmeyeceğine dair yargıyı değiştirebilir",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 2
+            },
+            "rank": 4
+          }
+        ]
+      },
+      "core_latency_ms": 75362,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Bilinçli bir strateji ile otomatikleşmiş bir refleks arasında",
+        "shape": "between_two",
+        "reveal": "İlginç olan şu: kırılma ve daha çok yardım etme arasında bir seçim olmamış. Ortada bir karar değil, bir refleks vardı — sen de bunu 'otomatik' diye tam isabetli bir kelimeyle anlattın. Çoğu zaman 'neden böyle yapıyorum' sorusu bir niyet arar, oysa burada niyet devreye bile girmemiş gibi görünüyor. Bu, kalıbın ne kadar derine işlediğini gösteriyor — ama aynı zamanda onu ilk kez bu kadar net gördüğünü de.",
+        "close": null,
+        "uncertain": "Bu refleks yalnızca bu kişiyle mi, yoksa başka ilişkilerde de aynı biçimde mi işliyor?",
+        "noticed": [
+          "Kırılma anının hemen ardından 'daha çok yardım etme' refleksi",
+          "Kırıldığını söylememiş; kırılmayı içeride tutup dışarıya ters yönde bir davranış yansıtmış",
+          "Bunu otomatik yaptığını, yani o anda seçerek değil, bir alışkanlık olarak yaptığını söylüyor"
+        ]
+      },
+      "card": {
+        "card_id": "714b2cf2-9d5e-4f1b-8158-2d61ad3e0ab9",
+        "session_id": "6d09dd01-15f9-493f-b95b-67cbfe9562b9",
+        "created_at": "2026-09-10T07:12:08.018418+00:00",
+        "title": "Seçim Değil Refleks",
+        "distinction": "Bilinçli bir strateji ile otomatikleşmiş bir refleks arasında",
+        "why_it_matters": "Bilinçli bir strateji değiştirilebilir; ama önce fark edilmesi gereken bir refleks, farklı bir başlangıç noktası gerektirir.",
+        "still_open": "Bu otomatik dönüşün ne zaman başladığı ya da hangi ilişkilerde devreye girdiği henüz bilinmiyor.",
+        "take_with_you": "Bir dahaki seferinde otomatik pilot devreye girdiğinde — o an fark edebilir miyim?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "Bu refleks yalnızca bu kişiyle mi, yoksa başka ilişkilerde de aynı biçimde mi işliyor?",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hera:hera_grievance_vs_self",
+            "figure_id": "hera",
+            "myth_ids": [
+              "hera_bargains_troy",
+              "hera_persecutions"
+            ],
+            "source_refs": [
+              "Apollod. 2.4.8; 2.4.12; 3.4.3",
+              "Eur. Heracles 822-873",
+              "Il. 19.95-133 (Heracles' birth)",
+              "Il. 4.1-67",
+              "Ovid Met. 1.588-750; 3.253-315"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "çekirdek X (Bilinçli strateji) → kayıt x' 'Kırgınlığı taşımak'",
+              "y": "çekirdek Y (Otomatikleşmiş refleks) → kayıt y' 'kırgınlığın kim olduğunu belirlemesi'"
+            },
+            "why_it_may_fit": "Her ikisinde de başlangıçta bir seçim gibi görünen şey zamanla özneyi ele geçiren otomatik bir işleve dönüşüyor: kırgınlığı taşımak → kırgınlığın kimliği belirlemesi, tıpkı refleksin stratejinin yerini alması gibi.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "figure_id": "hermes",
+            "myth_ids": [
+              "hermes_cattle_theft"
+            ],
+            "source_refs": [
+              "Homeric Hymn 4 to Hermes"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "çekirdek X (Bilinçli strateji) → kayıt x' 'Kapıları açık tutmak'",
+              "y": "çekirdek Y (Otomatikleşmiş refleks) → kayıt y' 'içeri girmek'(hiçbir zaman girmemek)"
+            },
+            "why_it_may_fit": "Kapıları açık tutma başlangıçta bilinçli bir tercih gibi işler, ancak mekanizma onu 'hiçbir zaman içeri girmeme' refleksine dönüştürür; seçerek değil alışkanlıkla yapılan bir hareket.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hera:hera_grievance_vs_self",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "invents_motive",
+              "Çekirdeğin ayrımı 'strateji vs. refleks' iken kayıt bunu 'kırgınlığı taşımak vs. kırgınlığın kimliği belirlemesi' olarak yeniden yazıyor; kutuplar örtüşmüyor ve Hera'nın öfkesi kişinin durumundaki otomatik yardım refleksiyle yapısal olarak eşleşmiyor."
+            ]
+          },
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "clever_not_useful",
+              "Çekirdeğin ayrımı 'strateji vs. refleks' iken kayıt bunu 'kapıları açık tutmak vs. içeri girmemek' olarak kaydırıyor; bu zekice bir çerçeve ama kişinin kırılma-sonrası yardım etme refleksine geri dönmüyor ve kutuplar gerçekten eşleşmiyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 5017,
+        "out": 886
+      },
+      "roles_latency_ms": 19384,
+      "total_calls": 4
+    },
+    {
+      "id": "b04",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "REVEAL",
+      "story": "Eski işimde sormadan halletmem takdir görüyordu. Yeni yerde aynı şeyi yaptım, 'niye danışmadın' dediler. Hem doğru yaptığımı düşünüyorum hem de kendimi suçlu hissediyorum.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4722,
+        "out": 3538
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Eleştiri yalnızca danışmamana mı odaklandı, yoksa yaptığın işin kendisini de sorunsallaştırdılar mı?",
+        "options": [
+          "Yalnızca danışmadığımı söylediler, işin kendisine bir şey demediler.",
+          "Hem danışmadığımı hem de sonucu eleştirdiler.",
+          "Tam olarak neyi kastettiklerini anlamadım."
+        ],
+        "why_ask": "Eleştiri yalnızca sürece yönelikse suçluluk duygusu bambaşka bir yere oturur: işi yanlış yapmak değil, görünmez bir kurala uymamak.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "c1, anlatıdaki en somut sinyale — 'niye danışmadın' ifadesinin içeriği değil süreci hedef almasına — doğrudan yaslanıyor ve kişinin ikiye bölünmüş hissini (doğru yaptım + suçluyum) tek bir ayrımla çözüyor. c2 de güçlü ama c1'in bir katı altında kalıyor: eleştirinin sürece mi yoksa sonuca mı yönelik olduğu netleşmeden c2'nin sorusu tam oturmuyor.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c1 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c1",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Yaptığın işe itiraz ile sürece itiraz arasında",
+              "evidence": "'Niye danışmadın' sorusu sürece işaret ediyor; kişi de sonucun doğru olduğunu düşünüyor.",
+              "missing_fact": "Eleştiri yalnızca 'danışmadın' üzerinde mi kaldı, yoksa sonucu da sorguladılar mı?",
+              "fact_already_in_story": false,
+              "possible_question": "Eleştiri yalnızca danışmamana mı odaklandı, yoksa yaptığın işin kendisini de sorunsallaştırdılar mı?",
+              "options": [
+                "Yalnızca danışmadığımı söylediler, işin kendisine bir şey demediler.",
+                "Hem danışmadığımı hem de sonucu eleştirdiler.",
+                "Tam olarak neyi kastettiklerini anlamadım."
+              ],
+              "why": "Eleştiri yalnızca sürece yönelikse suçluluk duygusu bambaşka bir yere oturur: işi yanlış yapmak değil, görünmez bir kurala uymamak.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 3
+              },
+              "rank": 9
+            },
+            {
+              "id": "c2",
+              "distinction": "Bağlamı okumak ile davranışı değiştirmek arasında",
+              "evidence": "Eski yerde aynı davranış ödüllendirilmiş; yeni yerde kural farklı ama söylenmemiş.",
+              "missing_fact": "Yeni işe başlarken 'nasıl çalışıyoruz' tarzında bir bilgi paylaşımı ya da uyarı oldu mu?",
+              "fact_already_in_story": false,
+              "possible_question": "Yeni işe başlarken karar alma süreçleri hakkında sana bir şey söylendi mi?",
+              "options": [
+                "Evet, danışarak çalışmamı beklediğini belirttiler.",
+                "Hayır, hiç konuşulmadı.",
+                "Belirsizdi, tam olarak ne beklediklerini bilmiyordum."
+              ],
+              "why": "Kural açıkça söylendiyse suçluluk daha temelli hisseder; söylenmemişse suçluluk duygusunun kendisi sorgulanabilir hale gelir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 1,
+                "closure_value": 2
+              },
+              "rank": 5
+            },
+            {
+              "id": "c3",
+              "distinction": "Yetkinlik sinyali olarak bağımsızlık ile güven inşası olarak danışma arasında",
+              "evidence": "Eski ortamda bağımsız hareket takdir görmüş; yeni ortamda aynı şey sorun yaratmış — iki yer için 'iyi çalışan' farklı anlama geliyor olabilir.",
+              "missing_fact": null,
+              "fact_already_in_story": false,
+              "possible_question": null,
+              "options": [],
+              "why": "Suçluluk yanlış yapmaktan değil, farklı bir oyun oynandığını fark etmemekten geliyor olabilir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 1,
+                "user_answerability": 1,
+                "low_effort": 1,
+                "speculation_risk": 2,
+                "steering_risk": 2,
+                "closure_value": 2
+              },
+              "rank": 1
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": false,
+      "answered_with": "Yalnızca danışmadığımı söylediler, işin kendisine bir şey demediler.",
+      "turn2_tournament": {
+        "winner_id": "c1",
+        "ranking_reasons": "c1 anlatının doğrudan sinyallerinden besleniyor ve ikinci soru gelmeksizin ayrımı tamamlıyor; 'doğru yaptım' ile 'suçlu hissediyorum'un neden çelişmediğini gösteriyor. c2 benzer yönde ama bir adım daha yoruma kayıyor.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Sonucun kalitesi ile sürecin biçimi arasında",
+            "evidence": "İşin kendisine itiraz gelmedi; yalnızca danışılmamış olması eleştirildi.",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Eleştiri içeriğe değil sürece yönelikse, 'doğru yaptım' ile 'suçlu hissediyorum' aslında çelişmez — ikisi de aynı anda doğru olabilir.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 3,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 0,
+              "steering_risk": 0,
+              "closure_value": 3
+            },
+            "rank": 9
+          },
+          {
+            "id": "c2",
+            "distinction": "Yetkinlik beklentisi ile aidiyet beklentisi arasında",
+            "evidence": "'Niye danışmadın' sorusu, sonuçtan bağımsız bir katılım beklentisine işaret ediyor.",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Beklenti farklıysa hata kural ihlali değil, norm farkıdır — bu suçluluğun anlamını değiştirir.",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 2
+            },
+            "rank": 4
+          }
+        ]
+      },
+      "core_latency_ms": 65593,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Sonucun kalitesi ile sürecin biçimi arasında",
+        "shape": "between_two",
+        "reveal": "Söylediklerin aslında çelişmiyor olabilir. 'Doğru yaptım' işin içeriğine bakıyor; 'suçlu hissediyorum' ise sürecin biçimine — ve eleştiri de tam oraya düştü. Yeni yer işin sonucuna itiraz etmedi; ama dahil edilmek istedi. Bu durumda hem haklı olmak hem de bir şeyi atlamış olmak aynı anda mümkün görünüyor.",
+        "close": null,
+        "uncertain": "Bu norm farkı sana önceden açık mıydı, yoksa ancak şimdi mi görünür oldu?",
+        "noticed": [
+          "Eski yerde aynı davranış takdir görürken yeni yerde aynı davranış eleştirildi — içerik değil, süreç sorgulandı.",
+          "İşin doğruluğuna itiraz edilmedi; yalnızca danışılmamış olması sorun sayıldı.",
+          "Kişi hem haklı hem suçlu hissediyor — bu iki his aynı anda var, çelişmeden."
+        ]
+      },
+      "card": {
+        "card_id": "e21b2d2d-d0e2-480e-9fee-7b42f5b29fef",
+        "session_id": "d66f1b36-e977-484e-be02-d01373d28106",
+        "created_at": "2026-09-10T07:13:32.997418+00:00",
+        "title": "Doğru İş, Atlanmış Süreç",
+        "distinction": "Sonucun kalitesi ile sürecin biçimi arasında",
+        "why_it_matters": "İçerik ile süreç farklı şeyler olduğunda, ikisi hakkındaki yargılar da ayrı ayrı doğru olabilir. Bu fark görülünce suçluluk ile haklılık çatışmaktan çıkıyor.",
+        "still_open": "Bu norm farkı sana önceden açık mıydı, yoksa ancak şimdi mi görünür oldu?",
+        "take_with_you": "Ne yaptım ile nasıl yaptım aynı soru mu?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "Bu norm farkı sana önceden açık mıydı, yoksa ancak şimdi mi görünür oldu?",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hephaestus:hephaestus_work_vs_belonging",
+            "figure_id": "hephaestus",
+            "myth_ids": [
+              "hephaestus_return",
+              "hephaestus_thrown",
+              "hephaestus_thetis_armour"
+            ],
+            "source_refs": [
+              "Alcaeus fr. 349",
+              "François Vase (c. 570 BCE) and many Attic vases",
+              "Homeric Hymn 3.316-321",
+              "Il. 1.590-594",
+              "Il. 18.368-617",
+              "Il. 18.394-405",
+              "Paus. 1.20.3",
+              "Pind. fr. 283"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Sonucun kalitesi → işinin kabul edilmesi",
+              "y": "sürecin biçimi → kendinin kabul edilmesi"
+            },
+            "why_it_may_fit": "İşin doğruluğuna itiraz edilmemesi (iş kabul edilir) ama sürecin/kişinin sorgulanması (kendin kabul edilmez) yapısı, çekirdeğin iki kutbunu aynı şekilde ikiye ayırır.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:zeus:zeus_guarantor_vs_exempt",
+            "figure_id": "zeus",
+            "myth_ids": [
+              "zeus_liaisons",
+              "zeus_lycaon_flood"
+            ],
+            "source_refs": [
+              "Apollod. 1.4.1; 2.4.8; 3.1.1",
+              "Apollod. 3.8.1",
+              "Il. 14.315-328 (Zeus lists them himself)",
+              "Ovid Met. 1.163-415",
+              "Ovid Met. 1.588-750; 2.401-530; 3.253-315"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Sonucun kalitesi → kuralın bekçisi olmak (doğru yapılmış, kural korunmuş)",
+              "y": "sürecin biçimi → kuraldan muaf olmak (kurala uymama biçimi)"
+            },
+            "why_it_may_fit": "Sonucun (düzenin korunması) değil, sürecin biçiminin (muafiyet) sorun sayılması yapısı örtüşür; danışılmamış olmanın eleştirilmesi ile kuraldan kendi kendini muaf tutmak aynı mekanizmayı paylaşır.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hephaestus:hephaestus_work_vs_belonging",
+            "reasons": [
+              "changes_core_distinction",
+              "Çekirdeğin ayrımı 'sonucun kalitesi / sürecin biçimi' iken bu aday onu 'işinin kabul edilmesi / kendinin kabul edilmesi' olarak kaydırıyor — kişinin durumunda 'kendinin reddedilmesi' değil, 'danışılmamış olmanın eleştirilmesi' var; kutup kayması adayı öldürür."
+            ]
+          },
+          {
+            "record_id": "greek_olympus:zeus:zeus_guarantor_vs_exempt",
+            "reasons": [
+              "changes_core_distinction",
+              "invents_motive",
+              "clever_not_useful",
+              "Kişinin durumunda 'kuraldan muafiyet' iddiası yok; aday kişiye bilinçli bir muafiyet güdüsü atfederek çekirdeğin ayrımını tamamen farklı bir gerilime taşıyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 5191,
+        "out": 757
+      },
+      "roles_latency_ms": 19697,
+      "total_calls": 4
+    },
+    {
+      "id": "b05",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "QUESTION",
+      "story": "Her ay 'bu ilişki böyle gitmez' diyorum. Sonra bir şey çıkıyor: bayram, annemin ameliyatı, onun sınavı. Üç yıl oldu, karar hâlâ verilmedi.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4685,
+        "out": 3502
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Bu üç yılda o kişiye bir kez olsun 'bu böyle gitmez' ya da 'bitiriyoruz' dedin mi?",
+        "options": [
+          "Evet, söyledim ama geri adım attım",
+          "Hayır, hiç söylemedim",
+          "Söyledim ama o ciddiye almadı",
+          "Doğrudan söylemesem de ima ettim"
+        ],
+        "why_ask": "Eğer hiç söylenmemişse 'erteleme' değil 'kararı kendine saklama' söz konusu — bu iki durum çok farklı çıkış noktaları gerektirir.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "c1, anlatıdaki en somut sinyale ('karar hâlâ verilmedi') dayanıyor ve tek bir gözlemlenebilir olguyla (o kişiye söylendi mi?) iki okumadan birini doğrudan eliyor. c2 örtüşüyor ama c1'in bir adım üstünde duruyor; c3 ise yönlendirme riski taşıyor.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c1 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c1",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Karar verilip erteleniyor ile karar aslında hâlâ verilmemiş arasında",
+              "evidence": "'Karar hâlâ verilmedi' cümlesi ve her ay yeniden söylenen ama hiç eyleme geçmeyen 'gitmez' sözü",
+              "missing_fact": "Bu üç yılda hiç 'bunu bitiriyorum' diyerek o kişiye bir şey söylendi mi?",
+              "fact_already_in_story": false,
+              "possible_question": "Bu üç yılda o kişiye bir kez olsun 'bu böyle gitmez' ya da 'bitiriyoruz' dedin mi?",
+              "options": [
+                "Evet, söyledim ama geri adım attım",
+                "Hayır, hiç söylemedim",
+                "Söyledim ama o ciddiye almadı",
+                "Doğrudan söylemesem de ima ettim"
+              ],
+              "why": "Eğer hiç söylenmemişse 'erteleme' değil 'kararı kendine saklama' söz konusu — bu iki durum çok farklı çıkış noktaları gerektirir.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 1,
+                "closure_value": 3
+              },
+              "rank": 8
+            },
+            {
+              "id": "c2",
+              "distinction": "Gerekçeler engel ile gerekçeler izin arasında",
+              "evidence": "Gerekçelerin üç yıl boyunca hiç tükenmemesi — her ay yeni bir gerekçe beliriyor",
+              "missing_fact": "Gerekçe olmayan bir ay oldu mu, ve o ayda ne oldu?",
+              "fact_already_in_story": false,
+              "possible_question": "Hiçbir özel durum olmayan 'sıradan' bir ay geçti mi bu üç yılda?",
+              "options": [
+                "Evet oldu, o ayda da bir şey değişmedi",
+                "Evet oldu, o ay daha çok düşündüm ama yine de geçti",
+                "Hatırlamıyorum, her ay bir şey çıktı gibi hissediyorum",
+                "Hayır, gerçekten her ay bir şey oldu"
+              ],
+              "why": "Sıradan bir ayda da kararın verilmediği görülürse gerekçelerin belirleyici olmadığı netleşir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 2,
+                "low_effort": 2,
+                "speculation_risk": 1,
+                "steering_risk": 1,
+                "closure_value": 2
+              },
+              "rank": 4
+            },
+            {
+              "id": "c3",
+              "distinction": "İlişkiden çıkmak isteniyor ile ilişkinin şu hali değişsin isteniyor arasında",
+              "evidence": "'Bu ilişki böyle gitmez' ifadesi — 'bu ilişki bitmeli' değil, 'böyle gitmez' deniyor",
+              "missing_fact": "Kafada bir 'bu olsaydı kalırdım' koşulu var mı?",
+              "fact_already_in_story": false,
+              "possible_question": null,
+              "options": [],
+              "why": "Eğer hedef bitiş değil dönüşümse, 'karar verilemiyor' çerçevesi tamamen değişir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 2,
+                "speculation_risk": 1,
+                "steering_risk": 2,
+                "closure_value": 2
+              },
+              "rank": 3
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Evet, söyledim ama geri adım attım",
+      "turn2_tournament": {
+        "winner_id": "c1",
+        "ranking_reasons": "c1 anlatıdan doğrudan destekleniyor: söylemiş ama geri adım atmış — bu kararın var olduğunu, ama uygulanamadığını açıkça gösteriyor. Spekülatif değil, kişinin kendi eylemi. c2 daha yorumsal ve yönlendirme riski taşıyor.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Kararı verememek ile kararı uygulayamamak arasında",
+            "evidence": "Söylemiş ve geri adım atmış — bu kararın iletildiğini, ama durduğunu gösteriyor.",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Karar eksik değilse, sorun farklı bir yerde — bu, 'ne yapacağımı bilmiyorum' yerine 'yapamıyorum'a işaret eder.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 3,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 0,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 8
+          },
+          {
+            "id": "c2",
+            "distinction": "Gerekçelerin engel mi yoksa izin mi olduğu arasında",
+            "evidence": "Her erteleme somut bir olayla eşleşmiş; bu örtüşme sistematik görünüyor.",
+            "missing_fact": "O olaylar olmasa ne olurdu — ama bu üçüncü kişinin zihnine değil, kişinin kendi iç sesine sorulan bir şey.",
+            "fact_already_in_story": false,
+            "possible_question": null,
+            "options": [],
+            "why": "Gerekçeler engelse sabır meselesi; izinse örüntü meselesi.",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 2,
+              "steering_risk": 2,
+              "closure_value": 2
+            },
+            "rank": 2
+          }
+        ]
+      },
+      "core_latency_ms": 66417,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Kararı verememek ile kararı uygulayamamak arasında",
+        "shape": "between_two",
+        "reveal": "Söylemiş olmak önemli bir ayrım: karar eksik değildi, iletildi bile. Ama sonra geri çekildi. Bu, 'ne yapacağımı bilmiyorum' sorunundan farklı bir şey gibi görünüyor — daha çok 'biliyorum ama bir şey durduruyor.' O 'bir şey'in ne olduğu hâlâ belirsiz; belki gerçek bir bağ, belki zamanlamanın hiç doğru gelmemesi, belki başka bir şey. Ama sorun kararın kendisinde değil gibi.",
+        "close": null,
+        "uncertain": "Geri adım attıran şeyin ne olduğu — ilişkiye dair bir şey mi, zamanlama mı, yoksa başka bir şey mi — hâlâ açık.",
+        "noticed": [
+          "'Bu ilişki böyle gitmez' kararı her ay yenileniyor — ama hep dışarıdan gelen bir olay sonrasında askıya alınıyor.",
+          "Söylemiş ve geri adım atmış: karar iletilmiş ama sonra geri çekilmiş.",
+          "Üç yıl; süre uzun ama her erteleme somut bir gerekçeye bağlanmış (bayram, ameliyat, sınav)."
+        ]
+      },
+      "card": {
+        "card_id": "eb6fa5c7-e606-4935-a019-8011017d6ac1",
+        "session_id": "e796c13b-f41c-4723-9a42-74c64b149000",
+        "created_at": "2026-09-10T07:14:59.113397+00:00",
+        "title": "Karar Var, Ama Durdu",
+        "distinction": "Kararı verememek ile kararı uygulayamamak arasında",
+        "why_it_matters": "Karar verilmemiş sanılıyor; ama söylenmiş ve geri çekilmiş. Bu iki şey farklı soruya götürür.",
+        "still_open": "Geri adım attıran şey ne — ilişkinin kendisi mi, yoksa başka bir şey mi?",
+        "take_with_you": "Karar nerede takıldı?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "Geri adım attıran şeyin ne olduğu — ilişkiye dair bir şey mi, zamanlama mı, yoksa başka bir şey mi — hâlâ açık.",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "figure_id": "hermes",
+            "myth_ids": [
+              "hermes_cattle_theft"
+            ],
+            "source_refs": [
+              "Homeric Hymn 4 to Hermes"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Kararı verememek → kapıları açık tutmak (içeri girmemek, eşikte kalmak)",
+              "y": "Kararı uygulayamamak → kapıları açık tutmak içeri girmeye engel olur, giriş gerçekleşmez"
+            },
+            "why_it_may_fit": "Her iki yapıda da eylem eşiğinde donma var: karar verilmiş görünür ama uygulanmaz, kapı açılmış görünür ama girilmez — mekanizma ertelemenin kendini sürdürmesi.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:demeter:demeter_hold_vs_release",
+            "figure_id": "demeter",
+            "myth_ids": [
+              "demeter_persephone"
+            ],
+            "source_refs": [
+              "Hes. Theog. 912-914",
+              "Homeric Hymn 2 to Demeter",
+              "Ovid Met. 5.341-571; Fasti 4.393-620"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Kararı verememek → elinde tutmak (bırakmamak)",
+              "y": "Kararı uygulayamamak → başka bir hayata bırakamamak, salma eylemi gerçekleşmiyor"
+            },
+            "why_it_may_fit": "Bırakma kararı her seferinde somut bir dış gerekçeyle askıya alınıyor — yapısal olarak 'elinde tutmak ile bırakmak' arasında kalmak bu mekanizmayla örtüşüyor.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "clever_not_useful",
+              "Çekirdeğin ayrımı 'karar vermek vs. uygulamak' iken bu aday 'kapı açmak vs. içeri girmek' metaforunu getiriyor — yapısal örtüşme yüzeysel kalıyor ve Hermes'in sığır hırsızlığı miti kişinin somut durumuna (üç yıl, söyleyip geri adım atma) hiçbir şey eklemiyor."
+            ]
+          },
+          {
+            "record_id": "greek_olympus:demeter:demeter_hold_vs_release",
+            "reasons": [
+              "invents_motive",
+              "longer_than_insight",
+              "'Elinde tutmak vs. bırakmak' kutupları çekirdeğin 'uygulayamamak' tarafıyla kısmen örtüşüyor, ancak adayın 'why_it_may_fit' açıklaması dış gerekçeye odaklanarak geri adım attıran iç mekanizmayı (çekirdeğin belirsiz bıraktığı şeyi) sanki Demeter'in tutuşu gibi çözümlenmiş sayıyor — bu çekirdeğin 'uncertain' alanını kapatma riskiyle gelir."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 4868,
+        "out": 875
+      },
+      "roles_latency_ms": 23526,
+      "total_calls": 4
+    },
+    {
+      "id": "b06",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "REVEAL",
+      "story": "Annem her aramada 'iyi misin' diye soruyor ama ben bir şey anlatınca hemen konuyu kendine çeviriyor. Artık kısa cevap veriyorum. Sonra da telefonu kapatınca suçlu hissediyorum.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4680,
+        "out": 3690
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Daha önce hiç uzun uzun anlattığın oldu mu — o zamanlarda da aynı mı oldu?",
+        "options": [
+          "Evet, hep aynı oldu",
+          "Bir-iki kez gerçekten dinledi gibi hissettim",
+          "Hiç tam anlatmadım, hep kısa kestim"
+        ],
+        "why_ask": "Eğer tam anlatıldığında da konu kayıyorsa bu bir örüntü; kısa kesilince kayıyorsa kişinin kendi kapanmasının etkisi var.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "c1, kişinin kendi gözlemleyebileceği somut bir olguyu soruyor — tam anlatım denenmiş mi — ve bu tek olgu iki okumadan birini doğrudan eler. c3 benzer ama biraz daha yüklü; c2'de ise ayrım anlatıda zaten mevcut.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c1 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c1",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Annenin 'iyi misin' sorusu bir açılış daveti mi yoksa bir selamlama ritüeli mi",
+              "evidence": "Her aramada tekrarlıyor — bu tekrar hem samimiyete hem alışkanlığa işaret edebilir.",
+              "missing_fact": "Kişi daha önce hiç tam ve uzun anlattı mı; o anlarda da konu kendine mi döndü?",
+              "fact_already_in_story": false,
+              "possible_question": "Daha önce hiç uzun uzun anlattığın oldu mu — o zamanlarda da aynı mı oldu?",
+              "options": [
+                "Evet, hep aynı oldu",
+                "Bir-iki kez gerçekten dinledi gibi hissettim",
+                "Hiç tam anlatmadım, hep kısa kestim"
+              ],
+              "why": "Eğer tam anlatıldığında da konu kayıyorsa bu bir örüntü; kısa kesilince kayıyorsa kişinin kendi kapanmasının etkisi var.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 2
+              },
+              "rank": 8
+            },
+            {
+              "id": "c2",
+              "distinction": "Suçluluk duygusu kısa cevap verdiği için mi yoksa annesiyle gerçekten konuşamadığı için mi",
+              "evidence": "Suçluluk telefon kapandıktan sonra doğuyor; kısa cevap verme ise bilinçli bir eylem olarak anlatılıyor.",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Suçluluğun kaynağı netleşse ne üzerine düşünmesi gerektiği değişir — ama anlatıda ikisi de zaten görünüyor.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 1,
+                "discriminability": 1,
+                "user_answerability": 3,
+                "low_effort": 2,
+                "speculation_risk": 1,
+                "steering_risk": 1,
+                "closure_value": 2
+              },
+              "rank": 2
+            },
+            {
+              "id": "c3",
+              "distinction": "Kısa cevap bir sınır mı yoksa beklentiye verilen bir tepki mi",
+              "evidence": "'Artık kısa cevap veriyorum' — bu bir kararın sonucu gibi anlatılıyor.",
+              "missing_fact": "Kısa cevaba geçmeden önce farklı denenmiş miydi; yoksa beklenti mi önce oluştu?",
+              "fact_already_in_story": false,
+              "possible_question": "Kısa cevap vermeye başlamadan önce farklı denedin mi hiç?",
+              "options": [
+                "Evet, denedim ama hep aynı oldu",
+                "Hayır, zaten beklentim yoktu",
+                "Bazen açıldım ama pişman oldum"
+              ],
+              "why": "Eğer hiç tam denenmemişse döngüyü kimin başlattığı belirsizleşir; denendiyse ve sonuç aynıysa örüntü netleşir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 1,
+                "closure_value": 2
+              },
+              "rank": 4
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": false,
+      "answered_with": "Evet, hep aynı oldu",
+      "turn2_tournament": {
+        "winner_id": "c2",
+        "ranking_reasons": "c2, suçluluğun kaynağını doğrudan anlatının kendi malzemesinden — kısa cevap verme ve sonrasında gelen suçluluk — türetiyor; yargı değiştirme ve kapanış değeri yüksek, spekülasyon ve yönlendirme riski düşük. c1 de güçlü ama döngü çerçevesi biraz daha soyut kalıyor.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Annenin ilgisizliği ile yerleşik bir döngünün içinde olmak arasında",
+            "evidence": "Her aramada aynı örüntü; kısa cevap veren artık kişinin kendisi; suçluluk yine kişide",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Sorun 'dinlemeyen anne' değil, her ikisinin de içinde olduğu döngü olarak görülürse kişinin elindekiler de değişir",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 5
+          },
+          {
+            "id": "c2",
+            "distinction": "Suçluluğun kaynağı: anneye karşı gelmek ile kendini korumak arasında",
+            "evidence": "Telefonu kapattıktan sonra suçlu hissetmek; kısa cevabın bilinçli bir uyum olduğu anlaşılıyor",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Suçluluğun nereden geldiği netleşirse kişi onu farklı taşıyabilir",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 3,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 7
+          },
+          {
+            "id": "c3",
+            "distinction": "Beklentinin nerede olduğu: anneden değişmesini beklemek ile döngüden çıkmayı beklemek arasında",
+            "evidence": "Hep aynı oldu yanıtı döngünün yerleşik olduğunu gösteriyor",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Beklentinin nerede tutulduğu görülürse nerede sıkışıldığı da görülür",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 2,
+              "low_effort": 3,
+              "speculation_risk": 2,
+              "steering_risk": 2,
+              "closure_value": 2
+            },
+            "rank": 2
+          }
+        ]
+      },
+      "core_latency_ms": 70678,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Suçluluğun kaynağı: anneye karşı gelmek ile kendini korumak arasında",
+        "shape": "between_two",
+        "reveal": "Dikkat çekici olan şu: kısa cevap vermek senin bir şeyi kırmak için değil, bir şeyden korunmak için geliştirdiğin bir uyum gibi görünüyor. Ama sonra suçluluk geliyor — sanki o kısa cevap anneye değil, sana ait bir şeye verilmiş gibi hissettiriyor. Belki de suçluluk 'anneyi ihmal ettim'den çok 'bir kez daha beklentimi korudum' duygusundan kaynaklanıyor.",
+        "close": null,
+        "uncertain": "Bu suçluluk duygusu zamanla hafifliyor mu, yoksa her aramadan sonra aynı ağırlıkla mı geliyor?",
+        "noticed": [
+          "Kısa cevap verme davranışı kişinin kendi seçimi — annenin değil",
+          "Suçluluk duygusu telefonu kapattıktan sonra geliyor, konuşma sırasında değil",
+          "Daha önce uzun anlatıldığında da aynı örüntü olmuş — bu rastlantı değil, yerleşik bir döngü"
+        ]
+      },
+      "card": {
+        "card_id": "1f7ca913-fbe1-425d-9b0f-e421c7640515",
+        "session_id": "d3bf9454-0edf-46a8-8c8b-9eef90d74330",
+        "created_at": "2026-09-10T07:16:33.319219+00:00",
+        "title": "Koruma mu, İhmal mi?",
+        "distinction": "Suçluluğun kaynağı: anneye karşı gelmek ile kendini korumak arasında",
+        "why_it_matters": "Kısa cevabı ne için verdiğin, arkasından gelen suçluluğun ne anlama geldiğini değiştirir. İkisi aynı eylem, ama çok farklı iki yer.",
+        "still_open": "Suçluluğun tam olarak neyi koruduğun için mi, yoksa anneyi mi hayal kırıklığına uğrattığın için mi geldiği henüz net değil.",
+        "take_with_you": "Bu suçluluk kime ait?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "Bu suçluluk duygusu zamanla hafifliyor mu, yoksa her aramadan sonra aynı ağırlıkla mı geliyor?",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:artemis:artemis_boundary_vs_cruelty",
+            "figure_id": "artemis",
+            "myth_ids": [
+              "artemis_actaeon",
+              "artemis_calydonian_boar"
+            ],
+            "source_refs": [
+              "Apollod. 3.4.4",
+              "Callim. Hymn 5.107-118",
+              "Il. 9.529-599",
+              "Ovid Met. 3.138-252",
+              "Ovid Met. 8.260-546"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "çekirdek X (anneye karşı gelmek) → kayıt x' (sınırı korumak)",
+              "y": "çekirdek Y (kendini korumak) → kayıt y' (sınırda acımasız olmak)"
+            },
+            "why_it_may_fit": "Kendini koruma amacıyla çizilen sınır, aynı hareketle suçluluk üreten bir sertliğe dönüşür — tıpkı sınır çekmenin acımasızlıkla iç içe geçtiği yapı gibi.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:demeter:demeter_protect_vs_decide",
+            "figure_id": "demeter",
+            "myth_ids": [
+              "demeter_demophoon"
+            ],
+            "source_refs": [
+              "Homeric Hymn 2.231-291"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "çekirdek X (anneye karşı gelmek) → kayıt x' (korumak)",
+              "y": "çekirdek Y (kendini korumak) → kayıt y' (onun adına karar vermek)"
+            },
+            "why_it_may_fit": "Annenin koruma hamlesi ile kişinin kendi sınırını koruması aynı gerilim alanında buluşur: birinin 'koruma' eylemi diğerinin 'karar çalınması' olarak deneyimlenir, suçluluk bu asimetriden doğar.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:artemis:artemis_boundary_vs_cruelty",
+            "reasons": [
+              "changes_core_distinction",
+              "keyword_similarity",
+              "Çekirdeğin ayrımı 'anneye karşı gelmek vs. kendini korumak' iken aday bunu 'sınırı korumak vs. sınırda acımasız olmak' olarak kaydırıyor; sertlik/acımasızlık çekirdekte hiç yok, suçluluğun kaynağı olarak da gösterilmiyor — yüzeysel 'sınır' kelimesi benzerliği taşıyan bir örtüşme."
+            ]
+          },
+          {
+            "record_id": "greek_olympus:demeter:demeter_protect_vs_decide",
+            "reasons": [
+              "changes_core_distinction",
+              "invents_motive",
+              "Aday kutupları 'korumak vs. onun adına karar vermek' olarak koyuyor; bu annenin perspektifini merkeze alırken çekirdek kişinin kendi suçluluğunu soruyor — kutup ataması ters döndürülmüş, kişiye 'karar çalmak' gibi bir niyet de yükleniyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 5027,
+        "out": 828
+      },
+      "roles_latency_ms": 19709,
+      "total_calls": 4
+    },
+    {
+      "id": "b07",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "QUESTION",
+      "story": "Terfi teklif ettiler. Herkes sevindi, ben sevinemedim. Gece uyuyamadım ama nedenini kendime bile söyleyemiyorum. Belki istemiyorum, belki korkuyorum, ayıramıyorum.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4680,
+        "out": 3787
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Bu teklif gelmeden önce o role — ya da benzerine — isteyerek baktığın bir an oldu mu?",
+        "options": [
+          "Evet, aklıma gelirdi / istediğimi hissederdim",
+          "Hiç düşünmemiştim, konu açılmamıştı",
+          "Düşündüm ama içimde hep bir 'ama' vardı",
+          "Düşündüm ve o zaman da istememiştim"
+        ],
+        "why_ask": "Öncesinde arzu varsa korku ön planda; hiç arzu yoksa bu bir yön meselesi — iki okuma tamamen farklı adım gerektirir.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "c1 tek somut, kişinin yanıtlayabileceği ve iki okumayı gerçekten ayırt eden eksik olguya sahip; judgment_change_value maksimum ve spekülasyon riski sıfır. c3 yakın ama daha az eleyici: ilk anlık tepki bilinse bile istememe/korkuyu tam ayırt etmez.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c1 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c1",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "İstememe ile korkudan geri çekilme arasında",
+              "evidence": "Kişi tam olarak 'belki istemiyorum, belki korkuyorum' diyerek bu ikiyi ayırt edemediğini söylüyor.",
+              "missing_fact": "Bu teklif gelmeden önce, o pozisyonu ya da benzerini hayal ettiği ya da istediği bir an oldu mu?",
+              "fact_already_in_story": false,
+              "possible_question": "Bu teklif gelmeden önce o role — ya da benzerine — isteyerek baktığın bir an oldu mu?",
+              "options": [
+                "Evet, aklıma gelirdi / istediğimi hissederdim",
+                "Hiç düşünmemiştim, konu açılmamıştı",
+                "Düşündüm ama içimde hep bir 'ama' vardı",
+                "Düşündüm ve o zaman da istememiştim"
+              ],
+              "why": "Öncesinde arzu varsa korku ön planda; hiç arzu yoksa bu bir yön meselesi — iki okuma tamamen farklı adım gerektirir.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 3
+              },
+              "rank": 9
+            },
+            {
+              "id": "c2",
+              "distinction": "Sevinememek ile aktif istemememek arasında",
+              "evidence": "Herkesin sevinci ile kişinin sevinememesi arasındaki kontrast ve geceyi uyuyamadan geçirmesi.",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Sevinememek ile reddetmek istemek farklı şeyler; ama anlatıdan bu ayrım henüz tam belirgin değil.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 1,
+                "discriminability": 1,
+                "user_answerability": 2,
+                "low_effort": 2,
+                "speculation_risk": 1,
+                "steering_risk": 1,
+                "closure_value": 1
+              },
+              "rank": 2
+            },
+            {
+              "id": "c3",
+              "distinction": "Herkesin sevinci ile kendi sesini duyma fırsatı arasında",
+              "evidence": "'Herkes sevindi' cümlesi önce geliyor; kişinin kendi tepkisi bu kalabalık içinde ikincil kaldı.",
+              "missing_fact": "Teklif ilk verildiğinde, herkesin tepkisinden önce, ilk bir saniyede ne hissettiğini biliyor mu?",
+              "fact_already_in_story": false,
+              "possible_question": "Teklifi duyduğun o ilk anda — herkes tepki vermeden önce — içinde ne geçti?",
+              "options": [
+                "Hiçbir şey hissedemedim, boşluk gibiydi",
+                "Önce bir şey hissettim ama hemen geçti",
+                "Herkesin tepkisiyle aynı anda oldu, ayıramadım"
+              ],
+              "why": "İlk anlık tepki, isteksizliğin mi yoksa yutulmuş bir sevincin mi söz konusu olduğunu gösterebilir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 2,
+                "speculation_risk": 1,
+                "steering_risk": 0,
+                "closure_value": 2
+              },
+              "rank": 5
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Evet, aklıma gelirdi / istediğimi hissederdim",
+      "turn2_tournament": {
+        "winner_id": "c1",
+        "ranking_reasons": "c1, anlatının iki ayrı noktasındaki somut çelişkiyle (öncesinde istiyordum / şimdi sevinemiyorum) doğrudan destekleniyor ve yargıyı en çok değiştirme kapasitesine sahip. c3 de güçlü ama kişinin bizzat dile getirdiği ikilemi tekrarlamak yerine, onun bir adım altındaki olguya (önceden istiyordu, şimdi değişti mi?) işaret eden c1 daha fazla şey açıyor.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Rolü hâlâ istemek ile teklif gelince isteğin kaybolması arasında",
+            "evidence": "Öncesinde istediğini hissediyordu; teklif gelince sevinemedi ve uyuyamadı.",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "İstemenin hâlâ orada olup olmadığı, 'neden sevinemiyorum' sorusunun cevabını doğrudan etkiler.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 3,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 7
+          },
+          {
+            "id": "c2",
+            "distinction": "Başkalarının sevinci ile kendi iç sesini ayırt etmek arasında",
+            "evidence": "'Herkes sevindi, ben sevinemedim' — dışarıdaki sevinç ile içerideki sessizlik arasındaki uçurum doğrudan dile getirilmiş.",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Eğer başkalarının sevinci olmasaydı kendi tepkisini daha kolay okuyabilir miydi sorusu belirsizliği besliyor.",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 2,
+              "steering_risk": 1,
+              "closure_value": 2
+            },
+            "rank": 3
+          },
+          {
+            "id": "c3",
+            "distinction": "Korku ile isteksizlik arasında",
+            "evidence": "Kişi tam bu ayrımı kendisi dile getirdi: 'belki istemiyorum, belki korkuyorum, ayıramıyorum.'",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Bu iki şeyin ayrışması farklı yollara işaret eder; ama ikinci soru yasak olduğu için REVEAL ile sunulabilir.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 2,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 2,
+              "steering_risk": 2,
+              "closure_value": 3
+            },
+            "rank": 4
+          }
+        ]
+      },
+      "core_latency_ms": 75761,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Rolü hâlâ istemek ile teklif gelince isteğin kaybolması arasında",
+        "shape": "between_two",
+        "reveal": "Teklif gelmeden önce o rolü istediğini hissediyordun. Ama teklif somutlaştığında sevinç değil, uyku kaçıran bir şey geldi. Bu bazen şunu gösterir: istek hâlâ orada, ama hayal olarak istenen ile gerçek olarak önüne gelen şey birebir aynı değil gibi hissettiriyor. 'İstemiyorum mu, yoksa korkuyor muyum?' sorusu belki de bu yüzden ayrışmıyor — ikisi aynı şeyi gösteriyor olmayabilir.",
+        "close": null,
+        "uncertain": "Önceden hayal edilen o rol ile önüne gelen teklifin aynı şey olup olmadığı.",
+        "noticed": [
+          "Herkes sevindi, kişi sevinemedi — bu fark kendiliğinden ortaya çıktı, kişi onu aramadı.",
+          "Geceyi uyuyamadan geçirdi ama nedeni henüz kendine bile net değil.",
+          "Teklif gelmeden önce o rolü istediğini hissediyordu; şimdi ise 'belki istemiyorum, belki korkuyorum' diyor."
+        ]
+      },
+      "card": {
+        "card_id": "e1191aa9-2acc-45b5-856d-eb18bc1be3b5",
+        "session_id": "b91e6ee7-8aa3-411a-83f4-2bb8019cd363",
+        "created_at": "2026-09-10T07:18:08.790974+00:00",
+        "title": "Hayal Edilen ile Önüne Gelen",
+        "distinction": "Rolü hâlâ istemek ile teklif gelince isteğin kaybolması arasında",
+        "why_it_matters": "İstemek ile sevinememek çelişkili görünüyor; ama önceden istenen şeyle şimdi teklif edilen şey tam olarak örtüşmüyorsa bu çelişki gerçek olmayabilir.",
+        "still_open": "O hayal ettiğin rolle bu teklif gerçekten aynı şey miydi?",
+        "take_with_you": "Sevinmek için neyin farklı olması gerekirdi?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "Önceden hayal edilen o rol ile önüne gelen teklifin aynı şey olup olmadığı.",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:dionysus:dionysus_wish_vs_price",
+            "figure_id": "dionysus",
+            "myth_ids": [
+              "dionysus_midas"
+            ],
+            "source_refs": [
+              "Aristotle Politics 1257b (proverbial)",
+              "Ovid Met. 11.85-145"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Rolü hâlâ istemek → İstediğini almak",
+              "y": "teklif gelince isteğin kaybolması → aldığınla yaşamak"
+            },
+            "why_it_may_fit": "Her iki yapıda da istek, nesnesine kavuşunca dönüşüme uğrar: istemek ile elde etmenin aynı şey olmadığı ortaya çıkar.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "figure_id": "hermes",
+            "myth_ids": [
+              "hermes_cattle_theft"
+            ],
+            "source_refs": [
+              "Homeric Hymn 4 to Hermes"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Rolü hâlâ istemek → Kapıları açık tutmak",
+              "y": "teklif gelince isteğin kaybolması → içeri girmek"
+            },
+            "why_it_may_fit": "Her iki yapıda da imkân canlı kaldığı sürece istek sürer; somut adım atılınca (teklif/kapı) istek değil, bir şeyin bitmesi hissedilir.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:dionysus:dionysus_wish_vs_price",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "Çekirdeğin ayrımı 'istemek vs teklif gelince isteğin kaybolması' iken bu aday bunu 'istemek vs aldığınla yaşamak'a kaydırıyor — Midas altınını aldı ve acısını çekti, oysa kişi henüz almadı ve zaten orada bir şey değişti; kutuplar eşleşmiyor."
+            ]
+          },
+          {
+            "record_id": "greek_olympus:hermes:hermes_open_doors_vs_entering",
+            "reasons": [
+              "invents_motive",
+              "longer_than_insight",
+              "'İçeri girince bir şeyin bitmesi hissedilir' formülü çekirdeğe yakın görünüyor ancak bu yorumu mitik metne dayandıracak bir unsur yok — Hermes sığır hırsızlığı hikâyesinde 'imkânı canlı tutmak' değil, somut kazanım ve müzakere var; aday mite yorum atfediyor."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 4717,
+        "out": 740
+      },
+      "roles_latency_ms": 19418,
+      "total_calls": 4
+    },
+    {
+      "id": "b08",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "QUESTION",
+      "story": "Ekipte bir hata oldu, kimin yaptığı belli değildi. Toplantıda ben 'benim hatam olabilir' dedim, kimse bir şey demedi. Sonradan öğrendim ki başkasınınmış. Şimdi herkes bana bakıyor gibi geliyor.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4706,
+        "out": 3226
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Ekip de hatanın başkasına ait olduğunu öğrendi mi, yoksa bunu yalnız mı sen öğrendin?",
+        "options": [
+          "Evet, ekip de öğrendi",
+          "Hayır, sadece ben öğrendim",
+          "Emin değilim"
+        ],
+        "why_ask": "Ekip de öğrendiyse 'bakma' hissi farklı anlam taşır; öğrenmediyse kişi gerçek bir belirsizliğin içindedir.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "c1, anlatının doğrudan ürettiği gerilimi taşıyor: üstlenme ile gerçek hata arasındaki boşluk. Ekibin bilip bilmediği, 'bakma' hissinin ne anlama geldiğini doğrudan değiştiriyor. c2 yakın ama c1'in cevabına bağlı — önce c1 netleşmeli.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c1 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c1",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Sorumluluk üstlenmek ile hata sahibi olmak arasında",
+              "evidence": "'Benim hatam olabilir' dedi ama hata sonradan başkasının çıktı.",
+              "missing_fact": "Ekip sonradan hatanın kimin olduğunu öğrendi mi?",
+              "fact_already_in_story": false,
+              "possible_question": "Ekip de hatanın başkasına ait olduğunu öğrendi mi, yoksa bunu yalnız mı sen öğrendin?",
+              "options": [
+                "Evet, ekip de öğrendi",
+                "Hayır, sadece ben öğrendim",
+                "Emin değilim"
+              ],
+              "why": "Ekip de öğrendiyse 'bakma' hissi farklı anlam taşır; öğrenmediyse kişi gerçek bir belirsizliğin içindedir.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 2,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 3
+              },
+              "rank": 9
+            },
+            {
+              "id": "c2",
+              "distinction": "Gözlemlenen bakış ile hissedilen bakış arasında",
+              "evidence": "'Herkes bana bakıyor gibi geliyor' — 'gibi geliyor' ifadesi kişinin kendi belirsizliğini yansıtıyor.",
+              "missing_fact": "Toplantıdan sonra biriyle konuşuldu mu ya da somut farklı bir davranış gözlemlendi mi?",
+              "fact_already_in_story": false,
+              "possible_question": "Toplantıdan bu yana sana farklı davranan ya da farklı bakan biri oldu mu?",
+              "options": [
+                "Evet, fark ettim",
+                "Hayır, değişen bir şey yok",
+                "Emin olamıyorum"
+              ],
+              "why": "Somut bir davranış değişikliği yoksa kaygının kaynağı farklı bir yere işaret eder.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 1,
+                "closure_value": 2
+              },
+              "rank": 4
+            },
+            {
+              "id": "c3",
+              "distinction": "Bir kez olan şey ile alışkanlık arasında",
+              "evidence": "Anlatıda yalnızca tek bir olay var; tekrar edilip edilmediğine dair sinyal yok.",
+              "missing_fact": "Daha önce de benzer bir durumda sorumluluğu üstlendin mi?",
+              "fact_already_in_story": false,
+              "possible_question": "Bu, daha önce de başına gelen bir şey mi?",
+              "options": [
+                "Evet, benzer şeyler oldu",
+                "Hayır, ilk kez böyle bir şey oldu"
+              ],
+              "why": "Tekrar ediyorsa kalıp sorgulanır; ilk kezse durum daha dar okunur.",
+              "scores": {
+                "evidence_support": 1,
+                "judgment_change_value": 1,
+                "discriminability": 1,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 1,
+                "closure_value": 1
+              },
+              "rank": 2
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Evet, ekip de öğrendi",
+      "turn2_tournament": {
+        "winner_id": "c1",
+        "ranking_reasons": "c1 anlatının somut sinyallerine doğrudan oturuyor: 'olabilir' ile 'yaptım' arasındaki fark, ekip gerçeği bildiğinde anlam kazanıyor. c2 daha spekülatif ve içe dönük bir okuma gerektiriyor.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Sorumluluk üstlenmek ile suçu kabullenmek arasında",
+            "evidence": "Kişi 'olabilir' dedi — kesin iddiada bulunmadı. Ekip gerçeği öğrendi.",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Ekip gerçeği biliyorsa 'herkes bana bakıyor' hissi, suçlanmaktan değil başka bir şeyden kaynaklanıyor olabilir.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 3,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 7
+          },
+          {
+            "id": "c2",
+            "distinction": "Ekibin gerçeği bilmesi ile kişinin bunu içselleştirmesi arasında",
+            "evidence": "Ekip gerçeği öğrendi ama his devam ediyor.",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Asıl gerilim bilgi açığında değil, bilgi kapandıktan sonra hissin neden sürdüğünde.",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 2,
+              "steering_risk": 2,
+              "closure_value": 2
+            },
+            "rank": 2
+          }
+        ]
+      },
+      "core_latency_ms": 58852,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Sorumluluk üstlenmek ile suçu kabullenmek arasında",
+        "shape": "between_two",
+        "reveal": "Toplantıda söylediğin şey aslında bir itiraf değil, bir ihtimaldi: 'olabilir' dedin. Ama o sessizlikte belki o ihtimal daha ağır bir şeye dönüştü — en azından içinde. Şimdi ekip gerçeği biliyor; yani dışarıdaki tablo değişti. 'Herkes bana bakıyor' hissi, hatadan değil belki o an öne çıkmış olmaktan kalıyor olabilir — sorumluluk almak ile suçu üstlenmek farklı şeyler, ama o ikisi çok kolay birbirine karışıyor.",
+        "close": null,
+        "uncertain": "O an öne çıkmış olmanın ekip içinde nasıl okunduğu — olumsuz mu, olumlu mu, yoksa unutuldu mu.",
+        "noticed": [
+          "Toplantıda 'benim hatam olabilir' dedi, kimse o anda yanıt vermedi.",
+          "Asıl hatanın kime ait olduğu sonradan hem kendisi hem ekip tarafından öğrenildi.",
+          "Şimdi 'herkes bana bakıyor gibi geliyor' diye tarif ediyor — bu bir his, gözlemlenen bir davranış değil."
+        ]
+      },
+      "card": {
+        "card_id": "7fa79969-90fb-4fac-b159-494f7afabd72",
+        "session_id": "48658b5d-6e97-45b0-b55c-5c53626b97b1",
+        "created_at": "2026-09-10T07:19:27.063007+00:00",
+        "title": "İhtimal ile İtiraf Arasındaki Fark",
+        "distinction": "Sorumluluk üstlenmek ile suçu kabullenmek arasında",
+        "why_it_matters": "'Olabilir' demek sorumluluk almaktır, suçu kabullenmek değil. Ekip gerçeği bildiğinde bu fark önemli hale geliyor.",
+        "still_open": "O an öne çıkmak ekip tarafından nasıl okundu — bu hâlâ belirsiz.",
+        "take_with_you": "Gerçek ortaya çıktıktan sonra ekibin gözünde ne değişti, ne değişmedi?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "O an öne çıkmış olmanın ekip içinde nasıl okunduğu — olumsuz mu, olumlu mu, yoksa unutuldu mu.",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "librarian_zero_candidates",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 1,
+      "roles_tokens": {
+        "in": 2893,
+        "out": 13
+      },
+      "roles_latency_ms": 10097,
+      "total_calls": 3
+    },
+    {
+      "id": "b09",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "QUESTION",
+      "story": "Eşimle konuştuğumda o hep çözüm söylüyor, ben sadece anlatmak istiyorum. Sonunda ben susuyorum, o da 'ne oldu şimdi' diyor. Aynı sahne, her hafta.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4674,
+        "out": 3524
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Eşine hiç 'sadece dinlemeni istiyorum, çözüm aramana gerek yok' dedin mi?",
+        "options": [
+          "Evet, söyledim ama değişmedi",
+          "Hayır, hiç doğrudan söylemedim",
+          "Söylemeye çalıştım ama tam söyleyemedim"
+        ],
+        "why_ask": "Eş bilip bilmediğine göre döngünün kaynağı değişir: iletişim mi yok, anlayış mı yok.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "c1, kişinin bizzat bilebileceği tek bir somut olguyu soruyor ve yanıtı döngünün kaynağını doğrudan değiştiriyor. c2 iç motivasyona kayıyor, spekülasyon riski yüksek; c3 c1 ile örtüşüyor.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c1 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c1",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Eşin 'ne istediğini bilmemesi' ile 'bilip yine de çözüm üretmesi' arasında",
+              "evidence": "Kişi amacını ('sadece anlatmak') net ifade ediyor ama bunu eşine söyleyip söylemediği anlatıda yok.",
+              "missing_fact": "Kişi eşine 'sadece dinle, çözüm istemiyorum' dedi mi hiç?",
+              "fact_already_in_story": false,
+              "possible_question": "Eşine hiç 'sadece dinlemeni istiyorum, çözüm aramana gerek yok' dedin mi?",
+              "options": [
+                "Evet, söyledim ama değişmedi",
+                "Hayır, hiç doğrudan söylemedim",
+                "Söylemeye çalıştım ama tam söyleyemedim"
+              ],
+              "why": "Eş bilip bilmediğine göre döngünün kaynağı değişir: iletişim mi yok, anlayış mı yok.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 3
+              },
+              "rank": 9
+            },
+            {
+              "id": "c2",
+              "distinction": "Susmanın 'çekilme' olması ile 'bekleyiş' olması arasında",
+              "evidence": "Kişi susuyor, eş 'ne oldu şimdi' diyor — yani susma bir sinyal olarak okunuyor ama anlamı farklı yorumlanıyor.",
+              "missing_fact": "Kişi sustuğunda içinden ne beklediğini biliyor mu?",
+              "fact_already_in_story": false,
+              "possible_question": null,
+              "options": [],
+              "why": "Susmanın işlevi farklıysa döngüyü kimin sürdürdüğüne dair yorum değişir.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 1,
+                "user_answerability": 2,
+                "low_effort": 1,
+                "speculation_risk": 2,
+                "steering_risk": 1,
+                "closure_value": 1
+              },
+              "rank": 2
+            },
+            {
+              "id": "c3",
+              "distinction": "Döngünün 'eşin çözüm modundan' kaynaklanması ile 'ihtiyacın hiç söylenmemesinden' kaynaklanması arasında",
+              "evidence": "Kişi eşi 'hep çözüm söylüyor' diye tanımlıyor; kendi sessizliğini de ayrıca belirtiyor.",
+              "missing_fact": "Kişi eşine bu ihtiyacı açıkça iletti mi?",
+              "fact_already_in_story": false,
+              "possible_question": null,
+              "options": [],
+              "why": "c1 ile örtüşüyor; ayrı bir ek olgu üretmiyor.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 2,
+                "speculation_risk": 1,
+                "steering_risk": 1,
+                "closure_value": 2
+              },
+              "rank": 4
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": true,
+      "answered_with": "Evet, söyledim ama değişmedi",
+      "turn2_tournament": {
+        "winner_id": "c2",
+        "ranking_reasons": "c2, kişinin kendi deneyimine ait bir ayrımı işaret ediyor — susmak ne hissettiriyor, bu kişinin biliyor. c1 de güçlü ama eşin iç dünyasına dair spekülasyona dayanıyor; c3 tavsiyeye çok yakın.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Eşin duymadığı ile duyup değiştiremediği arasında",
+            "evidence": "Söylendi ama değişmedi — bu iki okumayı da besliyor",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Duyulmadığını düşünmek ile duyulduğunu ama değişilemediğini düşünmek, kişinin o susuşu nasıl taşıdığını farklılaştırır",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 2,
+              "user_answerability": 1,
+              "low_effort": 1,
+              "speculation_risk": 2,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 5
+          },
+          {
+            "id": "c2",
+            "distinction": "Susmanın ne anlama geldiği arasında — vazgeçmek ile korumak",
+            "evidence": "Kişi her hafta aynı sahnede susuyor; bu seçim mi, tükenmek mi belirsiz",
+            "missing_fact": null,
+            "fact_already_in_story": false,
+            "possible_question": null,
+            "options": [],
+            "why": "Susmanın anlamı, kişinin o anı nasıl taşıdığını — yük mü, refleks mi — doğrudan etkiler",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 3,
+              "discriminability": 2,
+              "user_answerability": 3,
+              "low_effort": 2,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 5
+          },
+          {
+            "id": "c3",
+            "distinction": "Döngünün nerede kırıldığı arasında — söz yetmez, an gerekir",
+            "evidence": "Söylendi ama sahne değişmedi — ne zaman, nasıl söylendiği belirsiz",
+            "missing_fact": null,
+            "fact_already_in_story": false,
+            "possible_question": null,
+            "options": [],
+            "why": "Değişmeyen şeyin 'eş' mi yoksa 'an' mı olduğunu ayırt eder; ama bu tavsiyeye çok yakın",
+            "scores": {
+              "evidence_support": 1,
+              "judgment_change_value": 2,
+              "discriminability": 1,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 1,
+              "steering_risk": 3,
+              "closure_value": 1
+            },
+            "rank": 0
+          }
+        ]
+      },
+      "core_latency_ms": 65442,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Susmanın ne anlama geldiği arasında — vazgeçmek ile korumak",
+        "shape": "between_two",
+        "reveal": "Söyledin ama sahne değişmedi — bu 'duyulmadım' hissiyle bitişik görünüyor, ama tam aynı şey olmayabilir. Bir şeyin söylenmesi ile gerçekten karşılanması arasında bir boşluk var burada. Ve her hafta o susuş geliyor — bu susuşun içinde ne taşındığı, pes mi, yoksa o döngüden çıkmanın tek yolu mu, orası hâlâ açık görünüyor.",
+        "close": null,
+        "uncertain": "O susuş kişi için bir vazgeçiş mi hissettiriyor, yoksa kendini korumanın biricik yolu mu?",
+        "noticed": [
+          "Eşe 'sadece dinlemeni istiyorum' açıkça söylenmiş ama davranış değişmemiş",
+          "Sahne her hafta aynı şekilde tekrarlanıyor — tek seferlik bir kırılma değil, yerleşik bir döngü",
+          "Kişi susuyor; eş 'ne oldu şimdi' diyor — yani döngünün nasıl kapandığı da görünür"
+        ]
+      },
+      "card": {
+        "card_id": "4b3762c2-847c-4ddc-b341-1af670ba7fbe",
+        "session_id": "13102909-80fd-4c84-8924-7f75c662b5d3",
+        "created_at": "2026-09-10T07:20:42.604526+00:00",
+        "title": "Söylendi Ama Karşılanmadı",
+        "distinction": "Susmanın ne anlama geldiği arasında — vazgeçmek ile korumak",
+        "why_it_matters": "Söylemek ile karşılanmak aynı şey değil — ikisi arasındaki boşluk, o susuşun ne anlama geldiğini değiştirir.",
+        "still_open": "O susuş içinde ne ağır basıyor: pes etmek mi, yoksa kendini korumak mı?",
+        "take_with_you": "Söylediğimde değişmedi — bu benim için ne anlama geliyor?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "O susuş kişi için bir vazgeçiş mi hissettiriyor, yoksa kendini korumanın biricik yolu mu?",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [],
+        "recall_considered": 0,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": false,
+          "excluded_shape": 0,
+          "excluded_no_structure": 0,
+          "kept": 0
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "librarian_zero_candidates",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 0,
+      "roles_tokens": {
+        "in": 0,
+        "out": 0
+      },
+      "roles_latency_ms": 0,
+      "total_calls": 2
+    },
+    {
+      "id": "b10",
+      "kind": null,
+      "expected_note": null,
+      "founder_route": "CLOSE",
+      "story": "Bugün çok iyi bir haber aldım, sınavı kazandım. Ailemi aradım, herkes çok mutlu oldu. Ben de mutluyum, sadece bunu bir yere yazmak istedim.",
+      "core_calls": 1,
+      "core_tokens": {
+        "in": 2278,
+        "out": 626
+      },
+      "turn1": {
+        "mode": "CLOSE",
+        "question": null,
+        "options": [],
+        "why_ask": null,
+        "close": "Sınavı kazandın, ailen sevindi, sen de mutlusun — ve şimdi bu da yazıldı.",
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "Tek aday ve ayrımın her iki yanı da anlatıda zaten çözülmüş; 'sadece yazmak istedim' niyet beyanı açık. Gerilim ya da karar değiştirecek bir bilinmeyen yok.",
+          "proposed_mode": "CLOSE",
+          "routed_mode": "CLOSE",
+          "route_reason": "no candidate carries judgment-changing tension (max judgment_change_value=0)",
+          "question_from": null,
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Paylaşma ihtiyacı ile anlam arama ihtiyacı arasında",
+              "evidence": "'Sadece bunu bir yere yazmak istedim' ifadesi",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Amaç zaten açık: kaydetmek.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 0,
+                "discriminability": 0,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 0,
+                "closure_value": 3
+              },
+              "rank": 2
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "CLOSE",
+      "route_match": true,
+      "core_latency_ms": 12339,
+      "final_mode": "CLOSE",
+      "core": {
+        "distinction": null,
+        "shape": null,
+        "reveal": null,
+        "close": "Sınavı kazandın, ailen sevindi, sen de mutlusun — ve şimdi bu da yazıldı.",
+        "uncertain": null,
+        "noticed": [
+          "Sınavı kazandı — somut, olmuş bir şey.",
+          "Aileyi aradı ve paylaştı; ortak sevinç var.",
+          "Bunu 'bir yere yazmak istedi' — kaydetme isteği, başka bir ihtiyaç değil."
+        ]
+      },
+      "card": null,
+      "roles_retries": [],
+      "route": "CLOSE",
+      "librarian": null,
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "route_close_stops_pipeline",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 0,
+      "roles_tokens": {
+        "in": 0,
+        "out": 0
+      },
+      "roles_latency_ms": 0,
+      "total_calls": 1
+    },
+    {
+      "id": "e01",
+      "kind": "positive_no_problem",
+      "expected_note": "CLOSE-like: no tension",
+      "founder_route": null,
+      "story": "Bu sabah erken kalktım, uzun zamandır ertelediğim koşuya çıktım. Hava serindi, kimse yoktu. Eve dönünce çok iyi hissettim, sadece söylemek istedim.",
+      "core_calls": 1,
+      "core_tokens": {
+        "in": 2283,
+        "out": 973
+      },
+      "turn1": {
+        "mode": "CLOSE",
+        "question": null,
+        "options": [],
+        "why_ask": null,
+        "close": "Aldı seni o serin, ıssız sabah — ve söyledin. Güzel.",
+        "tournament": {
+          "winner_id": "c2",
+          "ranking_reasons": "c2 anlatının kendi sözüne en çok dayanıyor; ama her iki adayda da judgment_change_value sıfır, çünkü kişi ne yaşadığını ve ne hissettiğini biliyor, çözülmemiş gerilim yok. CLOSE rotası doğru.",
+          "proposed_mode": "CLOSE",
+          "routed_mode": "CLOSE",
+          "route_reason": "no candidate carries judgment-changing tension (max judgment_change_value=0)",
+          "question_from": null,
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Bir şeyi yapmanın zamanlaması ile o şeyi yapmak arasında",
+              "evidence": "Uzun süredir erteleme + bu sabah erken kalkma + sessiz, serin hava",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Ayrım karar değiştirici değil; kişi zaten ne hissettiğini biliyor.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 0,
+                "discriminability": 0,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 1,
+                "closure_value": 1
+              },
+              "rank": 0
+            },
+            {
+              "id": "c2",
+              "distinction": "Paylaşma ihtiyacı ile açıklama ihtiyacı arasında",
+              "evidence": "'Sadece söylemek istedim' ifadesi",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Kişi amacını zaten net biçimde söylemiş; gerilim yok.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 0,
+                "discriminability": 0,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 2,
+                "steering_risk": 2,
+                "closure_value": 2
+              },
+              "rank": -1
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "CLOSE",
+      "route_match": null,
+      "core_latency_ms": 17471,
+      "final_mode": "CLOSE",
+      "core": {
+        "distinction": null,
+        "shape": null,
+        "reveal": null,
+        "close": "Aldı seni o serin, ıssız sabah — ve söyledin. Güzel.",
+        "uncertain": null,
+        "noticed": [
+          "Uzun zamandır ertelenen bir şey sonunda yapılmış.",
+          "Dış koşul olarak 'hava serin, kimse yok' özellikle not edilmiş.",
+          "Amaç açıkça söylenmiş: 'sadece söylemek istedim.'"
+        ]
+      },
+      "card": null,
+      "roles_retries": [],
+      "route": "CLOSE",
+      "librarian": null,
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "route_close_stops_pipeline",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 0,
+      "roles_tokens": {
+        "in": 0,
+        "out": 0
+      },
+      "roles_latency_ms": 0,
+      "total_calls": 1
+    },
+    {
+      "id": "e02",
+      "kind": "ambiguous_relationship",
+      "expected_note": "QUESTION likely: a low-effort own-action fact should discriminate",
+      "founder_route": null,
+      "story": "Bir arkadaşımla aramız son aylarda tuhaf. Hâlâ görüşüyoruz ama eskisi gibi değil. Ne o bir şey söylüyor ne ben. Bir şey mi oldu, yoksa böyle mi olur bilmiyorum.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4703,
+        "out": 3798
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Tuhaflaştığı dönemde aklında kalan belirli bir an ya da değişiklik var mı, yoksa ne zaman başladığını bile söylemek zor mu?",
+        "options": [
+          "Aklımda kalan belirli bir an ya da söz var",
+          "O dönemde hayatımda ya da onun hayatında büyük bir şey oldu",
+          "Ne zaman başladığını söyleyemem, fark ettim ki böyleydi",
+          "İkisi de biraz var gibi"
+        ],
+        "why_ask": "Kırılma anı varsa 'konuşulabilecek bir şey var', yoksa 'dönem geçer mi geçmez mi' sorusu öne çıkar.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "c1 hem anlatıdaki en somut gerilimi taşıyor (kişinin kendi kurduğu ikilik) hem de yanıt ayrımlardan birini gerçekten eliyor, yönlendirme riski düşük. c2 de güçlü ama yanıt 'evet' olsa dahi bir tavsiyeye kayma riski daha yüksek.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c1 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c1",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Bir kırılma anı olan değişim ile zamanla sürüklenen değişim arasında",
+              "evidence": "'Bir şey mi oldu, yoksa böyle mi olur bilmiyorum' — kişi bu ayrımı kendisi kurmuş ama cevaplayamamış",
+              "missing_fact": "Yaklaşık olarak ne zaman değişti ve o dönemde ikisinden birinin hayatında büyük bir değişiklik ya da gergin bir an oldu mu?",
+              "fact_already_in_story": false,
+              "possible_question": "Tuhaflaştığı dönemde aklında kalan belirli bir an ya da değişiklik var mı, yoksa ne zaman başladığını bile söylemek zor mu?",
+              "options": [
+                "Aklımda kalan belirli bir an ya da söz var",
+                "O dönemde hayatımda ya da onun hayatında büyük bir şey oldu",
+                "Ne zaman başladığını söyleyemem, fark ettim ki böyleydi",
+                "İkisi de biraz var gibi"
+              ],
+              "why": "Kırılma anı varsa 'konuşulabilecek bir şey var', yoksa 'dönem geçer mi geçmez mi' sorusu öne çıkar.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 1,
+                "closure_value": 3
+              },
+              "rank": 8
+            },
+            {
+              "id": "c2",
+              "distinction": "Kişinin bir şey söylemek istemesi ile söylememesi arasında",
+              "evidence": "'Ne o bir şey söylüyor ne ben' — kişi kendi sessizliğini de fark etmiş",
+              "missing_fact": "Kişi kendi tarafında tuttuğu, söylemediği belirli bir şey var mı?",
+              "fact_already_in_story": false,
+              "possible_question": "Senin tarafında söylemediğin, aklında tuttuğun belirli bir şey var mı?",
+              "options": [
+                "Evet, söylemediğim bir şey var",
+                "Hayır, söyleyecek net bir şeyim yok, sadece bir his bu"
+              ],
+              "why": "Tuttuğu bir şey varsa mesele 'ne oldu' değil 'söylenip söylenmeyecek' olur.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 2,
+                "closure_value": 2
+              },
+              "rank": 3
+            },
+            {
+              "id": "c3",
+              "distinction": "İlişkinin dönüşmesi ile ilişkinin bitmesi arasında",
+              "evidence": "'Hâlâ görüşüyoruz' vurgusu — kişi bunu özellikle belirtmiş",
+              "missing_fact": null,
+              "fact_already_in_story": false,
+              "possible_question": null,
+              "options": [],
+              "why": "Bu ayrım anlatıda zaten açık değil ama cevabı kişinin kendi içinde belirsiz — sormak yönlendirme riski taşır.",
+              "scores": {
+                "evidence_support": 1,
+                "judgment_change_value": 2,
+                "discriminability": 1,
+                "user_answerability": 2,
+                "low_effort": 2,
+                "speculation_risk": 2,
+                "steering_risk": 3,
+                "closure_value": 1
+              },
+              "rank": -1
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": null,
+      "answered_with": "Aklımda kalan belirli bir an ya da söz var",
+      "turn2_tournament": {
+        "winner_id": "c1",
+        "ranking_reasons": "c1 kazandı çünkü kişinin kendi yanıtı zaten ayrımı kapatıyor: belirsizlik değil, bilinen ama söylenmeyen bir an var. c2 yakın ama üçüncü kişinin farkındalığına dair spekülasyon gerektiriyor; c3 ise yönlendirme riskini artırıyor.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Sessizliğin kaynağı: Yaşanan belirli bir kırılma anı ile zamanla sürüklenen mesafe arasında",
+            "evidence": "Kişi 'aklımda kalan belirli bir an ya da söz var' dedi; bu bir kırılma noktasının var olduğuna işaret ediyor",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Eğer belirli bir an varsa 'böyle mi olur' sorusu gerçek değil — ne olduğu zaten biliniyor, sadece söylenmemiş",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 3,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 0,
+              "steering_risk": 0,
+              "closure_value": 3
+            },
+            "rank": 9
+          },
+          {
+            "id": "c2",
+            "distinction": "Susmanın yönü: İkisinin de susması ile yalnızca kişinin susması arasında",
+            "evidence": "'Ne o bir şey söylüyor ne ben' — ikisinin de sustuğunu kişi gözlemliyor",
+            "missing_fact": "Arkadaş o anı/o sözü biliyor mu, yoksa sadece kişi mi biliyor?",
+            "fact_already_in_story": false,
+            "possible_question": null,
+            "options": [],
+            "why": "Eğer arkadaş o anı bilmiyorsa 'ne o ne ben' gözlemi farklı bir şeye işaret eder — ortak bir kaçınma değil, kişinin kendi sessizliği",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 2,
+              "low_effort": 2,
+              "speculation_risk": 1,
+              "steering_risk": 1,
+              "closure_value": 2
+            },
+            "rank": 4
+          },
+          {
+            "id": "c3",
+            "distinction": "Sorunun niteliği: 'Ne oldu' sorusu ile 'ne yapmalıyım' sorusu arasında",
+            "evidence": "Belirli bir an var — yani ne olduğu bilinuyor. Yine de 'bir şey mi oldu bilmiyorum' diye soruluyor",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Bilmek ile söylememek arasındaki farkı görmek, 'ne yapacağım' sorusunu farklı bir yere taşır",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 1,
+              "steering_risk": 2,
+              "closure_value": 2
+            },
+            "rank": 3
+          }
+        ]
+      },
+      "core_latency_ms": 70788,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Sessizliğin kaynağı: Yaşanan belirli bir kırılma anı ile zamanla sürüklenen mesafe arasında",
+        "shape": "between_two",
+        "reveal": "Az önce söylediğin şey ilginç bir yer açıyor: 'bir şey mi oldu bilmiyorum' diyorsun, ama aynı zamanda aklında kalan belirli bir an ya da söz var. Yani 'ne oldu' sorusu belki gerçek soru değil — o an orada, biliniyor. Asıl sessizlik o anın ne olduğundan değil, henüz dile gelmemiş olmasından beslenIyor gibi görünüyor. İkisinin de susmaya devam etmesi belki de ikisinin de aynı şeyi beklediğine işaret ediyor: karşı tarafın önce açmasını.",
+        "close": null,
+        "uncertain": "O anın yalnızca kişi tarafından mı, yoksa her ikisi tarafından da mı taşındığı belirsiz.",
+        "noticed": [
+          "Hâlâ görüşüyorlar ama ikisi de o anı/o sözü dile getirmemiş",
+          "Kişi o anı aklında tutuyor — yani ne olduğunu biliyor, ama paylaşmamış",
+          "Hem 'bir şey mi oldu' hem 'böyle mi olur' diye soruyor — iki okuma arasında asılı"
+        ]
+      },
+      "card": {
+        "card_id": "eac89ef6-73d4-4271-826f-9f4443715bf5",
+        "session_id": "8904938b-fea6-45b0-8478-3a94f68cd443",
+        "created_at": "2026-09-10T07:22:23.205265+00:00",
+        "title": "Bilinen Ama Söylenmeyen An",
+        "distinction": "Sessizliğin kaynağı: Yaşanan belirli bir kırılma anı ile zamanla sürüklenen mesafe arasında",
+        "why_it_matters": "Belirsizlik çoğu zaman bilgisizlikten değil, bilinen şeyin sessizlikte tutulmasından gelir. Bu fark, 'ne oldu' sorusunu 'neden hâlâ söylenmedi' sorusuna dönüştürür.",
+        "still_open": "O an ikisi için de ortak mu, yoksa yalnızca sende mi duruyor?",
+        "take_with_you": "O anı bilmek ile o anı taşımak aynı şey mi?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "O anın yalnızca kişi tarafından mı, yoksa her ikisi tarafından da mı taşındığı belirsiz.",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "librarian_zero_candidates",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 1,
+      "roles_tokens": {
+        "in": 2983,
+        "out": 13
+      },
+      "roles_latency_ms": 4861,
+      "total_calls": 3
+    },
+    {
+      "id": "e03",
+      "kind": "workplace",
+      "expected_note": "QUESTION or REVEAL; observable event available",
+      "founder_route": null,
+      "story": "Müdürüm toplantıda benim hazırladığım sunumu kendi fikri gibi anlattı. Kimse bir şey demedi. Sonra bana 'iyi iş çıkardık' dedi. Ne diyeceğimi bilemedim, teşekkür ettim.",
+      "core_calls": 2,
+      "core_tokens": {
+        "in": 4687,
+        "out": 3888
+      },
+      "turn1": {
+        "mode": "QUESTION",
+        "question": "Müdür sunumu anlatırken senin adını ya da katkını hiç andı mı?",
+        "options": [
+          "Hayır, hiç anmadı",
+          "Evet, bir noktada andı ama ufak geçti",
+          "Doğrudan anmadı ama 'ekibim hazırladı' gibi bir şey dedi",
+          "Hatırlamıyorum"
+        ],
+        "why_ask": "Ad hiç anılmadıysa kasıtlı görünür; anıldıysa 'ortak sahiplenme' okuma ağırlık kazanır ve kişinin hissiyle çelişir.",
+        "close": null,
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "c1, kişinin yargısını en doğrudan değiştirecek, kişinin bizzat gözemleyebileceği ve tek bir seçenekle yanıtlanabilecek somut olguyu soruyor. c3 de anlamlı ama kişinin kesin bilmeyebileceği bir olguya dayanıyor; c2 zaten anlatıda çözülmüş.",
+          "proposed_mode": "QUESTION",
+          "routed_mode": "QUESTION",
+          "route_reason": "contender c1 has a low-effort, answerable, discriminating missing fact",
+          "question_from": "c1",
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Kasıtlı sahiplenme ile farkında olmadan ortak sahiplenme arasında",
+              "evidence": "'Kendi fikri gibi anlattı' gözlemi var; ama 'iyi iş çıkardık' ifadesi 'biz' kipinde — bu iki okumayı açık bırakıyor",
+              "missing_fact": "Müdür toplantıda kişinin adını ya da katkısını hiç andı mı?",
+              "fact_already_in_story": false,
+              "possible_question": "Müdür sunumu anlatırken senin adını ya da katkını hiç andı mı?",
+              "options": [
+                "Hayır, hiç anmadı",
+                "Evet, bir noktada andı ama ufak geçti",
+                "Doğrudan anmadı ama 'ekibim hazırladı' gibi bir şey dedi",
+                "Hatırlamıyorum"
+              ],
+              "why": "Ad hiç anılmadıysa kasıtlı görünür; anıldıysa 'ortak sahiplenme' okuma ağırlık kazanır ve kişinin hissiyle çelişir.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 3,
+                "discriminability": 3,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 1,
+                "steering_risk": 0,
+                "closure_value": 3
+              },
+              "rank": 8
+            },
+            {
+              "id": "c2",
+              "distinction": "Teşekkürün içten kabulü ile çaresizlikten çıkan otomatik tepki arasında",
+              "evidence": "'Ne diyeceğimi bilemedim, teşekkür ettim' — doğrudan söylenmiş",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Anlatıda zaten açık; kişi ne diyeceğini bilemediğini ve teşekkürün bir çaresizlik tepkisi olduğunu söylüyor.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 1,
+                "discriminability": 0,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 1
+              },
+              "rank": 4
+            },
+            {
+              "id": "c3",
+              "distinction": "Grubun da gördüğü bir şey ile yalnızca kişinin yaşadığı bir şey arasında",
+              "evidence": "'Kimse bir şey demedi' — bu cümle kişiyi etkileyen bir sessizlik",
+              "missing_fact": "Toplantıda sunumun kimin hazırladığını bilen başka biri var mıydı?",
+              "fact_already_in_story": false,
+              "possible_question": "Toplantıdaki kişilerden sunumun sana ait olduğunu bilen var mıydı?",
+              "options": [
+                "Evet, en az bir kişi biliyordu",
+                "Hayır, sadece müdür biliyordu",
+                "Bilmiyorum"
+              ],
+              "why": "Bilen biri sessiz kaldıysa 'herkes gördü ama konuşmadı' ağırlık kazanır; kimse bilmiyorsa kişinin yalnızlığı farklı bir anlam taşır.",
+              "scores": {
+                "evidence_support": 2,
+                "judgment_change_value": 2,
+                "discriminability": 2,
+                "user_answerability": 2,
+                "low_effort": 2,
+                "speculation_risk": 1,
+                "steering_risk": 0,
+                "closure_value": 2
+              },
+              "rank": 5
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "QUESTION",
+      "route_match": null,
+      "answered_with": "Hayır, hiç anmadı",
+      "turn2_tournament": {
+        "winner_id": "c2",
+        "ranking_reasons": "c2 tamamen anlatıdan besleniyordu — kişinin kendi cümlesi ('ne diyeceğimi bilemedim') zaten ayrımı içinde taşıyordu. c1 güçlü ama kasıt sorusu spekülasyona açık; c3 ise ikinci bir soruya ihtiyaç duyuyor.",
+        "proposed_mode": "REVEAL",
+        "routed_mode": "REVEAL",
+        "route_reason": "answer received; second question forbidden",
+        "question_from": null,
+        "candidates": [
+          {
+            "id": "c1",
+            "distinction": "Emek görünmez kılındı ile emek paylaşıldı arasında",
+            "evidence": "Kişinin adı ya da katkısı toplantıda hiç anılmadı; 'iyi iş çıkardık' ifadesi öznesi belirsiz bir ortaklık dili kullanıyor.",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Kasıtlı sahiplenme ile dikkatsiz çerçeveleme arasındaki fark, kişinin bundan sonra nasıl konumlanacağını değiştirir.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 2,
+              "user_answerability": 1,
+              "low_effort": 1,
+              "speculation_risk": 2,
+              "steering_risk": 1,
+              "closure_value": 3
+            },
+            "rank": 5
+          },
+          {
+            "id": "c2",
+            "distinction": "Teşekkür etmek sessizce onaylamak ile anlık bir kapanma refleksi arasında",
+            "evidence": "'Ne diyeceğimi bilemedim, teşekkür ettim' — kişi bunu açıkça ayırt ediyor.",
+            "missing_fact": null,
+            "fact_already_in_story": true,
+            "possible_question": null,
+            "options": [],
+            "why": "Teşekkürün ne anlama geldiği netleşirse kişi o anı farklı okuyabilir — kendini suçlamayı bırakır ya da devam edip etmeyeceğine karar verir.",
+            "scores": {
+              "evidence_support": 3,
+              "judgment_change_value": 3,
+              "discriminability": 3,
+              "user_answerability": 3,
+              "low_effort": 3,
+              "speculation_risk": 0,
+              "steering_risk": 0,
+              "closure_value": 3
+            },
+            "rank": 9
+          },
+          {
+            "id": "c3",
+            "distinction": "Mesele tanınma ile mesele adil kredi arasında",
+            "evidence": "Kişi toplantıda kimsenin bir şey demediğini özellikle not ediyor — sadece müdürü değil, odayı da gözlemliyor.",
+            "missing_fact": "Kişi için asıl ağır gelen ne: o anda duyulmamak mı, yoksa bu emeğin ileriye taşınmayacak olması mı?",
+            "fact_already_in_story": false,
+            "possible_question": null,
+            "options": [],
+            "why": "Ayrım netleşirse kişi neyi çözmek istediğini daha açık görür.",
+            "scores": {
+              "evidence_support": 2,
+              "judgment_change_value": 2,
+              "discriminability": 2,
+              "user_answerability": 3,
+              "low_effort": 2,
+              "speculation_risk": 1,
+              "steering_risk": 2,
+              "closure_value": 2
+            },
+            "rank": 3
+          }
+        ]
+      },
+      "core_latency_ms": 73328,
+      "final_mode": "REVEAL",
+      "core": {
+        "distinction": "Teşekkür etmek sessizce onaylamak ile anlık bir kapanma refleksi arasında",
+        "shape": "between_two",
+        "reveal": "'Ne diyeceğimi bilemedim, teşekkür ettim' derken aslında iki şeyi aynı anda söyledin: o an sende bir şey kapandı, ve bu kapanma bir kabul değildi. Teşekkür bazen onay demek değildir; bazen sadece o saniyeyi geçiştirmenin tek mevcut kelimesidir. Asıl ağırlık muhtemelen orada — müdürün ne yaptığında değil, senin o an için başka bir dilin olmamasında.",
+        "close": null,
+        "uncertain": "O teşekkür kişinin içinde hâlâ bir şeyi kapattı mı, yoksa askıda mı bıraktı?",
+        "noticed": [
+          "Müdür sunumu 'biz' ya da 'ben' diye mi anlattı bilmiyoruz ama kişinin adı hiç geçmemiş.",
+          "Toplantı sonrası müdürün 'iyi iş çıkardık' demesi — 'sen' değil, 'biz'.",
+          "Kişi ne diyeceğini bilememiş ve teşekkür etmiş; bu tepki hem sessizliği hem de çatışmayı aynı anda gösteriyor."
+        ]
+      },
+      "card": {
+        "card_id": "dc1a41be-6d61-4e66-8e8b-4a6a656ae740",
+        "session_id": "3f153e91-9c94-423a-a207-b4e77019ce48",
+        "created_at": "2026-09-10T07:23:41.396536+00:00",
+        "title": "Teşekkür mü, Kapanma mı?",
+        "distinction": "Teşekkür etmek sessizce onaylamak ile anlık bir kapanma refleksi arasında",
+        "why_it_matters": "Teşekkür etmek ile o anı geçiştirmek aynı kelimeyle oluyor — ama ikisi çok farklı şeyler. Biri kabul, diğeri refleks.",
+        "still_open": "O an sende ne kapandı, ne askıda kaldı?",
+        "take_with_you": "O saniyede başka hangi kelime olabilirdi?",
+        "route_path": "QUESTION_REVEAL",
+        "original_uncertainty": "O teşekkür kişinin içinde hâlâ bir şeyi kapattı mı, yoksa askıda mı bıraktı?",
+        "enrichment": null,
+        "return_prompt": "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?",
+        "returns": []
+      },
+      "roles_retries": [],
+      "route": "REVEAL",
+      "librarian": {
+        "candidates": [
+          {
+            "record_id": "greek_olympus:hephaestus:hephaestus_work_vs_belonging",
+            "figure_id": "hephaestus",
+            "myth_ids": [
+              "hephaestus_return",
+              "hephaestus_thrown",
+              "hephaestus_thetis_armour"
+            ],
+            "source_refs": [
+              "Alcaeus fr. 349",
+              "François Vase (c. 570 BCE) and many Attic vases",
+              "Homeric Hymn 3.316-321",
+              "Il. 1.590-594",
+              "Il. 18.368-617",
+              "Il. 18.394-405",
+              "Paus. 1.20.3",
+              "Pind. fr. 283"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Teşekkür etmek sessizce onaylamak → işinin kabul edilmesi (teşekkür, emeğin görüldüğünün onayı olarak alınır)",
+              "y": "anlık bir kapanma refleksi → kendinin kabul edilmesi (ama 'sen' hiç geçmedi — bu kapı kapandı)"
+            },
+            "why_it_may_fit": "Her iki yapıda da onay yalnızca işe yönelir, kişiye ulaşmaz; teşekkür de tıpkı Hephaestus'un işinin beğenilmesi gibi 'ben'i dışarıda bırakarak kapanır.",
+            "recall_score": 0.0
+          },
+          {
+            "record_id": "greek_olympus:hermes:hermes_carrier_vs_author",
+            "figure_id": "hermes",
+            "myth_ids": [
+              "hermes_prometheus",
+              "hermes_pandora_words"
+            ],
+            "source_refs": [
+              "Aesch. Prometheus Bound 941-1079",
+              "Hes. Works & Days 67-82"
+            ],
+            "epistemic_type": "mythic_parallel",
+            "structural_match": {
+              "x": "Teşekkür etmek sessizce onaylamak → mesajı taşımak (adı geçmeyen kişi sunum içeriğini taşıdı, teslim etti)",
+              "y": "anlık bir kapanma refleksi → mesajın sahibi olmak (o sahiplik anı gelmedi, kapandı)"
+            },
+            "why_it_may_fit": "Kişi emeğini iletti ama yazar konumuna hiç geçemedi; teşekkür bu taşıyıcı konumu onaylarken sahiplik iddiasını aynı anda kapatan bir refleks olarak işledi.",
+            "recall_score": 0.0
+          }
+        ],
+        "recall_considered": 30,
+        "prefilter": {
+          "total": 45,
+          "core_poles_parsed": true,
+          "excluded_shape": 10,
+          "excluded_no_structure": 5,
+          "kept": 30
+        },
+        "dropped_by_verification": [],
+        "query_sent": {
+          "contains_story_text": false,
+          "contains_nickname": false,
+          "fields": [
+            "distinction",
+            "poles",
+            "structural_situation",
+            "uncertain",
+            "noticed",
+            "candidates_rejected"
+          ]
+        }
+      },
+      "skeptic": {
+        "passed": null,
+        "rejections": [
+          {
+            "record_id": "greek_olympus:hephaestus:hephaestus_work_vs_belonging",
+            "reasons": [
+              "keyword_similarity",
+              "changes_core_distinction",
+              "Çekirdeğin ayrımı 'teşekkür etmek' eyleminin ikili doğası üzerine kurulu — ama Hephaestus eşlemesi bunu 'işin onaylanması vs. kişinin onaylanması' olarak yeniden yazar; bu kayma çekirdeğin asıl bulgusunu (dilin yokluğu, kapanma refleksi) değil müdürün davranışını merkeze alır."
+            ]
+          },
+          {
+            "record_id": "greek_olympus:hermes:hermes_carrier_vs_author",
+            "reasons": [
+              "changes_core_distinction",
+              "clever_not_useful",
+              "Taşıyıcı/yazar ayrımı zekice ama çekirdeğin odağı 'başka bir dilin olmaması' ve kapanma refleksidir — sahiplik iddiasının gelmemesi değil; bu kayma içgörüyü kişinin içsel anından müdürle ilişkisine taşıyarak çekirdeği dışarıdan izlenen bir sahneye dönüştürür."
+            ]
+          }
+        ],
+        "score": 0,
+        "speculation_risk": null,
+        "note": "NONE"
+      },
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "skeptic_none",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 2,
+      "roles_tokens": {
+        "in": 5257,
+        "out": 886
+      },
+      "roles_latency_ms": 21936,
+      "total_calls": 4
+    },
+    {
+      "id": "e04",
+      "kind": "record_only",
+      "expected_note": "CLOSE: stated purpose is recording, mild content",
+      "founder_route": null,
+      "story": "Bugün annemin doğum günüydü, aradım, konuştuk. Her şey normaldi. Sadece bugünü bir yere not etmek istedim, o kadar.",
+      "core_calls": 1,
+      "core_tokens": {
+        "in": 2270,
+        "out": 687
+      },
+      "turn1": {
+        "mode": "CLOSE",
+        "question": null,
+        "options": [],
+        "why_ask": null,
+        "close": "Bugünü buraya bıraktın — annen arandı, konuştunuz, normal bir gündü. Kaydedildi.",
+        "tournament": {
+          "winner_id": "c1",
+          "ranking_reasons": "Tek anlamlı aday bu; anlatıda judgment_change_value 0, gerilim yok, kişinin niyeti açık. CLOSE rotası tutarlı.",
+          "proposed_mode": "CLOSE",
+          "routed_mode": "CLOSE",
+          "route_reason": "no candidate carries judgment-changing tension (max judgment_change_value=0)",
+          "question_from": null,
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Kaydetme isteği ile işlenecek bir gerilim arasında",
+              "evidence": "\"Sadece not etmek istedim, o kadar\" cümlesi niyeti net koyuyor; anlatıda gerilim sinyali yok.",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Gerilim olmadığı anlatıda zaten açık; yargı değiştirecek bir eksik yok.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 0,
+                "discriminability": 0,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 2,
+                "steering_risk": 2,
+                "closure_value": 3
+              },
+              "rank": -1
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "CLOSE",
+      "route_match": null,
+      "core_latency_ms": 14009,
+      "final_mode": "CLOSE",
+      "core": {
+        "distinction": null,
+        "shape": null,
+        "reveal": null,
+        "close": "Bugünü buraya bıraktın — annen arandı, konuştunuz, normal bir gündü. Kaydedildi.",
+        "uncertain": null,
+        "noticed": [
+          "Kişi aramış ve konuşmuş — eylemi kendisi gerçekleştirmiş.",
+          "\"Her şey normaldi\" ifadesi: ne olağanüstü ne de eksik.",
+          "\"Sadece not etmek istedim, o kadar\" — açıkça bir kayıt niyeti, paylaşım ya da çözüm talebi yok."
+        ]
+      },
+      "card": null,
+      "roles_retries": [],
+      "route": "CLOSE",
+      "librarian": null,
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "route_close_stops_pipeline",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 0,
+      "roles_tokens": {
+        "in": 0,
+        "out": 0
+      },
+      "roles_latency_ms": 0,
+      "total_calls": 1
+    },
+    {
+      "id": "e05",
+      "kind": "enough_info_for_reveal",
+      "expected_note": "REVEAL without question: story already contains the discriminating facts",
+      "founder_route": null,
+      "story": "Kardeşim benden üçüncü kez borç istedi. İlk ikisini geri ödemedi, ben de hiç sormadım. Bu sefer 'hayır' dedim, gerekçesini de söyledim: geri gelmiyor. O kızdı, ben rahatladım. Suçlu hissetmiyorum, sadece bunun ne kadar sürdüğünü fark ettim.",
+      "core_calls": 1,
+      "core_tokens": {
+        "in": 2328,
+        "out": 1695
+      },
+      "turn1": {
+        "mode": "CLOSE",
+        "question": null,
+        "options": [],
+        "why_ask": null,
+        "close": "Uzun süren bir şeyin adını koydun — ve o isim yerli yerine oturmuş gibi görünüyor.",
+        "tournament": {
+          "winner_id": "c3",
+          "ranking_reasons": "c3 anlatının kendi sesiyle en doğrudan örtüşüyor: 'ne kadar sürdüğünü fark ettim' cümlesi hem birikimi hem netleşmeyi içinde taşıyor. Diğer adaylar da anlatıda zaten mevcut; hiçbirinde gerçek bir gerilim ya da çözülmemiş olgu yok. judgment_change_value tüm adaylarda düşük olduğu için rota CLOSE.",
+          "proposed_mode": "CLOSE",
+          "routed_mode": "CLOSE",
+          "route_reason": "no candidate carries judgment-changing tension (max judgment_change_value=1)",
+          "question_from": null,
+          "candidates": [
+            {
+              "id": "c1",
+              "distinction": "Sessiz geçirme ile adını koyma arasında",
+              "evidence": "İlk ikisini geri ödemedi, ben de hiç sormadım — üçüncüde ise gerekçesini de söyledi.",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Bu ayrım anlatıda zaten açık; kişi bu geçişi kendisi fark etmiş durumda.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 1,
+                "discriminability": 1,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 2
+              },
+              "rank": 5
+            },
+            {
+              "id": "c2",
+              "distinction": "Suçsuz hissetmek ile gerçekten rahat olmak arasında",
+              "evidence": "Suçlu hissetmiyorum, sadece bunun ne kadar sürdüğünü fark ettim — iki ayrı duygu aynı cümlede.",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Kişi bu ikisini ayırt etmiş ve ikisini birden yaşadığını söylüyor; yargısı zaten yerinde.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 1,
+                "discriminability": 1,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 2
+              },
+              "rank": 5
+            },
+            {
+              "id": "c3",
+              "distinction": "Anlık karar ile birikmiş farkındalık arasında",
+              "evidence": "Bunun ne kadar sürdüğünü fark ettim — geçmişe bakan bir cümle, şimdiki kararı geçmişten besliyor.",
+              "missing_fact": null,
+              "fact_already_in_story": true,
+              "possible_question": null,
+              "options": [],
+              "why": "Kişi 'ne kadar sürdüğünü fark ettim' diyerek bunu zaten söylüyor; ayrım anlatıda içkin.",
+              "scores": {
+                "evidence_support": 3,
+                "judgment_change_value": 1,
+                "discriminability": 1,
+                "user_answerability": 3,
+                "low_effort": 3,
+                "speculation_risk": 0,
+                "steering_risk": 0,
+                "closure_value": 3
+              },
+              "rank": 5
+            }
+          ]
+        }
+      },
+      "core_route_turn1": "CLOSE",
+      "route_match": null,
+      "core_latency_ms": 31055,
+      "final_mode": "CLOSE",
+      "core": {
+        "distinction": null,
+        "shape": null,
+        "reveal": null,
+        "close": "Uzun süren bir şeyin adını koydun — ve o isim yerli yerine oturmuş gibi görünüyor.",
+        "uncertain": null,
+        "noticed": [
+          "İlk iki borcu geri ödemedi, kişi hiç sormadı — sessizliği bilinçli bir seçim olarak değil, alışkanlık olarak yaşamış olabilir.",
+          "Üçüncüsünde 'hayır' dedi ve gerekçesini açıkladı — bu sefer hem sınır hem açıklama bir arada geldi.",
+          "Kardeş kızdı, kişi rahatladı — iki farklı duygusal tepki aynı anda gerçekleşti ve kişi bunu çelişki olarak değil, tamamlanma olarak anlatıyor."
+        ]
+      },
+      "card": null,
+      "roles_retries": [],
+      "route": "CLOSE",
+      "librarian": null,
+      "skeptic": null,
+      "enrichment": {
+        "used": false,
+        "type": null,
+        "title": null,
+        "text": null,
+        "figure_id": null,
+        "myth_id": null,
+        "record_id": null,
+        "source_refs": [],
+        "label_tr": "Başka bir dilde",
+        "disclaimer_tr": null,
+        "reason": "route_close_stops_pipeline",
+        "fidelity": null
+      },
+      "core_identical": true,
+      "roles_calls": 0,
+      "roles_tokens": {
+        "in": 0,
+        "out": 0
+      },
+      "roles_latency_ms": 0,
+      "total_calls": 1
+    }
+  ]
+}
