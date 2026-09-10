@@ -1,0 +1,15 @@
+{
+  "_note": "Five edge cases for the distinction-card run. No Founder labels; expected behaviour noted per case for review only.",
+  "stories": [
+    {"id": "e01", "kind": "positive_no_problem", "expected_note": "CLOSE-like: no tension",
+     "story": "Bu sabah erken kalktım, uzun zamandır ertelediğim koşuya çıktım. Hava serindi, kimse yoktu. Eve dönünce çok iyi hissettim, sadece söylemek istedim."},
+    {"id": "e02", "kind": "ambiguous_relationship", "expected_note": "QUESTION likely: a low-effort own-action fact should discriminate",
+     "story": "Bir arkadaşımla aramız son aylarda tuhaf. Hâlâ görüşüyoruz ama eskisi gibi değil. Ne o bir şey söylüyor ne ben. Bir şey mi oldu, yoksa böyle mi olur bilmiyorum."},
+    {"id": "e03", "kind": "workplace", "expected_note": "QUESTION or REVEAL; observable event available",
+     "story": "Müdürüm toplantıda benim hazırladığım sunumu kendi fikri gibi anlattı. Kimse bir şey demedi. Sonra bana 'iyi iş çıkardık' dedi. Ne diyeceğimi bilemedim, teşekkür ettim."},
+    {"id": "e04", "kind": "record_only", "expected_note": "CLOSE: stated purpose is recording, mild content",
+     "story": "Bugün annemin doğum günüydü, aradım, konuştuk. Her şey normaldi. Sadece bugünü bir yere not etmek istedim, o kadar."},
+    {"id": "e05", "kind": "enough_info_for_reveal", "expected_note": "REVEAL without question: story already contains the discriminating facts",
+     "story": "Kardeşim benden üçüncü kez borç istedi. İlk ikisini geri ödemedi, ben de hiç sormadım. Bu sefer 'hayır' dedim, gerekçesini de söyledim: geri gelmiyor. O kızdı, ben rahatladım. Suçlu hissetmiyorum, sadece bunun ne kadar sürdüğünü fark ettim."}
+  ]
+}

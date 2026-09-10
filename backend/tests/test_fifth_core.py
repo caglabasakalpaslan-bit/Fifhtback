@@ -44,6 +44,9 @@ def _assert_turn_contract(t):
         assert t["mode"] == "REVEAL"
         assert isinstance(t["reveal"], str) and len(t["reveal"].strip()) > 20
         assert t["question"] is None and t["options"] == []
+        assert t["card"] and t["card"]["distinction"] == t["distinction"] and t["card"]["take_with_you"] and t["card"]["why_it_matters"]
+    if t.get("tournament"):
+        assert 1 <= len(t["tournament"]["candidates"]) <= 5 and t["tournament"]["routed_mode"] == t["mode"]
 
 
 def test_status_reports_credential_mode_without_secrets(api):
@@ -106,6 +109,26 @@ def test_close_is_a_real_core_output_for_a_tension_free_story(api):
     assert t["mode"] == "CLOSE", f"expected CLOSE for a tension-free story, got {t['mode']}: {t.get('reveal') or t.get('question')}"
     e = api.post(f"{BASE_URL}/api/fifth/enrich/{t['session_id']}", timeout=60).json()
     assert e["core_reveal"]["route"] == "CLOSE" and e["enrichment"]["used"] is False and e["total_calls"] == 0
+
+
+def test_card_return_loop(api):
+    r = api.post(f"{BASE_URL}/api/fifth/start", json={
+        "nickname": "tilki", "avatar": "🦊", "door": "tell",
+        "story": "Eski işimde sormadan halletmem takdir görüyordu. Yeni yerde aynı şeyi yaptım, 'niye danışmadın' dediler. Hem doğru yaptığımı düşünüyorum hem de kendimi suçlu hissediyorum.",
+    }, timeout=120)
+    if r.status_code == 503:
+        pytest.skip("model unavailable in this runtime — honest 503, nothing fabricated")
+    t = r.json()
+    if t["status"] == "question":
+        t = api.post(f"{BASE_URL}/api/fifth/answer", json={"session_id": t["session_id"], "answer": t["options"][0]}, timeout=120).json()
+    if t["mode"] != "REVEAL":
+        pytest.skip(f"core routed {t['mode']}; return loop needs a card")
+    rr = api.post(f"{BASE_URL}/api/fifth/card/{t['session_id']}/return", json={"outcome": "tuttu"}, timeout=30)
+    assert rr.status_code == 200 and rr.json()["returns"][-1]["outcome"] == "tuttu" and rr.json()["distinction"] == t["card"]["distinction"]
+    bad = api.post(f"{BASE_URL}/api/fifth/card/{t['session_id']}/return", json={"outcome": "nope"}, timeout=30)
+    assert bad.status_code == 422
+    s2 = api.get(f"{BASE_URL}/api/fifth/session/{t['session_id']}", timeout=30).json()
+    assert s2["card"]["returns"][-1]["outcome"] == "tuttu" and s2["card"]["distinction"] == t["card"]["distinction"]
 
 
 def test_stories_seed(api):

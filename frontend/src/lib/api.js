@@ -102,3 +102,9 @@ export const enrichFifth = async (session_id) => {
   const { data } = await axios.post(`${API}/fifth/enrich/${session_id}`, {}, { timeout: 120000 });
   return data;
 };
+
+// Return loop: later, the user says what happened to a saved Fifth Card. No scoring, no profile.
+export const returnCard = async (session_id, outcome, note) => {
+  const { data } = await axios.post(`${API}/fifth/card/${session_id}/return`, { outcome, note: note || null });
+  return data;
+};

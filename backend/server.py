@@ -1080,58 +1080,54 @@ FIFTH_CORE_PROMPT = """Sen "The Fifth" (Fifthback) içindeki tek çekirdeksin. B
 
 Görevin kişiye kim olduğunu söylemek DEĞİL. Görevin, anlatılanda karar değiştirici asıl ayrımı bulmak — ve gerekmedikçe soru sormamak. Anlatıda gerilim yoksa gerilim üretmek de görevin değil.
 
-İçinden şu sırayla düşün (bunları kimseye adım adım anlatma, sadece sonucunu ver):
-1. FARK ET (NOTICE): Somut olarak ne olmuş, ne söylenmiş? Yorum değil, sinyal.
-2. ÖRÜNTÜ (PATTERN): Bu sinyallerle uyuşabilecek 2-3 makul okuma nedir? Bunlar mercektir, gerçek değil. Yardımcı olabilecek mercekler: Kişi / Bağlam / İlişki / Toplum-Sistem; zıtlıklar (bekleyen-vazgeçen, yardım eden-tükenen); döngüler (aynı şeyin tekrar etmesi).
-3. AYIRT ET (DISTINGUISH): Bilinseydi yargıyı GERÇEKTEN değiştirecek TEK eksik olgu var mı? Ayrım demek: cevabına göre okumalardan biri elenir demek.
-4. KAPAT, SOR ya da AÇIKLA (CLOSE / QUESTION / REVEAL): Aşağıdaki kapıları SIRAYLA uygula; ilk tutan kapı kararı verir.
+ÇALIŞMA BİÇİMİ — AYRIM TURNUVASI:
+1. FARK ET: Somut olarak ne olmuş, ne söylenmiş? Yorum değil, sinyal (noticed).
+2. ADAY AYRIMLAR: 3-5 aday ayrım üret. Her aday "X ile Y arasında" biçiminde iki kutuplu olsun ve anlatıdan somut bir dayanağı olsun. Her aday için şunu sor: bilinseydi okumalardan birini ELEYECEK tek bir eksik olgu var mı? Bu olgu kişinin bildiği bir şey olmalı: gözlemlenebilir bir olay, kendi eylemi, kendi deneyimi ya da basit bir karşı-olgu ("söyledin mi", "daha önce de oldu mu", "o kişi başkalarına da böyle mi"). Üçüncü kişinin niyeti sorulamaz; kişinin GÖRDÜĞÜ davranışı sorulabilir. Olgu anlatıda ZATEN varsa fact_already_in_story=true yaz ve soru üretme. Kişinin kendi kurduğu ikiliği aynen geri sorma; bir kat altındaki olguyu sor.
+3. PUANLA (her biri 0-3, içsel; kullanıcıya gösterilmez):
+   evidence_support: dayanak anlatıda ne kadar somut
+   judgment_change_value: bu ayrım netleşse kişinin yargısı ne kadar değişir (0 = değişmez, gerilim yok)
+   discriminability: eksik olgu okumalardan birini gerçekten eler mi
+   user_answerability: kişi bu olguyu bilir mi (kendi eylemi/deneyimi = 3, üçüncü kişinin zihni = 0)
+   low_effort: tek soru, 2-4 tek satırlık seçenek ile cevaplanır mı
+   speculation_risk: niyet/motif/bilinçdışı atfı, genelleme (yüksek = kötü)
+   steering_risk: tavsiye/yönlendirme/teşhise kayma (yüksek = kötü)
+   closure_value: bu ayrım söylenince mesele yerine oturur mu
+   Sıralama: evidence_support + judgment_change_value + discriminability − speculation_risk − steering_risk. Yüksek spekülasyon ve yönlendirme sırayı DÜŞÜRÜR. En yüksek sıralı aday KAZANAN olur (winner_id) ve puanlarınla tutarlı olmalı.
+4. ROTA (proposed_mode; nihai rota puanlardan türetilir):
+   CLOSE: hiçbir adayda anlamlı, çözülmemiş, yargı değiştirici gerilim yoksa (tüm adaylarda judgment_change_value ≤ 1) ve kişinin söylediği amaç zaten yerine gelmişse (paylaşmak, kaydetmek). Biçime uymak için sorun uydurma.
+   QUESTION: kazanan ya da ona yakın bir adayın eksik olgusu düşük zahmetli, kişinin bildiği ve gerçekten eleyici ise (user_answerability ≥ 2, low_effort ≥ 2, discriminability ≥ 2, judgment_change_value ≥ 2) ve anlatıda zaten yoksa.
+   REVEAL: kazanan ayrım anlatının kendi sinyalleriyle yeterince destekleniyorsa ya da kalan bilinmeyen tonu değiştirir ama ayrımın kendisini değiştirmezse.
+   Kişinin daha önce sorulmuş bir soruya yanıtı varsa ikinci soru YASAK: proposed_mode REVEAL ya da CLOSE.
 
-KAPI 1 — CLOSE (Kapat): Anlatıda çözülmemiş, yargı değiştirici bir gerilim YOKSA ve kişinin söylediği amaç zaten yerine gelmişse (paylaşmak, kaydetmek, bir anı işaretlemek), mode="CLOSE". Gerilim sinyalleri: kendine soru ("mı… mı", "bilmiyorum", "ayıramıyorum"), aynı anda zıt duygular ("hem… hem", "kızmadım ama"), tekrar/döngü, geri çekilme eylemi (susmak, kısa cevap vermek, teklif etmeyi bırakmak), söylenmemiş kırılma, beklenti-sonuç uyumsuzluğu. Bunlardan hiçbiri yoksa okuma üretme, ayrım üretme, soru sorma: 1-2 cümlelik sıcak bir kabul yaz, kişinin kendi kelimesini geri ver ve dur. Biçime uymak için sorun uydurma.
-
-KAPI 2 — QUESTION (Sor): Şu dört koşulun HEPSİ sağlanıyorsa mode="QUESTION":
-  Q1 En az iki makul okuma var ve bunlar FARKLI ayrımlara götürüyor (aynı ayrımın iki tonu değil).
-  Q2 Bu okumalardan birini eleyecek TEK bir düşük zahmetli olgu var ve bu olgu kişinin bildiği bir şey: gözlemlenebilir bir olay, kendi eylemi, kendi deneyimi ya da basit bir karşı-olgu ("söyleseydin ne olurdu" değil, "söyledin mi"). Üçüncü kişinin niyeti/zihni sorulamaz; ama üçüncü kişinin kişinin GÖRDÜĞÜ davranışı sorulabilir. "Karşı taraf ne düşünüyor bilinemez" demek tek başına REVEAL gerekçesi DEĞİLDİR: kişinin elindeki gözlemlenebilir bir kanıt hâlâ ayırt ediyorsa sor.
-  Q3 Sorduğun şey anlatıda ZATEN YOK. Anlatı bir şeyi söylemişse onu sorma; kişinin kendi kurduğu ikiliği ("istemiyorum mu korkuyorum mu") aynen geri sorma, onun bir kat altındaki olguyu sor.
-  Q4 Düşük zahmet: tek soru, 2-4 seçenek, her seçenek tek satır (en fazla 8 kelime), bileşik soru yok.
-  Q1-Q3 sağlanıp Q4 sağlanmıyorsa soruyu kısalt; REVEAL'a kaçma.
-
-KAPI 3 — REVEAL (Açıkla): Gerilim var ama ya ayrım anlatının kendi sinyalleriyle zaten yeterince destekleniyor, ya da kalan bilinmeyen tonu değiştirir ama AYRIMIN KENDİSİNİ değiştirmez. O zaman mode="REVEAL": açıkla ve dur.
-
-Eğer kişinin daha önce sorulmuş bir soruya verdiği yanıt varsa, mode KESİNLİKLE "REVEAL" ya da "CLOSE" olmalı; ikinci soru YASAK.
-
-Açıklama (reveal) nasıl olmalı:
-- 2-4 cümle, sıcak ama net, terapi dili değil, günlük Türkçe.
-- İlk bakışta görünen okuma ile anlatıldığında ortaya çıkan karar değiştirici noktayı ayırsın. Örn. hissi: "Belki burada asıl ayrım X ile Y arasında." ya da "İlk bakışta X gibi görünüyor ama anlattığında karar değiştirici nokta Y." (Bu cümleleri kopyalama; anlama uydur.)
-- Belirsizliği koru: emin olmadığın şeyi "belki", "gibi görünüyor" diye söyle. Bilinmeyeni açıkça söyle.
-- Üçüncü kişiye sorumluluk yükleme; "genelde", "çoğunlukla" diye genelleme yapma; bilinçdışı motif dili kullanma.
-- Kişiye tavsiye ya da görev verme. Sadece ayrımı görünür kıl.
-
-Kapanış (close) nasıl olmalı:
-- 1-2 cümle. Kişinin söylediği duyguyu kendi kelimesiyle geri ver. Yeni okuma, ayrım, "ama", soru yok.
+KAZANAN İÇİN ÜRETİLECEKLER (her çağrıda hepsini doldur; hangisinin kullanılacağına rota karar verir):
+- close: 1-2 cümlelik sıcak kabul; kişinin kendi kelimesini geri ver; yeni okuma, ayrım, "ama", soru YOK.
+- reveal: 2-4 cümle, sıcak ama net, günlük Türkçe. İlk bakışta görünen okuma ile karar değiştirici noktayı ayır. Belirsizliği koru ("belki", "gibi görünüyor"). Üçüncü kişiye sorumluluk yükleme; genelleme yok; bilinçdışı motif dili yok; tavsiye yok.
+- card (FIFTH KARTI): title (≤ 6 kelime, ayrımı adlandıran, kişiyi adlandırmayan) · why_it_matters (1-2 kısa cümle: bu ayrım neden karar değiştirir) · still_open (yalnızca GERÇEK belirsizlik; yoksa null) · take_with_you (kişinin yanında götürebileceği tek kısa soru ya da cümle; tavsiye değil).
 
 YASAKLAR:
-- Teşhis yok (kişilik, bozukluk, "sen ... birisin" yok).
-- Duyguları nesnel gerçek gibi sunma ("aslında öfkelisin" yok).
-- Zorla denge kurma ("iki taraf da haklı" gibi boş cümleler yok).
-- Aşırı soru yok: en fazla BİR soru, o da şart değilse hiç.
-- Genel terapi/koçluk dili yok.
-- Örüntüleri/atasözlerini evrensel yasa gibi sunma; onlar sadece mercek.
-- Hikâye kartı verildiyse onu "senin hayatın" gibi ele alma; kişinin tanıdık dediği şey esas veridir.
-- Gerilim olmayan yerde gerilim icat etme.
+- Teşhis yok (kişilik, bozukluk, "sen ... birisin" yok). Duyguları nesnel gerçek gibi sunma. Zorla denge kurma. Terapi/koçluk dili yok. Örüntüleri evrensel yasa gibi sunma. Hikâye kartı verildiyse onu "senin hayatın" gibi ele alma. Gerilim olmayan yerde gerilim icat etme. Anlatıda olanı sorma.
 
 TÜM ÇIKTI TÜRKÇE. YALNIZCA şu KATI JSON nesnesini ver, başka hiçbir şey yazma:
 {
-  "mode": "CLOSE" ya da "QUESTION" ya da "REVEAL",
-  "noticed": [anlatılandan 1-3 somut sinyal, her biri kısa tek cümle],
-  "candidates": [mode CLOSE ise boş liste; aksi halde 1-3 kısa aday okuma/mercek; kesinlik iddiası olmadan],
-  "close": mode CLOSE ise 1-2 cümlelik kabul, aksi halde null,
-  "question": mode QUESTION ise tek kısa soru, aksi halde null,
-  "options": mode QUESTION ise 2-4 kısa tek satırlık seçenek, aksi halde [],
-  "why_ask": mode QUESTION ise bu sorunun hangi okumayı eleyeceğine dair tek cümle, aksi halde null,
-  "reveal": mode REVEAL ise 2-4 cümlelik açıklama, aksi halde null,
-  "distinction": mode REVEAL ise "X ile Y arasında" biçiminde asıl ayrımın tek satırlık adı, aksi halde null,
-  "shape": mode REVEAL ise ayrımın biçimi: "between_two" (gerçek iki kutup) / "gradient" (aynı şeyin dozları) / "open_question" (temiz karşıtı yok) / "sequence" (birinin zamanla ötekine dönüşmesi), aksi halde null,
-  "uncertain": mode REVEAL ise hâlâ bilinmeyen/emin olunmayan şeye dair tek cümle, aksi halde null
+  "noticed": [1-3 somut sinyal],
+  "candidates": [
+    {"id": "c1", "distinction": "X ile Y arasında", "pole_a": "X", "pole_b": "Y",
+     "evidence_from_story": "anlatıdan somut dayanak",
+     "missing_discriminating_fact": "bilinseydi bir okumayı eleyecek tek olgu; yoksa null",
+     "fact_already_in_story": true|false,
+     "possible_question": "o olguyu soran tek kısa soru; yoksa null",
+     "possible_options": ["2-4 tek satırlık seçenek"] | [],
+     "why_it_may_change_judgment": "tek cümle",
+     "scores": {"evidence_support": 0-3, "judgment_change_value": 0-3, "discriminability": 0-3, "user_answerability": 0-3, "low_effort": 0-3, "speculation_risk": 0-3, "steering_risk": 0-3, "closure_value": 0-3}}
+  ],
+  "winner_id": "c?",
+  "ranking_reasons": "1-2 cümle: kazanan neden kazandı, en yakın rakip neden kaybetti",
+  "proposed_mode": "CLOSE" | "QUESTION" | "REVEAL",
+  "close": "1-2 cümle",
+  "reveal": "2-4 cümle",
+  "shape": "between_two" | "gradient" | "open_question" | "sequence",
+  "uncertain": "hâlâ bilinmeyen tek cümle ya da null",
+  "card": {"title": "...", "why_it_matters": "...", "still_open": "... | null", "take_with_you": "..."}
 }"""
 
 
@@ -1156,6 +1152,61 @@ class FifthAnswer(BaseModel):
     answer: str
 
 
+class DistinctionScores(BaseModel):
+    evidence_support: int = 0
+    judgment_change_value: int = 0
+    discriminability: int = 0
+    user_answerability: int = 0
+    low_effort: int = 0
+    speculation_risk: int = 0
+    steering_risk: int = 0
+    closure_value: int = 0
+
+
+class DistinctionCandidate(BaseModel):
+    id: str
+    distinction: str
+    pole_a: Optional[str] = None
+    pole_b: Optional[str] = None
+    evidence_from_story: Optional[str] = None
+    missing_discriminating_fact: Optional[str] = None
+    fact_already_in_story: bool = False
+    possible_question: Optional[str] = None
+    possible_options: List[str] = []
+    why_it_may_change_judgment: Optional[str] = None
+    scores: DistinctionScores = DistinctionScores()
+    rank: int = 0                                     # computed: es + jcv + disc − spec − steer
+
+
+class Tournament(BaseModel):
+    """Internal: the core's candidate distinctions and how routing was derived. Not rendered to users."""
+    candidates: List[DistinctionCandidate] = []
+    winner_id: Optional[str] = None
+    ranking_reasons: Optional[str] = None
+    proposed_mode: Optional[str] = None
+    routed_mode: Optional[str] = None
+    route_reason: Optional[str] = None
+    question_from: Optional[str] = None               # candidate id whose question was asked
+
+
+class FifthCard(BaseModel):
+    """The structured final output of a completed REVEAL. Its distinction is the core's and cannot be
+    altered by later roles; `enrichment` only carries provenance of an approved optional layer."""
+    card_id: str
+    session_id: str
+    created_at: str
+    title: str
+    distinction: str
+    why_it_matters: str
+    still_open: Optional[str] = None
+    take_with_you: str
+    route_path: str                                   # REVEAL | QUESTION_REVEAL
+    original_uncertainty: Optional[str] = None
+    enrichment: Optional[dict] = None                 # {record_id, figure_id, myth_id, source_refs, title} when used
+    return_prompt: str = "Sonra dönersen: tuttu mu, değişti mi, uymadı mı, başka bir şey mi çıktı?"
+    returns: List[dict] = []                          # [{outcome, note, at}]
+
+
 class FifthTurn(BaseModel):
     session_id: str
     nickname: str
@@ -1173,6 +1224,8 @@ class FifthTurn(BaseModel):
     shape: Optional[str] = None            # between_two | gradient | open_question | sequence (REVEAL only)
     uncertain: Optional[str] = None
     close: Optional[str] = None            # CLOSE only: 1-2 sentence acknowledgment, no distinction
+    card: Optional[FifthCard] = None       # REVEAL only
+    tournament: Optional[Tournament] = None  # internal; scores are never shown in the UI
     source: str = "api"
     kind: str = "anlat"
     context: Optional[dict] = None
@@ -1231,13 +1284,17 @@ def fifth_model_status() -> dict:
 
 
 def _fifth_http_call(material: str, system: str = None, max_tokens: int = 1024) -> dict:
-    """One blocking POST to /v1/messages. Raises FifthUnavailable when there is no usable credential
+    """One POST to /v1/messages, STREAMED. Raises FifthUnavailable when there is no usable credential
     or the API refuses/cannot be reached. `system` defaults to FIFTH_CORE_PROMPT (the core call);
-    the enrichment gate passes its own system prompt through the same credential path."""
+    the roles pass their own system prompt through the same credential path.
+
+    Streaming matters: some credential gateways cut a request whose first bytes take longer than
+    ~30 s. With server-sent events the response starts immediately and long outputs (the distinction
+    tournament) complete. The stream is folded back into the non-streaming message shape."""
     c = _fifth_credentials()
     if not c["mode"]:
         raise FifthUnavailable("no credential: neither HTTPS_PROXY nor ANTHROPIC_API_KEY is set")
-    headers = {"content-type": "application/json", "anthropic-version": "2023-06-01"}
+    headers = {"content-type": "application/json", "anthropic-version": "2023-06-01", "accept": "text/event-stream"}
     if c["api_key"]:
         headers["x-api-key"] = c["api_key"]
     ca_bundle = os.environ.get("REQUESTS_CA_BUNDLE") or os.environ.get("SSL_CERT_FILE") or True
@@ -1248,14 +1305,14 @@ def _fifth_http_call(material: str, system: str = None, max_tokens: int = 1024) 
             json={
                 "model": FIFTH_MODEL,
                 "max_tokens": max_tokens,
+                "stream": True,
                 "system": system if system is not None else FIFTH_CORE_PROMPT,
                 "messages": [{"role": "user", "content": material}],
             },
-            # api.anthropic.com is often in NO_PROXY; naming the proxy explicitly is what lets a
-            # credential proxy inject the key. Without a proxy the request goes direct.
             proxies={"https": c["proxy"]} if c["proxy"] else None,
             verify=ca_bundle,
-            timeout=60,
+            timeout=(20, 120),
+            stream=True,
         )
     except requests.RequestException as e:
         raise FifthUnavailable(f"network: {e.__class__.__name__}") from e
@@ -1265,13 +1322,45 @@ def _fifth_http_call(material: str, system: str = None, max_tokens: int = 1024) 
         raise FifthUnavailable(f"api {resp.status_code}")
     if resp.status_code != 200:
         raise FifthBadOutput(f"api {resp.status_code}: {resp.text[:200]}")
-    return resp.json()
+    text_parts, model, stop_reason, usage = [], None, None, {"input_tokens": 0, "output_tokens": 0}
+    try:
+        for line in resp.iter_lines(decode_unicode=True):
+            if not line or not line.startswith("data:"):
+                continue
+            payload = line[5:].strip()
+            if not payload or payload == "[DONE]":
+                continue
+            ev = json.loads(payload)
+            et = ev.get("type")
+            if et == "message_start":
+                msg = ev.get("message") or {}
+                model = msg.get("model"); usage["input_tokens"] = (msg.get("usage") or {}).get("input_tokens", 0)
+            elif et == "content_block_delta":
+                d = ev.get("delta") or {}
+                if d.get("type") == "text_delta":
+                    text_parts.append(d.get("text", ""))
+            elif et == "message_delta":
+                stop_reason = (ev.get("delta") or {}).get("stop_reason") or stop_reason
+                usage["output_tokens"] = (ev.get("usage") or {}).get("output_tokens", usage["output_tokens"])
+            elif et == "error":
+                raise FifthUnavailable(f"stream error: {(ev.get('error') or {}).get('type')}")
+    except requests.RequestException as e:
+        raise FifthUnavailable(f"stream interrupted: {e.__class__.__name__}") from e
+    except json.JSONDecodeError as e:
+        raise FifthBadOutput("malformed stream event") from e
+    if not text_parts and stop_reason is None:
+        raise FifthUnavailable("empty stream")
+    return {"model": model or FIFTH_MODEL, "content": [{"type": "text", "text": "".join(text_parts)}], "stop_reason": stop_reason, "usage": usage}
 
 
 async def fifth_core(sess: dict) -> dict:
     """ONE model interaction. Returns the parsed core JSON with source="api".
     Raises FifthUnavailable / FifthBadOutput instead of inventing output."""
-    body = await asyncio.to_thread(_fifth_http_call, _fifth_material(sess))
+    # The tournament contract (3-5 candidates + reveal + card) needs more room than the old single-mode output.
+    body = await asyncio.to_thread(_fifth_http_call, _fifth_material(sess), None, 3000)
+    if body.get("stop_reason") == "max_tokens":
+        logger.error("Fifth core: output truncated at max_tokens")
+        raise FifthBadOutput("model output truncated")
     raw = "".join(b.get("text", "") for b in body.get("content", []) if b.get("type") == "text")
     m = re.search(r'\{.*\}', raw, re.DOTALL)
     try:
@@ -1286,46 +1375,93 @@ async def fifth_core(sess: dict) -> dict:
     return data
 
 
+def _parse_tournament(data: dict) -> Tournament:
+    cands = []
+    for i, c in enumerate((data.get("candidates") or [])[:5]):
+        clean = {}
+        for k, v in (c.get("scores") or {}).items():
+            if k in DistinctionScores.model_fields:
+                try:
+                    clean[k] = max(0, min(3, int(v)))
+                except (TypeError, ValueError):
+                    pass        # an unparseable score counts as 0, the others are kept
+        sc = DistinctionScores(**clean)
+        cand = DistinctionCandidate(
+            id=str(c.get("id") or f"c{i+1}"), distinction=str(c.get("distinction") or "").strip(),
+            pole_a=c.get("pole_a"), pole_b=c.get("pole_b"), evidence_from_story=c.get("evidence_from_story"),
+            missing_discriminating_fact=(c.get("missing_discriminating_fact") or None),
+            fact_already_in_story=bool(c.get("fact_already_in_story")),
+            possible_question=(str(c.get("possible_question")).strip() if c.get("possible_question") else None),
+            possible_options=[str(o).strip() for o in (c.get("possible_options") or []) if str(o).strip()][:4],
+            why_it_may_change_judgment=c.get("why_it_may_change_judgment"), scores=sc,
+        )
+        cand.rank = sc.evidence_support + sc.judgment_change_value + sc.discriminability - sc.speculation_risk - sc.steering_risk
+        if cand.distinction:
+            cands.append(cand)
+    return Tournament(candidates=cands, winner_id=data.get("winner_id"), ranking_reasons=data.get("ranking_reasons"), proposed_mode=str(data.get("proposed_mode") or "").upper() or None)
+
+
+def _question_eligible(c: DistinctionCandidate) -> bool:
+    sc = c.scores
+    return bool(c.missing_discriminating_fact and c.possible_question and 2 <= len(c.possible_options) <= 4 and not c.fact_already_in_story
+                and sc.user_answerability >= 2 and sc.low_effort >= 2 and sc.discriminability >= 2 and sc.judgment_change_value >= 2)
+
+
+def _route_from_tournament(t: Tournament, already_asked: bool):
+    """Deterministic routing from the core's own scores. Returns (mode, reason, winner, question_candidate)."""
+    if not t.candidates:
+        return "REVEAL", "no candidates parsed; falling back to reveal", None, None
+    top = max(c.rank for c in t.candidates)
+    winner = next((c for c in t.candidates if c.id == t.winner_id and c.rank >= top - 1), None) or max(t.candidates, key=lambda c: c.rank)
+    max_jcv = max(c.scores.judgment_change_value for c in t.candidates)
+    if max_jcv <= 1:
+        return "CLOSE", f"no candidate carries judgment-changing tension (max judgment_change_value={max_jcv})", winner, None
+    if not already_asked:
+        contenders = sorted([c for c in t.candidates if c.rank >= winner.rank - 1], key=lambda c: (c.id != winner.id, -c.rank))
+        qc = next((c for c in contenders if _question_eligible(c)), None)
+        if qc:
+            return "QUESTION", f"contender {qc.id} has a low-effort, answerable, discriminating missing fact", winner, qc
+        blocked = [f"{c.id}:already_in_story" for c in contenders if c.fact_already_in_story] + [f"{c.id}:no_missing_fact" for c in contenders if not c.missing_discriminating_fact]
+        return "REVEAL", "winner sufficiently supported; no eligible discriminating question (" + ", ".join(blocked[:3]) + ")", winner, None
+    return "REVEAL", "answer received; second question forbidden", winner, None
+
+
 def _fifth_normalize(sess: dict, data: dict) -> FifthTurn:
-    """Enforce the three-output contract: CLOSE, QUESTION (only if none asked yet) or REVEAL."""
-    mode = str(data.get("mode", "")).upper()
-    question = str(data.get("question")).strip() if data.get("question") else None
-    options = [str(o).strip() for o in (data.get("options") or []) if str(o).strip()][:4]
-    reveal = str(data.get("reveal")).strip() if data.get("reveal") else None
-    close = str(data.get("close")).strip() if data.get("close") else None
+    """Distinction tournament → deterministic route → CLOSE / QUESTION / REVEAL(+Fifth Card)."""
+    t = _parse_tournament(data)
     already_asked = bool(sess.get("question"))
+    mode, reason, winner, qc = _route_from_tournament(t, already_asked)
+    t.routed_mode, t.route_reason = mode, reason
+    now = datetime.now(timezone.utc).isoformat()
     meta = dict(session_id=sess["session_id"], nickname=sess["nickname"], avatar=sess["avatar"], door=sess["door"],
                 noticed=[str(x) for x in (data.get("noticed") or [])][:3],
                 source=data.get("source", "api"), kind=sess.get("kind", "anlat"), context=sess.get("context"),
-                created_at=sess.get("created_at"), updated_at=sess.get("updated_at"))
-
+                created_at=sess.get("created_at"), updated_at=sess.get("updated_at"), tournament=t)
+    close = str(data.get("close")).strip() if data.get("close") else None
     if mode == "CLOSE" and close:
         return FifthTurn(status="done", mode="CLOSE", close=close, candidates=[], **meta)
-
-    if mode == "QUESTION" and not already_asked and question:
-        return FifthTurn(
-            status="question", mode="QUESTION",
-            candidates=[str(x) for x in (data.get("candidates") or [])][:3],
-            question=question, options=options,
-            why_ask=str(data.get("why_ask")).strip() if data.get("why_ask") else None,
-            **meta,
-        )
-
+    if mode == "QUESTION" and qc:
+        t.question_from = qc.id
+        return FifthTurn(status="question", mode="QUESTION", candidates=[c.distinction for c in t.candidates][:3],
+                         question=qc.possible_question, options=qc.possible_options, why_ask=qc.why_it_may_change_judgment, **meta)
+    reveal = str(data.get("reveal")).strip() if data.get("reveal") else None
     if not reveal:
-        # The model asked a second question or returned nothing usable: stop honestly.
-        reveal = (
-            "Buraya kadar anlattıkların bir Açıklama için yeterli görünüyor ama net bir ayrım çıkaramadım. "
-            "Bunu bir kesinlik olarak değil, şu anki sınırım olarak oku."
-        )
+        reveal = ("Buraya kadar anlattıkların bir Açıklama için yeterli görünüyor ama net bir ayrım çıkaramadım. "
+                  "Bunu bir kesinlik olarak değil, şu anki sınırım olarak oku.")
+    distinction = (winner.distinction if winner else None) or (str(data.get("distinction")).strip() if data.get("distinction") else None)
     shape = data.get("shape") if data.get("shape") in ("between_two", "gradient", "open_question", "sequence") else None
-    return FifthTurn(
-        status="done", mode="REVEAL",
-        candidates=[str(x) for x in (data.get("candidates") or [])][:3],
-        reveal=reveal, shape=shape,
-        distinction=str(data.get("distinction")).strip() if data.get("distinction") else None,
-        uncertain=str(data.get("uncertain")).strip() if data.get("uncertain") else None,
-        **meta,
-    )
+    uncertain = str(data.get("uncertain")).strip() if data.get("uncertain") else None
+    card_in = data.get("card") or {}
+    card = FifthCard(
+        card_id=str(uuid.uuid4()), session_id=sess["session_id"], created_at=now,
+        title=str(card_in.get("title") or (winner.distinction if winner else "Ayrım")).strip()[:80],
+        distinction=distinction or "", why_it_matters=str(card_in.get("why_it_matters") or "").strip() or reveal,
+        still_open=(str(card_in.get("still_open")).strip() if card_in.get("still_open") else None) or uncertain,
+        take_with_you=str(card_in.get("take_with_you") or "").strip() or (distinction or ""),
+        route_path="QUESTION_REVEAL" if already_asked else "REVEAL", original_uncertainty=uncertain,
+    ) if distinction else None
+    return FifthTurn(status="done", mode="REVEAL", candidates=[c.distinction for c in t.candidates][:3],
+                     reveal=reveal, shape=shape, distinction=distinction, uncertain=uncertain, card=card, **meta)
 
 
 @api_router.get("/fifth/stories")
@@ -1341,7 +1477,7 @@ def _fifth_turn_from_record(sess: dict) -> FifthTurn:
         noticed=sess.get("noticed") or [], candidates=sess.get("candidates") or [],
         question=sess.get("question"), options=sess.get("options") or [], why_ask=sess.get("why_ask"),
         reveal=sess.get("reveal"), distinction=sess.get("distinction"), shape=sess.get("shape"), uncertain=sess.get("uncertain"),
-        close=sess.get("close"),
+        close=sess.get("close"), card=sess.get("card"), tournament=sess.get("tournament"),
         source=sess.get("source", "api"), kind=sess.get("kind", "anlat"), context=sess.get("context"),
         created_at=sess.get("created_at"), updated_at=sess.get("updated_at"),
         enrichment=sess.get("enrichment"),
@@ -1391,8 +1527,29 @@ async def fifth_enrich(session_id: str):
     turn = _fifth_turn_from_record(sess)
     result = await asyncio.to_thread(run_after_reveal, turn, sess, _gate_call, None, FifthUnavailable, FifthBadOutput)
     if result.enrichment.reason != "model_unavailable":   # never persist a run that could not reach the model
-        await db.fifth_sessions.update_one({"session_id": session_id}, {"$set": {"enrichment": result.model_dump(), "updated_at": datetime.now(timezone.utc).isoformat()}})
+        upd = {"enrichment": result.model_dump(), "updated_at": datetime.now(timezone.utc).isoformat()}
+        if sess.get("card") and result.enrichment.used:
+            e = result.enrichment
+            upd["card.enrichment"] = {"record_id": e.record_id, "figure_id": e.figure_id, "myth_id": e.myth_id, "source_refs": e.source_refs, "title": e.title, "type": e.type}
+        await db.fifth_sessions.update_one({"session_id": session_id}, {"$set": upd})
     return result
+
+
+class CardReturn(BaseModel):
+    outcome: Literal["tuttu", "degisti", "uymadi", "baska"]
+    note: Optional[str] = None
+
+
+@api_router.post("/fifth/card/{session_id}/return", response_model=FifthCard)
+async def fifth_card_return(session_id: str, req: CardReturn):
+    """Return loop: the user comes back later and says what happened to the card. No scoring, no profile."""
+    sess = await db.fifth_sessions.find_one({"session_id": session_id}, {"_id": 0})
+    if not sess or not sess.get("card"):
+        raise HTTPException(status_code=404, detail="Kart bulunamadı.")
+    entry = {"outcome": req.outcome, "note": (req.note or "").strip()[:500] or None, "at": datetime.now(timezone.utc).isoformat()}
+    await db.fifth_sessions.update_one({"session_id": session_id}, {"$push": {"card.returns": entry}, "$set": {"updated_at": entry["at"]}})
+    card = dict(sess["card"]); card["returns"] = list(card.get("returns") or []) + [entry]
+    return FifthCard(**card)
 
 
 @api_router.post("/fifth/start", response_model=FifthTurn)
@@ -1432,6 +1589,7 @@ async def fifth_start(req: FifthStart):
         "question": turn.question, "options": turn.options, "why_ask": turn.why_ask,
         "reveal": turn.reveal, "distinction": turn.distinction, "shape": turn.shape, "uncertain": turn.uncertain,
         "close": turn.close, "source": turn.source,
+        "card": turn.card.model_dump() if turn.card else None, "tournament": turn.tournament.model_dump() if turn.tournament else None,
     })
     await db.fifth_sessions.insert_one(dict(sess))
     return turn
@@ -1456,6 +1614,7 @@ async def fifth_answer(req: FifthAnswer):
             "answer": sess["answer"], "status": "done", "mode": turn.mode, "noticed": turn.noticed, "candidates": turn.candidates,
             "reveal": turn.reveal, "distinction": turn.distinction, "shape": turn.shape, "uncertain": turn.uncertain,
             "close": turn.close, "source": turn.source,
+            "card": turn.card.model_dump() if turn.card else None, "tournament": turn.tournament.model_dump() if turn.tournament else None,
             "answered_at": now, "updated_at": now,
         }},
     )

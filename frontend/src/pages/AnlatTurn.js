@@ -5,6 +5,7 @@ import { Loader2, ArrowRight, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { answerFifth, getFifthSession, describeFifthError, enrichFifth } from "../lib/api";
 import { BaskaBirDilde } from "../components/BaskaBirDilde";
+import { FifthCardView } from "../components/FifthCardView";
 import { setCurrentSession, clearCurrentSession, clearDraft, getCurrentSession } from "../lib/storage";
 import { BackLink } from "../components/BackLink";
 import { ModelUnavailable } from "../components/ModelUnavailable";
@@ -20,6 +21,7 @@ export const AnlatTurn = () => {
   const location = useLocation();
   const cached = getCurrentSession();
   const [turn, setTurn] = useState(location.state?.turn || (cached?.session_id === sessionId ? cached : null));
+  const isReturnVisit = !location.state?.turn;   // opened later (link, refresh, history) rather than right after the Reveal
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
   const [failure, setFailure] = useState(null);
@@ -131,10 +133,16 @@ export const AnlatTurn = () => {
           <motion.div key="r" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
             className="rounded-2xl border border-[#E7E0D8] bg-[#FBF7F2] p-6 sm:p-8 shadow-sm space-y-5" data-testid="fifth-reveal">
             <Label color="#3F6B56">Açıklama</Label>
-            {turn.distinction && <p className="text-sm font-mono uppercase tracking-[0.12em] text-[#3F6B56]">{turn.distinction}</p>}
-            <p className="font-serif text-2xl sm:text-3xl leading-snug">{turn.reveal}</p>
-            {turn.uncertain && <p className="text-sm text-[#8A847C] border-t border-[#E7E0D8] pt-4">Emin olunmayan: {turn.uncertain}</p>}
-            {enrichment?.enrichment?.used && <BaskaBirDilde enrichment={enrichment.enrichment} />}
+            {turn.card ? (
+              <FifthCardView card={turn.card} enrichment={enrichment?.enrichment} isReturnVisit={isReturnVisit} />
+            ) : (
+              <>
+                {turn.distinction && <p className="text-sm font-mono uppercase tracking-[0.12em] text-[#3F6B56]">{turn.distinction}</p>}
+                <p className="font-serif text-2xl sm:text-3xl leading-snug">{turn.reveal}</p>
+                {turn.uncertain && <p className="text-sm text-[#8A847C] border-t border-[#E7E0D8] pt-4">Emin olunmayan: {turn.uncertain}</p>}
+                {enrichment?.enrichment?.used && <BaskaBirDilde enrichment={enrichment.enrichment} />}
+              </>
+            )}
             <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
               <span className="text-sm text-[#8A847C]">Burada duruyoruz, {turn.nickname}.</span>
               <div className="flex items-center gap-4">
