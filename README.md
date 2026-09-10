@@ -21,7 +21,8 @@ Finished cards are kept in the user's browser under **Kartlarım**. No account, 
 ```
 MONGO_URL=...            # provided by the platform
 DB_NAME=...              # provided by the platform
-ANTHROPIC_API_KEY=...    # your paid Anthropic key — REQUIRED for the core to work
+FIFTHBACK_ANTHROPIC_KEY=...  # your paid Anthropic key — REQUIRED for the core to work
+ANTHROPIC_API_KEY=...        # accepted as a fallback name for the same key
 ```
 
 `frontend/.env`
@@ -30,7 +31,8 @@ ANTHROPIC_API_KEY=...    # your paid Anthropic key — REQUIRED for the core to 
 REACT_APP_BACKEND_URL=...   # provided by the platform
 ```
 
-Credential resolution in the core, in order: `ANTHROPIC_API_KEY` (direct connection) → an egress
+Credential resolution in the core, in order: `FIFTHBACK_ANTHROPIC_KEY` → `ANTHROPIC_API_KEY` (both direct
+connection) → an egress
 credential proxy (`HTTPS_PROXY`, sandbox runtimes only) → honest unavailable. The key is never
 logged or returned by any endpoint. `GET /api/fifth/status` reports only the credential *mode*.
 

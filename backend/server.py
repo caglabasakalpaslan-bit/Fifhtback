@@ -1374,10 +1374,11 @@ def _fifth_answer_material(sess: dict) -> str:
 
 # ---------------- Fifth Core model access ----------------
 # One model, one prompt, one request per turn. Credential resolution, in order:
-#   1. ANTHROPIC_API_KEY from the environment/secret store — sent as x-api-key on a DIRECT connection
-#      (the egress proxy is bypassed so it cannot substitute its own credential);
-#   2. an egress credential proxy (HTTPS_PROXY) — some runtimes attach the key at the proxy;
-#   3. neither → the core is honestly unavailable. No fake QUESTION/REVEAL is ever produced.
+#   1. FIFTHBACK_ANTHROPIC_KEY from the environment/secret store — sent as x-api-key on a DIRECT
+#      connection (the egress proxy is bypassed so it cannot substitute its own credential);
+#   2. ANTHROPIC_API_KEY, same treatment;
+#   3. an egress credential proxy (HTTPS_PROXY) — some runtimes attach the key at the proxy;
+#   4. none → the core is honestly unavailable. No fake QUESTION/REVEAL is ever produced.
 # The key is never logged, returned by any endpoint, or included in error text.
 FIFTH_MODEL = "claude-sonnet-4-6"
 ANTHROPIC_MESSAGES_URL = os.environ.get("ANTHROPIC_BASE_URL", "https://api.anthropic.com").rstrip("/") + "/v1/messages"
@@ -1393,7 +1394,11 @@ class FifthBadOutput(Exception):
 
 def _fifth_credentials() -> dict:
     proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
-    api_key = (os.environ.get("ANTHROPIC_API_KEY") or "").strip() or None
+    api_key = (
+        (os.environ.get("FIFTHBACK_ANTHROPIC_KEY") or "").strip()
+        or (os.environ.get("ANTHROPIC_API_KEY") or "").strip()
+        or None
+    )
     if api_key:
         return {"proxy": None, "api_key": api_key, "mode": "api_key"}      # own key wins; proxy is not used
     return {"proxy": proxy, "api_key": None, "mode": "proxy" if proxy else None}
@@ -1415,7 +1420,7 @@ def _fifth_http_call(material: str, system: str = None, max_tokens: int = 1024) 
     tournament) complete. The stream is folded back into the non-streaming message shape."""
     c = _fifth_credentials()
     if not c["mode"]:
-        raise FifthUnavailable("no credential: neither HTTPS_PROXY nor ANTHROPIC_API_KEY is set")
+        raise FifthUnavailable("no credential: none of FIFTHBACK_ANTHROPIC_KEY, ANTHROPIC_API_KEY or HTTPS_PROXY is set")
     headers = {"content-type": "application/json", "anthropic-version": "2023-06-01", "accept": "text/event-stream"}
     if c["api_key"]:
         headers["x-api-key"] = c["api_key"]
